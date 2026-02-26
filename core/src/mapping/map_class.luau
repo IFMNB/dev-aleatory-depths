@@ -1,33 +1,25 @@
 local Sad_ClassNames = table.freeze({
 	
-	SadObject = 'SadObject' :: 'SadObject', -- inherit from HxObject
-	--	SadBaseNetwork = 'SadBaseNetwork' :: 'SadBaseNetwork',
+	SadObject = 'SadObject' :: 'SadObject', 
 	
-		
-		SadConfigSnapshot = 'SadConfigSnapshot' :: 'SadConfigSnapshot',
 		SadMap = 'SadMap' :: 'SadMap',
-		SadAbility = 'SadAbility' :: 'SadAbility',
 	
 		ISadGroup = 'ISadGroup' :: 'ISadGroup',
 			SadPhysicGroup = 'SadPhysicGroup' :: 'SadPhysicGroup',
 			SadInstanceGroup = 'SadInstanceGroup' :: 'SadInstanceGroup',
 	
-		ISadCharacter = 'ISadCharacter' :: 'ISadCharacter',
-			SadBaseCharacter = 'SadBaseCharacter' :: 'SadBaseCharacter',
-				SadCharacter = 'SadCharacter' :: 'SadCharacter',
-				SadAiCharacter = 'SadAiCharacter' :: 'SadAiCharacter',
-				SadDevCharacter = 'SadDevCharacter' :: 'SadDevCharacter',
-		
-			ISadCharacterEcsManager = 'ISadCharacterController' :: 'ISadCharacterController',
-				SadAbilitiesManager = 'SadAbilitiesManager' :: 'SadAbilitiesManager',
-				SadMovementManager = 'SadMovementManager' :: 'SadMovementManager',
+		SadAbstractAbility = 'SadAbstractAbility' :: 'SadAbstractAbility',
+			SadCallbackAbility = 'SadCallbackAbility' :: 'SadCallbackAbility',
+			SadInstantAbility = 'SadInstantAbility' :: 'SadInstantAbility',
+	
+		SadAbstractCharacter = 'SadAbstractCharacter' :: 'SadAbstractCharacter',
+			SadPlayableCharacter = 'SadCharacter' :: 'SadCharacter',
+			SadAiCharacter = 'SadAiCharacter' :: 'SadAiCharacter',
 	
 		SadAbstractService = 'SadAbstractService' :: 'SadAbstractService',
 			SadDataService = 'SadDataService' :: 'SadDataService',
-			--SadEcsService = 'SadEcsService' :: 'SadEcsService',
 			SadGuiService = 'SadGuiService' :: 'SadGuiService',
-			SadInputService = 'SadInputService' :: 'SadInputService',
-			SadSoundService = 'SadSoundService' :: 'SadSoundService',
+			SadFXService = 'SadFXService' :: 'SadFXService',
 			SadNetService = 'SadNetService' :: 'SadNetService',
 			SadGameService = 'SadGameService' :: 'SadGameService',
 	

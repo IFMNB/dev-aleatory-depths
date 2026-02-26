@@ -4,8 +4,8 @@ local private = {}
 local class = {}; setmetatable(class,class);
 local interface = {};
 
-function private.new <T> (Service: T)
-	return main.new(Service, class)
+function private.new <T,Y> (Service: T & main.DefaultServiceNeedle<Y>)
+	return main.__SadAbstractService_protected.NewChild(Service :: T,class)
 end
 
 

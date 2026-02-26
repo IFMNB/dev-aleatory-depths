@@ -24,7 +24,7 @@ function private.PrepareToSend (...: any)
 			string.format('Writed %q byte value, #wsum == %q', tostring(B), tostring(interface.Service.NetworkWriteSum)))
 	end
 
-	return Transport
+	return Transport 
 end
 
 function private.GotPackage (Transport: buffer|any)

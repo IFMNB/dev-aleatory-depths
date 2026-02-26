@@ -1,7 +1,12 @@
 local main = require('./')
 
+
+local Hx = main.Libs.Hexagon
+local HxEvent = Hx.Classes.HxEvent()
+
 local private = {};
 local class = {}; setmetatable(class,class);
+local protected = {};
 local interface = {};
 
 local http = game:GetService('HttpService')
@@ -11,6 +16,7 @@ export type DefaultServiceNeedle <Name=string> = {
 	IsControllable: boolean
 }
 type SadAbstractService = typeof(class)
+
 
 private.states = setmetatable({}::{[{}]: boolean}, {__mode='k'})
 private.logstates = setmetatable({}::{[{}]: boolean}, {__mode='k'})
@@ -42,7 +48,8 @@ function private:set_active_auto (value: boolean?)
 		class:PrintLog(string.format('Automode for %s is set to %s', self.Name, value and 'true' or 'false'))
 	end
 	
-	if not self.IsControllable then return main.Mapping.Exception.CodeException:Warn(string.format('[%q] - Cannot set the automatic mode of operation on a service where it is not provided for by the IsControllable variable.', self.Name)) end
+	if not self.IsControllable then
+		return main.Mapping.Exception.CodeException:Warn(string.format('[%q] - Cannot set the automatic mode of operation on a service where it is not provided for by the IsControllable variable.', self.Name)) end
 	private.autostates[self] = value or false
 end
 
@@ -65,6 +72,7 @@ end
 	@return ()
 ]]
 function private:set_active (value: boolean?)
+	local self = self :: SadAbstractService;
 	
 	if private.states[class] then
 		class:PrintLog(string.format('Active for %s is set to %s', self.Name, value and 'true' or 'false'))
@@ -109,7 +117,6 @@ function private:set_active_log (value: boolean?)
 	
 	
 	private.logstates[self::any] = value or false
-	private.c1.Call(self, value)
 end
 
 --[[
@@ -135,6 +142,29 @@ function private:log (arg: any)
 	print(string.format('[Log] %q : %s', self.Name, tostring(arg)))
 end
 
+--[[
+	Защищенный метод создает сервис с соблюдением контакта самого абстрактоно сервиса.
+	
+	@class SadAbstractService
+	@protected
+	@side all
+	@return SadServiceInstance
+
+]]
+function private.new_service <T,Y,Q> (Service: T & DefaultServiceNeedle<Y>, childClass: Q)
+	local this = main.new(Service :: T, childClass);
+	local nolint = this :: any
+	
+	local e0, c0 = HxEvent.new();
+	local e1, c1 = HxEvent.new();
+	
+	nolint.OnLogActiveChangedEvent, nolint.SetLogActive = e0, main.Abstract.Wrap(c0.Call,class.SetLogActive);
+	nolint.OnActiveChangedEvent, nolint.SetActive = e1, main.Abstract.Wrap(c1.Call,class.SetActive);
+	nolint:SetActive(false);
+	
+	return this
+end
+
 
 class.__index=main.SadObject.class;
 class.ClassName = main.Mapping.Class.SadAbstractService;
@@ -153,17 +183,20 @@ class.PrintLog = private.log;
 class.SetLogActive = private.set_active_log;
 class.IsLogActive = private.get_active_log;
 
+private.e0, private.c0 = HxEvent.new();private.c0:Destroy();
+class.OnActiveChangedEvent = private.e0;
+class.OnLogActiveChangedEvent = private.e0;
 
 
+protected.NewChild = private.new_service;
 
 interface.class = class;
-interface.OnActiveChangedEvent, private.c0 = main.Libs.Hexagon.Classes.HxEvent().new(class.ClassName)
-interface.OnLogActiveChangedEvent, private.c1 = main.Libs.Hexagon.Classes.HxEvent().new(class.ClassName)
 interface.GetActive = private.active;
 interface.GetLogActive = private.active_log;
 
 table.freeze(interface)
 table.freeze(class)
 table.freeze(private)
+table.freeze(protected)
 
-return main:expand({__SadAbstractService=interface})
+return main:expand({__SadAbstractService=interface, __SadAbstractService_protected=protected})

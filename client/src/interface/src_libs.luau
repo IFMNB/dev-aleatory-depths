@@ -1,10 +1,5 @@
-local interface = {}
-local private = table.freeze({
-	
+local path = script.Parent.Parent.storage.library
+return table.freeze({
+	GuiUtils = require(path.GuiUtils);
+	SmartBone = require(path.SmartBone);
 })
-
-function interface:ClientLibs ()
-	
-end
-
-return interface

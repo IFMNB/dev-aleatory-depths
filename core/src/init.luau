@@ -1,8 +1,19 @@
 -- # core src
 
+local Library = require('@self/interface/src_library'):Libs()
+local Hexagon_Source = Library.Hexagon:Source()
 local src = {}
-src.Libs = require('@self/interface/src_library'):Libs()
-src.Mapping = require('@self/mapping')
+setmetatable(src, {__index=Hexagon_Source})
 
-setmetatable(src, {__index=src.Libs.Hexagon:Source()})
+src.Libs = Library
+src.Mapping = require('@self/mapping')
+src.Abstract = setmetatable({}, {__index=Hexagon_Source.Abstract})
+
+src.Abstract.Wrap = function <T, R, U...> (Callback: (...any)->(), Call: (T, ...R)->U...)
+	return function (T: T, ...: R)
+		Callback(...)
+		return Call(...)
+	end
+end
+
 return src

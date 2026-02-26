@@ -21,6 +21,13 @@ local Sad_Enums = table.freeze({
 	DenyEvery = Enum.new('DenyEvery'::'DenyEvery'),
 	DenyChanges = Enum.new('DenyChanges'::'DenyChanges'),
 	
+	CharacterController = table.freeze({ -- 
+		PlayerSide = Enum.new('PlayerSide'::'PlayerSide');
+		AiSide = Enum.new('AiSide'::'AiSide');
+		ScenarioSide = Enum.new('ScenarioSide'::'ScenarioSide');
+	});
+	
+	
 	-- Дополнительно
 })
 

@@ -20,11 +20,6 @@ GameIOMappingService.Service:SetActive(true)
 GameIOMappingService.Service:SetAuto(true)
 GameIOMappingService.Service:SetLogActive(true)
 
-game.Players.PlayerAdded:Connect(function(player: Player) 
-	GameIOMappingService.Service:AddPlayerContextKey(player, 'aalf', Enum.KeyCode.X, Enum.UserInputState.Begin)
-	print(GameIOMappingService.Service:IsContextExistsInService('aalf'))
-end)
-
 
 NetPackageService.Service:SetActive(true)
 NetOwnerService.Service:SetAuto(true)
