@@ -1,0 +1,39 @@
+local server = require(game.ServerStorage.server)
+
+local NetPackageService = server.Services.NetPackageService()
+local NetOwnerService = server.Services.NetOwnerService()
+local NetCoordinateService = server.Services.NetCoordinateService()
+local NetInputService = server.Services.NetInputService()
+
+local GameMapService = server.Services.GameMapService()
+local GameStunService = server.Services.GameStunService()
+local GameCollisionService = server.Services.GameCollisionService()
+local GameHitScanService = server.Services.GameHitScanService()
+local GameIOMappingService = server.Services.GameIOMappingService()
+
+GameMapService.Service:SetActive(true)
+GameStunService.Service:SetActive(true)
+GameCollisionService.Service:SetActive(true)
+GameHitScanService.Service:SetActive(true)
+GameHitScanService.Service:SetLogActive(true)
+GameIOMappingService.Service:SetActive(true)
+GameIOMappingService.Service:SetAuto(true)
+GameIOMappingService.Service:SetLogActive(true)
+
+game.Players.PlayerAdded:Connect(function(player: Player) 
+	GameIOMappingService.Service:AddPlayerContextKey(player, 'aalf', Enum.KeyCode.X, Enum.UserInputState.Begin)
+	print(GameIOMappingService.Service:IsContextExistsInService('aalf'))
+end)
+
+
+NetPackageService.Service:SetActive(true)
+NetOwnerService.Service:SetAuto(true)
+NetOwnerService.Service:SetActive(true)
+NetCoordinateService.Service:SetActive(true)
+NetCoordinateService.Service:SetAuto(true)
+NetInputService.Service:SetActive(true)
+NetInputService.Service:SetAuto(true)
+NetInputService.Service:SetLogActive(true)
+
+local TestZone = GameMapService.Service:GetMap('TestZone')
+TestZone:MapLoad() 

@@ -1,0 +1,39 @@
+local src = setmetatable({}, {__index=require(game.ReplicatedStorage.core).Services})
+
+
+function src.ConfigService ()
+	return require('../service/ConfigService')
+end
+
+-- Установщик сетевых владельцев.
+function src.NetOwnerService ()
+	return require('../service/NetOwnerService')
+end
+
+-- Синхронизирует координаты клиента с сервером посредством постоянного стриминга.
+function src.NetCoordinateService ()
+	return require('../service/NetCoordinateService')
+end
+
+-- Общее место хранения карт.
+function src.GameMapService ()
+	return require('../service/GameMapService')
+end
+
+-- Сервис для манипуляций с персонажами, обладающими Humanoid.
+function src.GameStunService ()
+	return require('../service/NetOwnerService/GameStunService')
+end
+
+-- Стандартный сервис для протокольного доступа к IO данным их девайсов.
+function src.NetInputService ()
+	return require('../service/NetInputService')
+end
+
+-- Игроки могут определять смысловые аналогии для разных событий.
+function src.GameIOMappingService ()
+	return require('../service/NetInputService/GameIOMappingService')
+end
+
+
+return src
