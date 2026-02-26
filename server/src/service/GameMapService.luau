@@ -17,7 +17,7 @@ end
 interface.Enums = table.freeze({
 	Null = Mapping.Enum.Null;
 })
-interface.Service = main.Core.Classes.SadGameService().new({
+interface.Service = main.Core.Classes.SadNetService().new({
 	Name = 'GameMapService' :: 'GameMapService';
 	GetMap = private.get;
 	IsControllable = false;

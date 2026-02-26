@@ -10,7 +10,7 @@ interface.Enums = table.freeze({
 interface.Exceptions = table.freeze({
 	
 });
-interface.Service = main.Core.Classes.SadGameService().new({
+interface.Service = main.Core.Classes.SadNetService().new({
 	
 	
 	

@@ -159,7 +159,7 @@ interface.Enums = table.freeze({
 interface.Exceptions = table.freeze({
 	CodeException = Mapping.Exception.CodeException;
 });
-interface.Service = main.Core.Classes.SadGameService().new({
+interface.Service = main.Core.Classes.SadNetService().new({
 	ScanSphereForModels = private.ScanSphereForFirstModelAncestor;
 	ScanCoordinateForModels = private.ScanCoordinateForFirstModelAncestor;
 	ScanSphereForCharacters = private.ScanSphereForPlayersCharacter;

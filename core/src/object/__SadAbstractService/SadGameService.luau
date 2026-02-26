@@ -10,9 +10,11 @@ function private.new <T,Y> (Service: T & main.DefaultServiceNeedle<Y>)
 	return this
 end
 
+
 class.__index = main.__SadAbstractService.class;
 class.ClassName = main.Mapping.Class.SadGameService;
 class.Source = script;
+
 
 interface.class = class;
 interface.new = private.new;

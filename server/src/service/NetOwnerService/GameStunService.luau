@@ -82,7 +82,7 @@ interface.Exceptions = table.freeze({
 	GameException = main.Mapping.Exception.GameException;
 	CodeException = main.Mapping.Exception.CodeException;
 });
-interface.Service = main.Core.Classes.SadGameService().new({
+interface.Service = main.Core.Classes.SadNetService().new({
 	DoModelStun = private.Stun;
 	DoModelFall = private.Fall;
 	

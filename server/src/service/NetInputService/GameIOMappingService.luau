@@ -701,7 +701,7 @@ interface.Exceptions = table.freeze({
 	RaceConditionException = Mapping.Exception.RaceConditionException;
 	
 });
-interface.Service = main.Core.Classes.SadGameService().new({ -- 25 методов
+interface.Service = main.Core.Classes.SadNetService().new({ -- 25 методов
 	AddPlayerToService = private.PLAYER_add;
 	RemovePlayerFromService = private.PLAYER_remove;
 	

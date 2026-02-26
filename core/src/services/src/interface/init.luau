@@ -17,8 +17,4 @@ function interface.GameHitScanService ()
 	return require('./service/GameCollisionService/GameHitScanService')
 end
 
-function interface.GameContextBusService ()
-	return require('./service/GameContextBusService')
-end 
-
 return interface

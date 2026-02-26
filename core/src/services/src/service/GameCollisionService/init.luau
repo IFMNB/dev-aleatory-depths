@@ -53,7 +53,7 @@ interface.Enums = table.freeze({
 interface.Exceptions = table.freeze({
 	CodeException = Mapping.Exception.CodeException;
 });
-interface.Service = main.Core.Classes.SadGameService().new({
+interface.Service = main.Core.Classes.SadNetService().new({
 	RemoveGroup = private.DestroyGroup;
 	GetGroup = private.GetGroup;
 	NewGroup = private.new_group;
