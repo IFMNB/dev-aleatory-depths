@@ -155,12 +155,12 @@ function private.new_service <T,Y,Q> (Service: T & DefaultServiceNeedle<Y>, chil
 	local this = main.new(Service :: T, childClass);
 	local nolint = this :: any
 	
+	nolint:SetActive(false);
 	local e0, c0 = HxEvent.new();
 	local e1, c1 = HxEvent.new();
-	
 	nolint.OnLogActiveChangedEvent, nolint.SetLogActive = e0, main.Abstract.Wrap(c0.Call,class.SetLogActive);
 	nolint.OnActiveChangedEvent, nolint.SetActive = e1, main.Abstract.Wrap(c1.Call,class.SetActive);
-	nolint:SetActive(false);
+	
 	
 	return this
 end

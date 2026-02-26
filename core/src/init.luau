@@ -9,11 +9,20 @@ src.Libs = Library
 src.Mapping = require('@self/mapping')
 src.Abstract = setmetatable({}, {__index=Hexagon_Source.Abstract})
 
-src.Abstract.Wrap = function <T, R, U...> (Callback: (...any)->(), Call: (T, ...R)->U...)
-	return function (T: T, ...: R)
+--[[
+	Оборачивает выполнение одной функции в каллбек для другой.
+	Ранее самостоятельно выстраивал тип.
+	
+	@class SadSource
+	@private
+	@side all
+	@return Function
+]]
+src.Abstract.Wrap = function <T,F, R, U...> (Callback: (...any)->(), Call: F&((T, ...R)->U...))
+	return (function (...: R)
 		Callback(...)
 		return Call(...)
-	end
+	end) :: F
 end
 
 return src

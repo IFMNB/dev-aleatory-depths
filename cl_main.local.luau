@@ -7,11 +7,12 @@ local GameIOMappingService = client.Services.GameIOMappingService()
 --local GameCameraService = client.Services.GameCameraService()
 
 NetPackageService.Service:SetActive(true)
+--NetPackageService.Service:SetLogActive(true)
+
 NetCoordinateService.Service:SetActive(true)
 GameIOMappingService.Service:SetActive(true)
 GameIOMappingService.Service:SetLogActive(true)
-task.wait(1)
-GameIOMappingService.Service:SendContextKeyChange('aalf', Enum.UserInputState.Begin, Enum.KeyCode.W)
+--GameIOMappingService.Service:SendContextKeyChange('aalf', Enum.UserInputState.Begin, Enum.KeyCode.W)
 
 NetInputService.Service:SetActive(true)
 NetInputService.Service:SetAuto(true)
