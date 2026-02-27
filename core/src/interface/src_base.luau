@@ -22,9 +22,16 @@ function src.Classes.SadCharacterReference ()
 	return require('../object/SadCharacterReference').SadCharacterReference
 end
 
+function src.Classes.SadPlayableCharacter () 
+	return require('../object/__SadAbstractCharacter/SadPlayeableCharacter').SadPlayableCharacter
+end
 
 function src.Interfaces.ISadGroup ()
 	return require('../object/ISadGroup')._ISadGroup
+end
+
+function src.Abstracts.SadAbstractCharacter ()
+	return require('../object/__SadAbstractCharacter').__SadAbstractCharacter
 end
 
 

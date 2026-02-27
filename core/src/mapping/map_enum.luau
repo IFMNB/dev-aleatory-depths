@@ -21,6 +21,18 @@ local Sad_Enums = table.freeze({
 	DenyEvery = Enum.new('DenyEvery'::'DenyEvery'),
 	DenyChanges = Enum.new('DenyChanges'::'DenyChanges'),
 	
+	AbilityType = table.freeze({
+		Ranged = Enum.new('Ranged'::'Ranged');
+		Melee = Enum.new('Melee'::'Melee');
+		Heal = Enum.new('Heal'::'Heal');
+		Movement = Enum.new('Movement'::'Movement');
+	});
+	
+	ActionSignalBehavior = table.freeze({
+		Deffered = Enum.new('Global'::'Global');
+		Immediate = Enum.new('Local'::'Local');
+	});
+	
 	CharacterController = table.freeze({ -- 
 		PlayerSide = Enum.new('PlayerSide'::'PlayerSide');
 		AiSide = Enum.new('AiSide'::'AiSide');

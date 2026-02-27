@@ -80,10 +80,14 @@ function private:Revive ()
 end
 
 --[[
-	
+	Устанавливает абстрактные свойства для переданного элемента.
 
+	@class SadAbstractCharacter
+	@side all
+	@exception CodeException
+	@return SadObject
 ]]
-function private.Construct <T,Y> (character: Model, element: T, childClass: Y)
+function private.Construct <T,Y> (character: Model, element: T, childClass: Y, defined: DefaultCanDefine?)
 	local SadCharacterReference = SadCharacterReference.new(character)
 	
 	local e0, c0 = HxEvent.new();
@@ -113,13 +117,19 @@ function private.Construct <T,Y> (character: Model, element: T, childClass: Y)
 	nolint.OnDiedEvent = e4;
 	nolint.OnReviveEvent = e5;
 	
+	if defined then
+		nolint.ReviveTime = defined.ReviveTime;
+		nolint.DownedDieTime = defined.DownedDieTime;
+		nolint.Revives = defined.Revives;
+	end
+	
 	return this
 end
 
-type DefaultCanDefine = {
-	ReviveTime: number,
-	DownedDieTime: number,
-	DownedReviveTime: number,
+export type DefaultCanDefine = {
+	ReviveTime: number?,
+	DownedDieTime: number?,
+	Revives: number?,
 }
 
 protected.Construct = private.Construct;

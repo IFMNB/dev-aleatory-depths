@@ -18,10 +18,14 @@ src.Abstract = setmetatable({}, {__index=Hexagon_Source.Abstract})
 	@side all
 	@return Function
 ]]
-src.Abstract.Wrap = function <T,F, R, U...> (Callback: (...any)->(), Call: F&((T, ...R)->U...))
+src.Abstract.Wrap = function <T,F, R, U...> (Callback: (...any)->(), Call: F&((T, ...R)->U...), CallAfter: (...any)->()?)
 	return (function (...: R)
 		Callback(...)
-		return Call(...)
+		local r0 = {Call(...)}
+		if CallAfter then
+			CallAfter(...)
+		end
+		return unpack(r0)
 	end) :: F
 end
 
