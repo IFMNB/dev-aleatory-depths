@@ -57,14 +57,14 @@ end
 
 	@class SadAbstractAbility
 	@side all
-	@exception CodeException
+	@exception CodeException, GameException
 	@return ()
 ]]
 function private:Call (...)
 	local self = self :: SadAbstractAbility;
 	local ability = Mapping.Exception.CodeException:Assert(self.Ability)
+	Mapping.Exception.GameException:Assert(not self:IsReloading())
 	ability(...)
-	self:DoReload()
 end
 
 
@@ -104,10 +104,10 @@ class.Name = '';
 class.Reload = 0;
 class.Damage = 0;
 class.Stun = 0;
-class.Type = nil :: Abilities?;
+class.Type = Mapping.Enum.AbilityType.Ignore :: Abilities;
 class.Ability = warn :: (...any) -> ()?;
 
-class.IsReloading = nil;
+class.IsReloading = private.IsReloading;
 
 class.DoReload = private.Reload;
 class.DoCall = private.Call;

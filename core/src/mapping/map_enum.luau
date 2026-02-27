@@ -26,6 +26,7 @@ local Sad_Enums = table.freeze({
 		Melee = Enum.new('Melee'::'Melee');
 		Heal = Enum.new('Heal'::'Heal');
 		Movement = Enum.new('Movement'::'Movement');
+		Ignore = Enum.new('Ignore'::'Ranged');
 	});
 	
 	ActionSignalBehavior = table.freeze({
