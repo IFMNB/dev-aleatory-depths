@@ -132,18 +132,22 @@ end
 
 --[[
 	Пишет лог в консоль с указанным сообщением.
+	
+	Обертка над прозаичным string.format() с референсами на сервис и сообщением в передаче
 
 	@class SadAbstractService
 	@side all
 	@return ()
 ]]
-function private:log (arg: any)
+function private:log (...: any)
 	local self = self::SadAbstractService;
-	print(string.format('[Log] %q : %s', self.Name, tostring(arg)))
+	print(string.format('[Log] %q : %s', self.Name, tostring(...)))
 end
 
 --[[
-	Защищенный метод создает сервис с соблюдением контакта самого абстрактоно сервиса.
+	Защищенный конструктор создает сервис с соблюдением контракта самого абстрактоно сервиса.
+	
+	Оборачивает некоторые Set методы в обертку, чтобы ивенты могли срабатывать автоматически без пересоздания конструкторов.
 	
 	@class SadAbstractService
 	@protected

@@ -12,6 +12,7 @@ local Sad_ClassNames = table.freeze({
 			SadCallbackAbility = 'SadCallbackAbility' :: 'SadCallbackAbility',
 			SadInstantAbility = 'SadInstantAbility' :: 'SadInstantAbility',
 	
+		SadCharacterReference = 'SadCharacterReference' :: 'SadCharacterReference',
 		SadAbstractCharacter = 'SadAbstractCharacter' :: 'SadAbstractCharacter',
 			SadPlayableCharacter = 'SadCharacter' :: 'SadCharacter',
 			SadAiCharacter = 'SadAiCharacter' :: 'SadAiCharacter',

@@ -18,6 +18,9 @@ function src.Classes.SadPhysicGroup ()
 	return require('../object/ISadGroup/SadPhysicGroup').SadPhysicGroup
 end
 
+function src.Classes.SadCharacterReference ()
+	return require('../object/SadCharacterReference').SadCharacterReference
+end
 
 
 function src.Interfaces.ISadGroup ()
