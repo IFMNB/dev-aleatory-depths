@@ -4,12 +4,6 @@ local private = {};
 local interface = {};
 
 local PackageTransport = main.ServiceLibs.PackageTransport
-local Http = game:GetService('HttpService')
-
-
--- TODO
--- Ревизия Net API (избавиться от Net классов и оставить 1 этот сервис)
-
 type NetPackageService = typeof(interface.Service)
 type SadObject = typeof(main.Core.Classes.SadObject().class)
 type HxEvent = typeof(main.Core.Classes.HxEvent().new())
@@ -119,9 +113,8 @@ private.watched = {}::{[RemoteEvent|UnreliableRemoteEvent]: HxEvent}
 	
 	@class NetPackageService
 	@side all
+	@exception *unknown*
 	@return HxEvent
-	@exception ?
-
 ]]
 function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent) : HxEvent
 	local self = self :: NetPackageService;

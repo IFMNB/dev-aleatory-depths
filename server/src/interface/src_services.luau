@@ -25,7 +25,12 @@ function src.GameStunService ()
 	return require('../service/NetOwnerService/GameStunService')
 end
 
--- Стандартный низкоуровневый сервис для протокольного доступа к IO данным девайсов клиентов.
+--[[
+	Стандартный низкоуровневый сервис для протокольного доступа к IO данным девайсов клиентов.
+
+	@fullAuto false
+	@side server
+]]
 function src.NetInputService ()
 	return require('../service/NetInputService')
 end
@@ -35,6 +40,9 @@ end
 	
 	Этот сервис определял зарегистрированные контекстные аналогии и имел как регистрацию глобального контекста,
 	так и регистарцию контекста на каждого игрока отдельно. Позволял переопределять клавишы.
+	
+	@fullAuto false
+	@side server
 ]]
 @deprecated
 function src.GameIOMappingService ()

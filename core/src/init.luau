@@ -14,7 +14,6 @@ src.Abstract = setmetatable({}, {__index=Hexagon_Source.Abstract})
 	Ранее самостоятельно выстраивал тип.
 	
 	@class SadSource
-	@private
 	@side all
 	@return Function
 ]]
