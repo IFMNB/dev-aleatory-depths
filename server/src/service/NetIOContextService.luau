@@ -3,8 +3,11 @@ local Mapping = main.Mapping
 local private = {};
 local interface = {};
 
-type Context = typeof(Mapping.Context)
+type Context = typeof(Mapping.InputContextMap)
+type Contexts = keyof<Context>
+type ContextThis = index<Context,Contexts>
 
+private.io = setmetatable({} :: {[ContextThis]: EnumItem}, {__mode='k'})
 
 interface.Enums = table.freeze({
 	Null = Mapping.Enum.Null;
@@ -17,7 +20,7 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	
 	Name = 'NetIOContextService'::'NetIOContextService';
 	Behavior = interface.Enums.Null :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
-	IsControllable = false;
+	IsControllable = true;
 })
 
 return interface

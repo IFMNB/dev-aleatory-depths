@@ -3,7 +3,9 @@ local Mapping = main.Mapping
 local private = {};
 local interface = {};
 
-type Context = typeof(Mapping.Context)
+type Context = typeof(Mapping.InputContextMap)
+type Contexts = keyof<Context>
+type ContextThis = index<Context,Contexts>
 
 
 interface.Enums = table.freeze({
