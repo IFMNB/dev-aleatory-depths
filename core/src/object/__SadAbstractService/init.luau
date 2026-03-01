@@ -48,6 +48,10 @@ function private:set_active_auto (value: boolean?)
 		class:PrintLog(string.format('Automode for %s is set to %s', self.Name, value and 'true' or 'false'))
 	end
 	
+	if private.autostates[self::any] == value then
+		return
+	end
+	
 	if not self.IsControllable then
 		return main.Mapping.Exception.CodeException:Warn(string.format('[%q] - Cannot set the automatic mode of operation on a service where it is not provided for by the IsControllable variable.', self.Name)) end
 	private.autostates[self] = value or false
@@ -76,6 +80,10 @@ function private:set_active (value: boolean?)
 	
 	if private.states[class] then
 		class:PrintLog(string.format('Active for %s is set to %s', self.Name, value and 'true' or 'false'))
+	end
+	
+	if private.states[self::any] == value then
+		return
 	end
 	
 	private.states[self::any] = value or false
@@ -115,6 +123,9 @@ function private:set_active_log (value: boolean?)
 		class:PrintLog(string.format('Log for %s is set to %s', self.Name, value and 'true' or 'false'))
 	end
 	
+	if private.logstates[self::any] == value then
+		return
+	end
 	
 	private.logstates[self::any] = value or false
 end
