@@ -113,7 +113,7 @@ local starter = function ()
 				if interface.Service:IsLogActive() then
 					interface.Service:PrintLog(Name)
 				end
-				NetPackageService.Service:SendServer(Mapping.Event.IOContextNetwork, v.Name)
+				NetPackageService.Service:SendServer(Mapping.Event.ContextNetwork, v.Name)
 			end
 		end
 		

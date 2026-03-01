@@ -31,8 +31,6 @@ function private:Send (player: Player, deltaTime: number?)
 	local cframe : CFrame
 	
 	if self.Behavior == interface.Enums.Client then
-		-- TODO
-		interface.Exceptions.CodeException:Throw()
 		return
 	end
 	

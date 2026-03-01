@@ -1,3 +1,6 @@
+--!native
+--!optimize 2
+
 local main = require('../')
 
 local private = {};
@@ -7,16 +10,12 @@ local PackageTransport = main.ServiceLibs.PackageTransport
 type NetPackageService = typeof(interface.Service)
 type SadObject = typeof(main.Core.Classes.SadObject().class)
 type HxEvent = typeof(main.Core.Classes.HxEvent().new())
+type HxEventConnection = typeof(({}::HxEvent):Connect(function(...)  end))
 
 function private.PrepareToSend (...: any)
 	local Transport = PackageTransport.Write(...);
 	local b, s, B = main.Libs.LarsenBufferize.Table.size({...})
 	interface.Service.NetworkWriteSum += B;
-	
-	if interface.Service:IsLogActive() then
-		interface.Service:PrintLog(
-			string.format('Writed %q byte value, #wsum == %q', tostring(B), tostring(interface.Service.NetworkWriteSum)))
-	end
 
 	return Transport 
 end
@@ -27,13 +26,6 @@ function private.GotPackage (Transport: buffer|any)
 		typeof(Transport) == 'buffer' and Transport or buffer.create(0)
 	)
 	interface.Service.NetworkReadSum += size;
-	interface.Service:PrintLog(string.format('Got package with byte size %q, #rsum == %q',
-		tostring(
-			size
-		),
-		tostring(interface.Service.NetworkReadSum)
-		)
-	)
 end
 
 --[[
@@ -48,8 +40,11 @@ function private:SendClient (Player: Player, Event: RemoteEvent|UnreliableRemote
 	interface.Exceptions.CodeException:Assert(game["Run Service"]:IsServer())
 	local self = self :: NetPackageService;
 	if not self:IsActive() then return self end
-	local Event = Event :: RemoteEvent
+	if self:IsLogActive() then
+		self:PrintLog(string.format('Sending package to %q', Player.DisplayName))
+	end
 	
+	local Event = Event :: RemoteEvent
 	local Transport = private.PrepareToSend(...);
 	Event:FireClient(Player, Transport);
 	return self
@@ -67,6 +62,9 @@ function private:SendServer (Event: RemoteEvent|UnreliableRemoteEvent, ...: any)
 	local self = self :: NetPackageService;
 	local Event = Event :: RemoteEvent
 	if not self:IsActive() then return self end
+	if self:IsLogActive() then
+		self:PrintLog('Sending package to server')
+	end
 	
 	local Transport = private.PrepareToSend(...);
 	Event:FireServer(Transport);
@@ -86,6 +84,10 @@ function private:SendPlayers (Players: {Player}, Event: RemoteEvent|UnreliableRe
 	local self = self :: NetPackageService;
 	local event = Event :: RemoteEvent
 	if not self:IsActive() then return self end
+	if self:IsLogActive() then
+		self:PrintLog(string.format('Sending package to %q players', tostring(#Players)))
+	end
+	
 	for i,v in Players do
 		self:SendClient(v, event, ...);
 	end
@@ -101,6 +103,9 @@ end
 ]]
 function private:SendAllClients (Event: RemoteEvent|UnreliableRemoteEvent, ...: any)
 	local self = self :: NetPackageService;
+	if self:IsLogActive() then
+		self:PrintLog('Sending package to all clients')
+	end
 	self:SendToClients(game.Players:GetPlayers(),Event, ...)
 	return self
 end
@@ -119,6 +124,12 @@ private.watched = {}::{[RemoteEvent|UnreliableRemoteEvent]: HxEvent}
 function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent) : HxEvent
 	local self = self :: NetPackageService;
 	local event = Event :: RemoteEvent;
+	
+	
+	
+	if self:IsLogActive() then
+		self:PrintLog(`Watched event {event.Name}`)
+	end
 	
 	if private.watched[event] then
 		return private.watched[event]
@@ -179,21 +190,43 @@ end
 
 
 --[[
-	Соединение ожидает пока пакет придет от конкретного игрока и выполняет callback.
+	Соединение ожидает пока вызов придет от конкретного игрока и выполняет callback.
+	
+	Во избежание дублирования одного и того же кода на разных сервисах этот метод доступен для вызова даже на HxEvent.
 
 	@class NetPackageService
 	@side server
 	@return HxEventConnection (Connection)
 ]]
-function private:forplayer (Player: Player, Event: RemoteEvent|UnreliableRemoteEvent, F: (...any)->())
+function private:forplayer (Player: Player, Event: RemoteEvent|UnreliableRemoteEvent|HxEvent, F: (...any)->(), Once: boolean?)
 	interface.Exceptions.CodeException:Assert(game["Run Service"]:IsServer())
 	local self = self :: NetPackageService;
-	local con : any
-	con = self:ForEvent(Event):Connect(function(player: Player, ...: any) 
+	local con : HxEventConnection
+	
+	local function lambda (player: Player, ... : any)
+		if not self:IsActive () then
+			return
+		end
+		
 		if player == Player then
 			F(...)
+			if Once then
+				con:Disconnect()
+			end
+			if self:IsLogActive() then
+				self:PrintLog(`Forplayer called by player {player.Name}`)
+			end
 		end
-	end)
+	end
+	
+	if (Event::any):IsA('SadObject') then
+		local Event = Event :: HxEvent
+		Event:Connect(lambda)
+	else
+		local Event = Event :: RemoteEvent|UnreliableRemoteEvent
+		con = self:ForEvent(Event):Connect(lambda)
+	end
+	
 	return con
 end
 
@@ -209,7 +242,7 @@ function private:waitplayer (Player: Player, Event: RemoteEvent|UnreliableRemote
 	local self = self :: NetPackageService;
 	local thread = coroutine.running()
 	
-	local con
+	local con : any
 	local this = task.spawn(function ()
 		task.wait(timeout or self.Timeout)
 		if con then
@@ -256,5 +289,36 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	NetworkWriteSum = 0;
 	Behavior = interface.Enums.UseBufferedTransport :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
 })
+
+local function logger ()
+	
+	print(debug.traceback())
+	
+	local time = 1
+	local saved_Read, saved_write = 0,0
+	local thread = coroutine.running()
+	
+	task.defer(function ()
+		interface.Service.OnLogActiveChangedEvent:Once(function(...) 
+			coroutine.close(thread)
+		end)
+	end)
+	
+	while task.wait(time) do
+		interface.Service:PrintLog(`IN BYTES: NetworkReadSum: {interface.Service.NetworkReadSum}, NetworkWriteSum: {interface.Service.NetworkWriteSum}`)
+		interface.Service:PrintLog(string.format('IN BYTES:t %s : For NetworkReadSum its a %q, for NetworkWriteSum its a %q',
+			tostring(time),
+			tostring(interface.Service.NetworkReadSum - saved_Read),
+			tostring(interface.Service.NetworkWriteSum - saved_write
+			)))
+		saved_Read, saved_write = interface.Service.NetworkReadSum, interface.Service.NetworkWriteSum
+	end
+end
+
+if interface.Service:IsActive() then
+	task.spawn(logger)
+else
+	interface.Service.OnLogActiveChangedEvent:Connect(logger)
+end
 
 return interface

@@ -22,6 +22,7 @@ GameIOMappingService.Service:SetLogActive(true)
 
 
 NetPackageService.Service:SetActive(true)
+NetPackageService.Service:SetLogActive()
 NetOwnerService.Service:SetAuto(true)
 NetOwnerService.Service:SetActive(true)
 NetCoordinateService.Service:SetActive(true)

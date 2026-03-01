@@ -11,7 +11,7 @@ local GameContextBusService = client.Services.GameContextBusService()
 local NetIOContextService = client.Services.NetIOContextService()
 
 NetPackageService.Service:SetActive(true)
---NetPackageService.Service:SetLogActive(true)
+NetPackageService.Service:SetLogActive(true)
 
 NetCoordinateService.Service:SetActive(true)
 --GameIOMappingService.Service:SetActive(true)
@@ -24,6 +24,7 @@ NetIOContextService.Service:SetLogActive(true)
 
 GameContextBusService.Service:SetActive(true)
 GameContextBusService.Service:SetLogActive(true)
+
 
 
 

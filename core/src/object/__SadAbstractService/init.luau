@@ -172,7 +172,8 @@ function private.new_service <T,Y,Q> (Service: T & DefaultServiceNeedle<Y>, chil
 	nolint:SetActive(false);
 	local e0, c0 = HxEvent.new();
 	local e1, c1 = HxEvent.new();
-	nolint.OnLogActiveChangedEvent, nolint.SetLogActive = e0, function (SAS: SadAbstractService, State :boolean)
+	nolint.OnLogActiveChangedEvent, nolint.SetLogActive = e0, function (SAS: SadAbstractService, State :boolean?)
+		local State = State or false
 		local this = SAS:IsLogActive()
 		class.SetLogActive (SAS, State)
 		if this ~= State then
@@ -180,7 +181,8 @@ function private.new_service <T,Y,Q> (Service: T & DefaultServiceNeedle<Y>, chil
 		end
 	end
 	
-	nolint.OnActiveChangedEvent, nolint.SetActive = e1, function (SAS: SadAbstractService, State :boolean)
+	nolint.OnActiveChangedEvent, nolint.SetActive = e1, function (SAS: SadAbstractService, State :boolean?)
+		local State = State or false
 		local this = SAS:IsActive()
 		class.SetActive (SAS, State)
 		if this ~= State then
