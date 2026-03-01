@@ -126,8 +126,7 @@ private.e0, private.c0 = HxEvent.new();
 private.e1, private.c1 = HxEvent.new();
 
 interface.Enums = table.freeze({
-	Deffered = Mapping.Enum.ActionSignalBehavior.Deffered;
-	Immediate = Mapping.Enum.ActionSignalBehavior.Immediate;
+	Immediate = Mapping.Enum.ContextEventBehavior.Immediate;
 });
 interface.Exceptions = table.freeze({
 	CodeException = Mapping.Exception.CodeException;
@@ -142,7 +141,7 @@ interface.Service = main.Core.Classes.SadGameService().new({
 	OnContextRemovedEvent = private.e1;
 	
 	Name = 'GameContextBusService' :: 'GameContextBusService';
-	Behavior = interface.Exceptions.CodeException;
+	Behavior = interface.Enums.Immediate :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
 	IsControllable = false;
 	Timeout = 5;
 })

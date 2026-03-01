@@ -29,8 +29,8 @@ local Sad_Enums = table.freeze({
 		Ignore = Enum.new('Ignore'::'Ranged');
 	});
 	
-	ActionSignalBehavior = table.freeze({
-		Deffered = Enum.new('Global'::'Global');
+	ContextEventBehavior = table.freeze({
+--		Deffered = Enum.new('Global'::'Global');
 		Immediate = Enum.new('Local'::'Local');
 	});
 	
