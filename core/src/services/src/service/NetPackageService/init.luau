@@ -113,7 +113,7 @@ private.watched = {}::{[RemoteEvent|UnreliableRemoteEvent]: HxEvent}
 	
 	@class NetPackageService
 	@side all
-	@exception *unknown*
+	@exception *unknown*, SafetyException
 	@return HxEvent
 ]]
 function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent) : HxEvent
@@ -142,7 +142,7 @@ function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent) : HxEvent
 			if typeof(Transport) == 'buffer' then
 				this = PackageTransport.Read(Transport)
 			else
-				this = Transport
+				interface.Exceptions.SafetyException:Throw()
 			end
 			
 			if type(this) == 'table' then
@@ -161,7 +161,7 @@ function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent) : HxEvent
 			if typeof(Transport) == 'buffer' then
 				this = PackageTransport.Read(Transport)
 			else
-				this = Transport
+				interface.Exceptions.SafetyException:Throw()
 			end
 			
 			if type(this) == 'table' then
