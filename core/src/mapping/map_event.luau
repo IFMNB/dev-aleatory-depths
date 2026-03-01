@@ -1,17 +1,15 @@
 local path = script.Parent.Parent.storage.network
 local Sad_Events = table.freeze({
-	ConfigNetwork = path.ConfigNetwork,
+	CoordinateNetwork = path.CoordinateNetwork, -- NetCoordinateService 
 	
-	RoundNetwork = path.RoundNetwork,
+	KeyCodeNetwork = path.KeyCodeNetwork, -- NetInputService
+	UserInputNetwork = path.UserInputNetwork, -- NetInputService
+	CameraNetwork = path.CameraNetwork, -- NetInputService
 	
-	CoordinateNetwork = path.CoordinateNetwork,
+	ContextKeyNetwork = path.ContextKeyNetwork, -- GameIOMappingService (DEPRECATED)
+	ContextInputNetwork = path.ContextInputNetwork, -- GameIOMappingService (DEPRECATED)
 	
-	KeyCodeNetwork = path.KeyCodeNetwork,
-	UserInputNetwork = path.UserInputNetwork,
-	CameraNetwork = path.CameraNetwork,
-	
-	ContextKeyNetwork = path.ContextKeyNetwork,
-	ContextInputNetwork = path.ContextInputNetwork,
+	IOContextNetwork = path.IOContextNetwork, -- используется NetIOContextService (payload: string)
 })
 
 return Sad_Events

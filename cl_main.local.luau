@@ -1,21 +1,35 @@
+
 local client = require('@game/StarterPlayer/client')
 
 local NetPackageService = client.Services.NetPackageService()
 local NetCoordinateService = client.Services.NetCoordinateService()
 local NetInputService = client.Services.NetInputService()
-local GameIOMappingService = client.Services.GameIOMappingService()
+local GameContextBusService = client.Services.GameContextBusService()
+
+--local GameIOMappingService = client.Services.GameIOMappingService()
 --local GameCameraService = client.Services.GameCameraService()
+local NetIOContextService = client.Services.NetIOContextService()
 
 NetPackageService.Service:SetActive(true)
 --NetPackageService.Service:SetLogActive(true)
 
 NetCoordinateService.Service:SetActive(true)
-GameIOMappingService.Service:SetActive(true)
-GameIOMappingService.Service:SetLogActive(true)
+--GameIOMappingService.Service:SetActive(true)
+--GameIOMappingService.Service:SetLogActive(true)
 --GameIOMappingService.Service:SendContextKeyChange('aalf', Enum.UserInputState.Begin, Enum.KeyCode.W)
 
-NetInputService.Service:SetActive(true)
+NetIOContextService.Service:SetActive(true)
+NetIOContextService.Service:SetAuto(true)
+NetIOContextService.Service:SetLogActive(true)
+
+GameContextBusService.Service:SetActive(true)
+GameContextBusService.Service:SetLogActive(true)
+
+
+
+NetInputService.Service:SetActive(false)
 NetInputService.Service:SetAuto(true)
+
 
 --GameCameraService.Service:SetActive(true)
 --GameCameraService.Service:SetAuto(true)

@@ -15,7 +15,9 @@ function src.NetCoordinateService ()
 end
 
 --[[
-	Стандартный низкоуровневый сервис для протокольного доступа к IO данным девайсов клиентов.
+	Стандартный низкоуровневый сервис для протокольного доступа к IO данным девайсов клиента.
+
+	На самом клиенте представляет способ отправки сырых IO данных на сервер.
 
 	@fullAuto false
 	@side client
@@ -50,6 +52,19 @@ end
 @deprecated
 function src.GameIOMappingService ()
 	return require('../service/GameIOMappingService')
+end
+
+--[[
+	Сервис для упрощенной передачи IO контекстов для вызова разнообразных операций на сервере.
+	
+	Этот сервис не позволит переопределить заранее созданные IO-контексты, однако дает возможность переопределить
+	способы вызова того или иного контекста. По сути, этот сервис является сервисом действий клиента на сервере.
+	
+	@fullAuto false
+	@side client
+]]
+function src.NetIOContextService ()
+	return require('../service/NetIOContextService')
 end
 
 return src

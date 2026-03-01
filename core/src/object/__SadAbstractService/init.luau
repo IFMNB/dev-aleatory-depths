@@ -87,7 +87,6 @@ function private:set_active (value: boolean?)
 	end
 	
 	private.states[self::any] = value or false
-	private.c0.Call(self, value)
 end
 
 --[[
@@ -173,8 +172,21 @@ function private.new_service <T,Y,Q> (Service: T & DefaultServiceNeedle<Y>, chil
 	nolint:SetActive(false);
 	local e0, c0 = HxEvent.new();
 	local e1, c1 = HxEvent.new();
-	nolint.OnLogActiveChangedEvent, nolint.SetLogActive = e0, main.Abstract.Wrap(c0.Call,class.SetLogActive);
-	nolint.OnActiveChangedEvent, nolint.SetActive = e1, main.Abstract.Wrap(c1.Call,class.SetActive);
+	nolint.OnLogActiveChangedEvent, nolint.SetLogActive = e0, function (SAS: SadAbstractService, State :boolean)
+		local this = SAS:IsLogActive()
+		class.SetLogActive (SAS, State)
+		if this ~= State then
+			c0.Call(State)
+		end
+	end
+	
+	nolint.OnActiveChangedEvent, nolint.SetActive = e1, function (SAS: SadAbstractService, State :boolean)
+		local this = SAS:IsActive()
+		class.SetActive (SAS, State)
+		if this ~= State then
+			c1.Call(State)
+		end
+	end
 	
 	
 	return this

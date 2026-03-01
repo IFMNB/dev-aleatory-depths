@@ -1,10 +1,6 @@
 local src = setmetatable({}, {__index=require(game.ReplicatedStorage.core).Services})
 
 
-function src.ConfigService ()
-	return require('../service/ConfigService')
-end
-
 -- Установщик сетевых владельцев.
 function src.NetOwnerService ()
 	return require('../service/NetOwnerService')

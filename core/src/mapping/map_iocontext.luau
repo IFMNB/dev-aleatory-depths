@@ -1,12 +1,13 @@
-local function context <T> (IO: any|EnumItem, Name: string)
+local function context <T> (IO: any|EnumItem, ST: EnumItem, Name: string)
 	return table.freeze({
 		DefaultIO = IO;
+		DefaultState = ST;
 		Name = Name;
 	})
 end
 
 local InputContextMap = table.freeze({
-	AbilitySlot0 = context(Enum.KeyCode.One, 'AbilitySlot0');
+	AbilitySlot0 = context(Enum.KeyCode.One, Enum.UserInputState.End, 'AbilitySlot0');
 	--AbilitySlot1 = 'AbilitySlot1' :: 'AbilitySlot1';
 	--AbilitySlot2 = 'AbilitySlot2' :: 'AbilitySlot2';
 	--AbilitySlot3 = 'AbilitySlot3' :: 'AbilitySlot3';

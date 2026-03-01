@@ -96,7 +96,8 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	IsControllable = true;
 });
 	
-UIS.InputEnded:Connect(function(input: InputObject, gameProcessedEvent: boolean) 
+UIS.InputEnded:Connect(function(input: InputObject, gameProcessedEvent: boolean)
+	if not interface.Service:IsActive() then return end
 	if not interface.Service:IsAuto() then return end
 	if gameProcessedEvent then return end
 	
@@ -104,7 +105,8 @@ UIS.InputEnded:Connect(function(input: InputObject, gameProcessedEvent: boolean)
 	interface.Service:UserInputEnded(input)
 end)
 
-game["Run Service"].Heartbeat:Connect(function(deltaTime: number) 
+game["Run Service"].Heartbeat:Connect(function(deltaTime: number)
+	if not interface.Service:IsActive() then return end
 	if not interface.Service:IsAuto() then return end
 	local cframe = Mapping.Exception.PermissionException:Assert(workspace.CurrentCamera).CFrame
 	
@@ -123,7 +125,8 @@ game["Run Service"].Heartbeat:Connect(function(deltaTime: number)
 	interface.Service:SendCamera()
 end)
 
-UIS.InputBegan:Connect(function(input: InputObject, gameProcessedEvent: boolean) 
+UIS.InputBegan:Connect(function(input: InputObject, gameProcessedEvent: boolean)
+	if not interface.Service:IsActive() then return end
 	if not interface.Service:IsAuto() then return end
 	if gameProcessedEvent then return end
 	
