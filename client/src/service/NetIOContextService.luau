@@ -9,7 +9,7 @@ type ContextThis = index<Context,Contexts>
 type NetIOContextService = typeof(interface.Service)
 type IO = {IO: EnumItem, ST: EnumItem}
 
-local NetPackageService = main.Core.Services.NetPackageService()
+local NetContextGatewayService = main.Core.Services.NetContextGatewayService()
 local GameContextBusService = main.Core.Services.GameContextBusService()
 local UserInputService = game:GetService('UserInputService')
 private.io = setmetatable({} :: {[ContextThis]: IO}, {__mode='k'})
@@ -113,7 +113,7 @@ local starter = function ()
 				if interface.Service:IsLogActive() then
 					interface.Service:PrintLog(Name)
 				end
-				NetPackageService.Service:SendServer(Mapping.Event.ContextNetwork, v.Name)
+				NetContextGatewayService.Service:SendContext(v.Name)
 			end
 		end
 		

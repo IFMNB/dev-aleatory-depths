@@ -63,4 +63,14 @@ function interface.GameContextBusService ()
 	return require('./service/GameContextBusService')
 end
 
+--[[
+	Сервис-ворота для единой точки доступа ко всему контекстному нетворку.
+
+	@fullAuto false
+	@side all
+]]
+function interface.NetContextGatewayService ()
+	return require('./service/NetPackageService/NetContextGatewayService')
+end
+
 return interface

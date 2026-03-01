@@ -285,18 +285,16 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	
 	IsControllable = false;
 	Timeout = 5;
+	LoggerTime = 2;
 	NetworkReadSum = 0;
 	NetworkWriteSum = 0;
 	Behavior = interface.Enums.UseBufferedTransport :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
 })
 
 local function logger ()
-	
-	print(debug.traceback())
-	
-	local time = 1
 	local saved_Read, saved_write = 0,0
 	local thread = coroutine.running()
+	local DeltaTime = os.time()
 	
 	task.defer(function ()
 		interface.Service.OnLogActiveChangedEvent:Once(function(...) 
@@ -304,14 +302,17 @@ local function logger ()
 		end)
 	end)
 	
-	while task.wait(time) do
-		interface.Service:PrintLog(`IN BYTES: NetworkReadSum: {interface.Service.NetworkReadSum}, NetworkWriteSum: {interface.Service.NetworkWriteSum}`)
-		interface.Service:PrintLog(string.format('IN BYTES:t %s : For NetworkReadSum its a %q, for NetworkWriteSum its a %q',
-			tostring(time),
+	while task.wait(interface.Service.LoggerTime) do
+		interface.Service:PrintLog(string.format('NetworkByteLogStamp\nRead %q, Write %q\nDeltaRead %q, DeltaWrite %q\nServiceTimeout %s, StampDeltaTime %s ',
+			tostring(interface.Service.NetworkReadSum),
+			tostring(interface.Service.NetworkWriteSum),
 			tostring(interface.Service.NetworkReadSum - saved_Read),
-			tostring(interface.Service.NetworkWriteSum - saved_write
-			)))
+			tostring(interface.Service.NetworkWriteSum - saved_write),
+			tostring(interface.Service.LoggerTime),
+			tostring(os.time()-DeltaTime)
+			))
 		saved_Read, saved_write = interface.Service.NetworkReadSum, interface.Service.NetworkWriteSum
+		DeltaTime = os.time()
 	end
 end
 
