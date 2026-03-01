@@ -1,7 +1,7 @@
 --[[
 	Карта определяет контексты для ивентов по форме
 	
-	string: RemoteEvent|UnreliableRemoteEvent;
+	string: string (literal)
 ]]
 
 local map = require('./')
@@ -19,6 +19,8 @@ local contextMap = table.freeze({
 	--MovementRight = nil;
 	--MovementJump = nil;
 	--MovementShift = nil;
+	
+	--
 })
 
 return contextMap
