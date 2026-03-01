@@ -97,8 +97,7 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	IsControllable = true;
 })
 
-
-GameContextBusService.Service.OnActiveChangedEvent:Once(function(...) 
+local starter = function ()
 	for i,v in Mapping.InputContextMap :: {[string]: ContextThis} do
 		local Controller = GameContextBusService.Service:AddContext(v.Name);
 		local Name = string.format('Activated IO Context for %q', v.Name)
@@ -121,6 +120,14 @@ GameContextBusService.Service.OnActiveChangedEvent:Once(function(...)
 		UserInputService.InputBegan:Connect(Reactor)
 		UserInputService.InputEnded:Connect(Reactor)
 	end
-end)
+end
+
+if GameContextBusService.Service:IsActive() then
+	starter()
+else
+	GameContextBusService.Service.OnActiveChangedEvent:Once(starter)
+end
+
+
 
 return interface

@@ -6,10 +6,11 @@ local Sad_Events = table.freeze({
 	UserInputNetwork = path.UserInputNetwork, -- NetInputService
 	CameraNetwork = path.CameraNetwork, -- NetInputService
 	
-	ContextKeyNetwork = path.ContextKeyNetwork, -- GameIOMappingService (DEPRECATED)
-	ContextInputNetwork = path.ContextInputNetwork, -- GameIOMappingService (DEPRECATED)
+	ContextKeyNetwork = path.GIOMS_ContextKeyNetwork, -- GameIOMappingService (DEPRECATED)
+	ContextInputNetwork = path.GIOMS_ContextInputNetwork, -- GameIOMappingService (DEPRECATED)
 	
 	IOContextNetwork = path.IOContextNetwork, -- используется NetIOContextService (payload: string)
+	ContextNetwork = path.ContextNetwork, -- используйтеся любыми сервисами (payload: string, ...: any)
 })
 
 return Sad_Events
