@@ -1,4 +1,4 @@
-local main = require('./')
+local main = require('../')
 local Mapping = main.Mapping;
 
 local Hx = main.Libs.Hexagon
@@ -96,7 +96,7 @@ end
 
 
 
-class.__index = main.SadObject.class;
+class.__index = main.Core.Classes.SadObject().class;
 class.ClassName = Mapping.Class.SadAbstractAbility;
 class.Source = script;
 

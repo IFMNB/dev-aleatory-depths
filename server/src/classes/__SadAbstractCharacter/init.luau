@@ -1,4 +1,4 @@
-local main = require('./');
+local main = require('../');
 
 local Hx = main.Libs.Hexagon
 local HxEvent = Hx.Classes.HxEvent()
@@ -134,7 +134,7 @@ export type DefaultCanDefine = {
 
 protected.Construct = private.Construct;
 
-class.__index = main.SadObject.class;
+class.__index = main.Core.Classes.SadObject().class;
 class.ClassName = main.Mapping.Class.SadAbstractCharacter
 class.Source = script;
 
