@@ -264,7 +264,7 @@ end
 
 
 interface.Enums = table.freeze({
-	UseBufferedTransport = main.Mapping.Enum.UseBufferedTransport;
+	Buffered = main.Mapping.Enum.NetworkTrasportationType.Buffered;
 })
 interface.Exceptions = table.freeze({
 	NetworkException = main.Mapping.Exception.NetworkException,
@@ -288,7 +288,7 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	LoggerTime = 2;
 	NetworkReadSum = 0;
 	NetworkWriteSum = 0;
-	Behavior = interface.Enums.UseBufferedTransport :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
+	Behavior = interface.Enums.Buffered :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
 })
 
 local function logger ()

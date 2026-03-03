@@ -12,7 +12,7 @@ end
 class.__index = main.__SadAbstractService.class;
 class.ClassName = main.Mapping.Class.SadGuiService;
 class.Source = script;
-
+class.MyGui = nil :: ScreenGui?;
 
 interface.class = class;
 interface.new = private.new;

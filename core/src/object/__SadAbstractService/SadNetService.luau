@@ -8,6 +8,7 @@ function private.new <T,Y> (Service: T & main.DefaultServiceNeedle<Y>)
 	return main.__SadAbstractService_protected.NewChild(Service :: T,class)
 end
 
+
 class.__index = main.__SadAbstractService.class;
 class.ClassName = main.Mapping.Class.SadNetService;
 class.Source = script;

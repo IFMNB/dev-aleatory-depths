@@ -3,6 +3,7 @@ local Sad_ClassNames = table.freeze({
 	SadObject = 'SadObject' :: 'SadObject', 
 	
 		SadMap = 'SadMap' :: 'SadMap',
+		SadConfigSnapshot = 'SadConfigSnapshot' :: 'SadConfigSnapshot',
 	
 		ISadGroup = 'ISadGroup' :: 'ISadGroup',
 			SadPhysicGroup = 'SadPhysicGroup' :: 'SadPhysicGroup',
@@ -13,6 +14,7 @@ local Sad_ClassNames = table.freeze({
 			SadInstantAbility = 'SadInstantAbility' :: 'SadInstantAbility',
 	
 		SadCharacterReference = 'SadCharacterReference' :: 'SadCharacterReference',
+		SadCharacterProperties = 'SadDefaultCharacterProperties' :: 'SadDefaultCharacterProperties';
 		SadAbstractCharacter = 'SadAbstractCharacter' :: 'SadAbstractCharacter',
 			SadPlayableCharacter = 'SadCharacter' :: 'SadCharacter',
 			SadAiCharacter = 'SadAiCharacter' :: 'SadAiCharacter',

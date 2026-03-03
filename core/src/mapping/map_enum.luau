@@ -8,8 +8,11 @@ local Sad_Enums = table.freeze({
 	
 	UseDefined = Enum.new('UseDefined'::'UseDefined');
 	UseDefault = Enum.new('UseDefault'::'UseDefault');
-
-	UseBufferedTransport = Enum.new('UseSadPackages'::'UseSadPackages');
+	
+	NetworkTrasportationType = table.freeze({
+--		Direct = Enum.new('Direct' :: 'Direct');
+		Buffered = Enum.new('Buffered'::'Buffered');
+	});
 	
 	Replicate = Enum.new('Replicate'::'Replicate'),
 	Unreplicate = Enum.new('Unreplicate'::'Unreplicate'),
