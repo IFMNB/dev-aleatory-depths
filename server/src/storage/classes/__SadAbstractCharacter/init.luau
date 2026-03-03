@@ -12,7 +12,7 @@ local interface = {};
 
 type SadAbstractCharacter = typeof(class)
 type SadCharacterReference <SCR1=any,SCR2=any,SCR3=any> = typeof(SadCharacterReference.new(nil::SCR1))
-type SadCharacterProperties = typeof(SadCharacterProperties.new())
+export type SadCharacterProperties = typeof(SadCharacterProperties.new())
 type ControllerSides = index<typeof(main.Mapping.Enum.CharacterController), keyof<typeof(main.Mapping.Enum.CharacterController)>>
 
 private.mode = {__mode='k'}
@@ -191,8 +191,8 @@ end
 	@exception CodeException
 	@return SadObject
 ]]
-function private.Construct <T,Y> (character: Model, element: T, childClass: Y, pre_defined)
-	local SadCharacterReference = SadCharacterReference.new(character)
+function private.Construct <T,Y> (character: Model?, element: T, childClass: Y, pre_defined: SadCharacterProperties?)
+	local SadCharacterReference = SadCharacterReference.new(character or class.Reference.Model:Clone())
 	
 	local e0, c0 = HxEvent.new();
 	local e1, c1 = HxEvent.new();
@@ -206,6 +206,8 @@ function private.Construct <T,Y> (character: Model, element: T, childClass: Y, p
 	local nolint = this :: any
 	
 	nolint.Reference = SadCharacterReference;
+	nolint.Properties = pre_defined or SadCharacterProperties.new();
+	
 	nolint.SetTeam = main.Abstract.Wrap(c0.Call, class.SetTeam);
 	nolint.SetController = main.Abstract.Wrap(c1.Call, class.SetController);
 	nolint.SetControllerActive = main.Abstract.Wrap(c2.Call, class.SetControllerActive);
@@ -230,8 +232,8 @@ class.__index = main.Core.Classes.SadObject().class;
 class.ClassName = main.Mapping.Class.SadAbstractCharacter
 class.Source = script;
 
-class.Reference = nil :: SadCharacterReference?;
-class.Properties = nil :: SadCharacterProperties?;
+class.Reference = table.freeze(SadCharacterReference.new(script.Parent.Parent.models.err_mdl:Clone()));
+class.Properties = table.freeze(SadCharacterProperties.new());
 
 class.GetTeam = private.GetTeam;
 class.GetController = private.GetController;

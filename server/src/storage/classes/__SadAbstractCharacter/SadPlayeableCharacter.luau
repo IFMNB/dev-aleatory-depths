@@ -23,7 +23,7 @@ type SadPlayerCharacter = typeof(class);
 	@exception CodeException
 	@return SadPlayerCharacter
 ]]
-function private.new (Character: Model, Params: main.DefaultCanDefine?, Player: Player?)
+function private.new (Params: main.SadCharacterProperties?, Character: Model?, Player: Player?)
 	local e0, c0 = HxEvent.new(class.ClassName);
 	
 	
@@ -35,7 +35,7 @@ function private.new (Character: Model, Params: main.DefaultCanDefine?, Player: 
 	
 	
 	this:SetCharacterPlayer(Player)
-	this.OnControllerChangedEvent:Connect(function(SAC, HxEnum) 
+	this.OnControllerChangedEvent:Connect(function(SAC, HxEnum)
 		if HxEnum ~= Mapping.Enum.CharacterController.PlayerSide then
 			this:SetController(Mapping.Enum.CharacterController.PlayerSide)
 			Mapping.Exception.CodeException:Throw()

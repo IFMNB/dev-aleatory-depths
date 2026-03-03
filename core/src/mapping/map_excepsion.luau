@@ -58,8 +58,8 @@ return table.freeze({
 	
 	TechicalException = exception.new(
 		'TechnicalException' :: 'TechnicalException',
-		'The error occurs when the code tries to execute in an environment for which it is not intended. It may also mean hardware problems on the server.'
-		::'The error occurs when the code tries to execute in an environment for which it is not intended. It may also mean hardware problems on the server.'
+		'The error occurs when the code tries to execute in an environment for which it is not intended.'
+		::'The error occurs when the code tries to execute in an environment for which it is not intended.'
 	),
 	
 	RaceConditionException = exception.new(

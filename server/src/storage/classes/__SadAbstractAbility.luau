@@ -53,7 +53,10 @@ function private:Reload ()
 end
 
 --[[
-	Вызывает выполнение способности, активируя все что должен активировать экземпляр этого класса как это было запланировано.
+	Вызывает выполнение способности, проверяя ее перезарядку при этом
+
+	Вызов способности через этот метод никогда не будет возвращать результат выполнения,
+	мало того, всякий раз когда это будет происходить данный метод будет выдавать
 
 	@class SadAbstractAbility
 	@side all
@@ -63,8 +66,15 @@ end
 function private:Call (...)
 	local self = self :: SadAbstractAbility;
 	local ability = Mapping.Exception.CodeException:Assert(self.Ability)
-	Mapping.Exception.GameException:Assert(not self:IsReloading())
-	return ability(...)
+	
+	if self:IsReloading() then
+		return
+	end
+	
+	local result = ability(...) :: never?
+	if result then
+		Mapping.Exception.TechicalException:Warn('The ability function must not return any value. This looks like a architecture error.')
+	end
 end
 
 
@@ -105,7 +115,7 @@ class.Reload = 0;
 class.Damage = 0;
 class.Stun = 0;
 class.Type = Mapping.Enum.AbilityType.Ignore :: Abilities;
-class.Ability = warn :: (...any) -> ()?;
+class.Ability = warn :: (...any) -> ();
 
 class.IsReloading = private.IsReloading;
 class.Priority = 0;

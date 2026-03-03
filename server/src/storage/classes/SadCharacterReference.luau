@@ -23,7 +23,7 @@ function private.new (Character: Model)
 		Humanoid = CodeException:Assert(Character:FindFirstChildOfClass('Humanoid'));
 		Model = CodeException:Assert(Character);
 		HumanoidRoot = CodeException:Assert(Character:FindFirstChild('HumanoidRootPart'));
-		Player = player;
+		OwnerPlayer = player;
 	}, class)
 end
 
@@ -34,7 +34,7 @@ class.Source = script;
 class.Root = nil :: BasePart?
 class.Model = nil :: Model?
 class.Humanoid = nil :: Humanoid?
-class.Player = nil :: Player?
+class.OwnerPlayer = nil :: Player?
 
 interface.class = class;
 interface.new = private.new;
