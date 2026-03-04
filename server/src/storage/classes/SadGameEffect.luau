@@ -11,18 +11,18 @@ local HxNumberModifier = main.Core.Classes.HxNumberModifier();
 private.HxNumberModFreeze = table.freeze(HxNumberModifier.new())
 private.HxEventModFreeze, private.c0 = HxEvent.new(); private.c0:Destroy();
 
-type SadCharacterEffect = typeof(interface.new())
-type SadCharacterEffectProcess <Yota=SadCharacterEffect, Teta=HxNumberModifier, Alpha=any> = typeof(private.new_sub(nil::Yota, nil::Teta, nil::Alpha))
+type SadGameEffect = typeof(interface.new())
+type SadGameEffectProcess <Yota=SadGameEffect, Teta=HxNumberModifier, Alpha=any> = typeof(private.new_sub(nil::Yota, nil::Teta, nil::Alpha))
 type EnumType = index<typeof(subclass.Enums), keyof<typeof(subclass.Enums)>>
 
 --[[
 	Субкласс для обозначения текущей процедуры эффекта. То бишь, это по сути экземпляр выполнения заданного эффекта.
 	
-	@class SadCharacterEffectProcess
+	@class SadGameEffectProcess
 	@side all
-	@return Instance (@P SadCharacterEffectProcess)
+	@return Instance (@P SadGameEffectProcess)
 ]]
-function private.new_sub <Y, T> (effect: SadCharacterEffect, target: T, enum_type: EnumType)
+function private.new_sub <Y, T> (effect: SadGameEffect, target: T, enum_type: EnumType)
 	local e0,c0 = HxEvent.new();
 	local this = main.new({
 		ThisEffect = effect,
@@ -50,7 +50,7 @@ subclass.__index = main.Core.Classes.SadObject().class;
 subclass.ClassName = main.Mapping.Class.SadGameEffectProcess;
 subclass.Source = script;
 subclass.ThisTarget = nil :: unknown;
-subclass.ThisEffect = nil :: SadCharacterEffect?;
+subclass.ThisEffect = nil :: SadGameEffect?;
 subclass.Duration = 0;
 subclass.Alive = false;
 subclass.OnLifeEndedEvent = private.HxEventModFreeze;
@@ -62,11 +62,11 @@ subclass.ProcessType = nil :: EnumType?;
 type HxNumberModifier = typeof(HxNumberModifier.new())
 
 --[[
-	Конструктор экземпляра класса SadCharacterEffect.
+	Конструктор экземпляра класса SadGameEffect.
 
-	@class SadCharacterEffect
+	@class SadGameEffect
 	@side all
-	@return Instance (@P SadCharacterEffect)
+	@return Instance (@P SadGameEffect)
 ]]
 function private.new (Time: number?, Health: number?, Speed: number?)
 	local this = main.new({
@@ -81,12 +81,12 @@ end
 	
 	После окончания отведенного времени жизни, эффект перестанет функционировать.
 
-	@class SadCharacterEffect
+	@class SadGameEffect
 	@side all
-	@return Instance (@P SadCharacterEffectProcess)
+	@return Instance (@P SadGameEffectProcess)
 ]]
 function private:do_effect (target: HxNumberModifier, origin: number?, previous: number?,  ...)
-	local self = self :: SadCharacterEffect;
+	local self = self :: SadGameEffect;
 	local this = private.new_sub(self, target, subclass.Enums.ChangeTarget);
 	local package = {...};
 	
@@ -104,7 +104,7 @@ function private:do_effect (target: HxNumberModifier, origin: number?, previous:
 	return this
 end
 
-function private.callOr (this: SadCharacterEffect, origin: number?, previous: number?, ...) : number
+function private.callOr (this: SadGameEffect, origin: number?, previous: number?, ...) : number
 	return this:Effect(origin, previous, ...) or previous or origin or 1
 end
 
@@ -113,12 +113,12 @@ end
 	
 	После окончания отведенного времени жизни, эффект перестанет функционировать.
 
-	@class SadCharacterEffect
+	@class SadGameEffect
 	@side all
-	@return Instance (@P SadCharacterEffectProcess)
+	@return Instance (@P SadGameEffectProcess)
 ]]
 function private:mod_effect (target: HxNumberModifier, ...)
-	local self = self :: SadCharacterEffect;
+	local self = self :: SadGameEffect;
 	local this = private.new_sub(self, target, subclass.Enums.TargetChanges);
 	local package = {...};
 	
@@ -154,7 +154,7 @@ class.Time = private.HxNumberModFreeze;
 class.DoEffectChanges = private.do_effect;
 class.DoEffectModifictator = private.mod_effect;
 
-class.Effect = warn :: (SadCharacterEffect: SadCharacterEffect, origin: number?, previous: number?, ...any) -> number?;
+class.Effect = warn :: (SadGameEffect: SadGameEffect, origin: number?, previous: number?, ...any) -> number?;
 
 interface.class = class;
 interface.subclass = subclass;
@@ -166,4 +166,4 @@ table.freeze(subclass)
 table.freeze(private)
 table.freeze(interface)
 
-return main:expand({SadCharacterEffect = interface})
+return main:expand({SadGameEffect = interface})

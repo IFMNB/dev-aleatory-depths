@@ -17,13 +17,11 @@ local Sad_ClassNames = table.freeze({
 		SadGameEffect = 'SadGameEffect' :: 'SadGameEffect',
 			SadGameEffectProcess = 'SadGameEffectProcess' :: 'SadGameEffectProcess',
 	
-		SadAbstractAbility = 'SadAbstractAbility' :: 'SadAbstractAbility',
-			SadCallbackAbility = 'SadCallbackAbility' :: 'SadCallbackAbility',
-			SadInstantAbility = 'SadInstantAbility' :: 'SadInstantAbility',	
-	
+		SadAbility = 'SadAbstractAbility' :: 'SadAbstractAbility',
+
 		SadAbstractCharacter = 'SadAbstractCharacter' :: 'SadAbstractCharacter',
 			SadPlayableCharacter = 'SadCharacter' :: 'SadCharacter',
-			SadAiCharacter = 'SadAiCharacter' :: 'SadAiCharacter',
+			SadScenarioCharacter = 'SadAiCharacter' :: 'SadAiCharacter',
 	
 		SadAbstractService = 'SadAbstractService' :: 'SadAbstractService',
 			SadDataService = 'SadDataService' :: 'SadDataService',

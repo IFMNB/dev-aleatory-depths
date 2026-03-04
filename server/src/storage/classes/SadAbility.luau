@@ -13,10 +13,30 @@ private.e0, private.c0 = HxEvent.new();private.c0:Destroy()
 type Abilities = index<typeof(Mapping.Enum.AbilityType), keyof<typeof(Mapping.Enum.AbilityType)>>
 export type SadCharacterProperties = typeof(require('./__SadAbstractCharacterStats/SadCharacterProperties').SadCharacterProperties.new())
 export type SadCharacterReference <DM = Model> = typeof(require('./SadCharacterReference').SadCharacterReference.new(nil::DM))
-type SadAbstractAbility = typeof(class)
+type SadAbstractAbility = typeof(interface.new())
 
 private.mode = {__mode='k'}
 private.reload = setmetatable({},private.mode)
+
+function private.new (Ability: typeof(class.Ability)?, Type: Abilities?, ReloadDuration: number?, DamageValue: number?, StunDuration: number?)
+	local e0, c0 = HxEvent.new();
+	local e1, c1 = HxEvent.new();
+	local e2, c2 = HxEvent.new();
+	
+	return main.new({
+		Ability = Ability;
+		DoCall = main.Abstract.Wrap(c0.Call, class.DoCall, c1.Call);
+		OnCallEvent = e0;
+		OnEndEvent = e1;
+		DoReload = main.Abstract.Wrap(c2.Call, class.DoReload);
+		OnReloadEvent = e2;
+		
+		Type = Type;
+		ReloadDuration = ReloadDuration;
+		DamageValue = DamageValue;
+		StunDuration = StunDuration;
+	}, class)
+end
 
 --[[
 	Возвращает состояние перезарядки.
@@ -46,7 +66,7 @@ function private:Reload ()
 	private.reload[self] = stamp;
 	
 	task.spawn(function ()
-		task.wait(self.Reload)
+		task.wait(self.ReloadDuration)
 		if private.reload[self] == stamp then
 			private.reload[self] = nil
 		end
@@ -103,13 +123,12 @@ end
 
 
 class.__index = main.Core.Classes.SadObject().class;
-class.ClassName = Mapping.Class.SadAbstractAbility;
+class.ClassName = Mapping.Class.SadAbility;
 class.Source = script;
 
-class.Name = '';
-class.Reload = 0;
-class.Damage = 0;
-class.Stun = 0;
+class.ReloadDuration = 0;
+class.DamageValue = 0;
+class.StunDuration = 0;
 class.Enums = Mapping.Enum.AbilityType;
 class.Type = class.Enums.Ignore :: Abilities;
 class.Ability = warn :: (Properties: SadCharacterReference, Target: SadCharacterReference, ...any) -> ();
@@ -125,8 +144,7 @@ class.OnCallEvent = private.e0
 class.OnEndEvent = private.e0
 
 
-
-
 interface.class = class;
+interface.new = private.new;
 
-return main:expand({__SadAbstractAbility = interface})
+return main:expand({SadAbility = interface})
