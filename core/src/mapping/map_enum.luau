@@ -14,6 +14,13 @@ local Sad_Enums = table.freeze({
 		Buffered = Enum.new('Buffered'::'Buffered');
 	});
 	
+	MathOperationType = table.freeze({
+		Add = Enum.new('Add' :: 'Add');
+		Sub = Enum.new('Sub' :: 'Sub');
+		Mult = Enum.new('Mult' :: 'Mult');
+		Div = Enum.new('Div' :: 'Div');
+	});
+	
 	Replicate = Enum.new('Replicate'::'Replicate'),
 	Unreplicate = Enum.new('Unreplicate'::'Unreplicate'),
 	
@@ -23,6 +30,11 @@ local Sad_Enums = table.freeze({
 	
 	DenyEvery = Enum.new('DenyEvery'::'DenyEvery'),
 	DenyChanges = Enum.new('DenyChanges'::'DenyChanges'),
+	
+	ProcessEffectType = table.freeze({
+		TargetChanges = Enum.new('DuratedChanges'::'DuratedChanges');
+		ChangeTarget = Enum.new('ChangeTarget'::'ChangeTarget');
+	});
 	
 	AbilityType = table.freeze({
 		Ranged = Enum.new('Ranged'::'Ranged');

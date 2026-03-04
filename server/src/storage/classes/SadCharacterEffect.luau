@@ -1,121 +1,169 @@
-local main = require('..//');
+local main = require('../../');
 
 local private = {};
 local class = {}; setmetatable(class,class);
 local subclass = {}; setmetatable(subclass, subclass);
 local interface = {};
 
-local protected = setmetatable({}, main.__SACS_protected);
-protected.__index = protected;
-
 local HxEvent = main.Core.Classes.HxEvent();
 local HxNumberModifier = main.Core.Classes.HxNumberModifier();
 
-private.use_health = setmetatable({} :: {[SadCharacterEffect]: boolean}, {__mode='k'});
-private.use_speed = setmetatable({} :: {[SadCharacterEffect]: boolean}, {__mode='k'});
+private.HxNumberModFreeze = table.freeze(HxNumberModifier.new())
+private.HxEventModFreeze, private.c0 = HxEvent.new(); private.c0:Destroy();
 
+type SadCharacterEffect = typeof(interface.new())
+type SadCharacterEffectProcess <Yota=SadCharacterEffect, Teta=HxNumberModifier, Alpha=any> = typeof(private.new_sub(nil::Yota, nil::Teta, nil::Alpha))
+type EnumType = index<typeof(subclass.Enums), keyof<typeof(subclass.Enums)>>
 
-
+--[[
+	Субкласс для обозначения текущей процедуры эффекта. То бишь, это по сути экземпляр выполнения заданного эффекта.
+	
+	@class SadCharacterEffectProcess
+	@side all
+	@return Instance (@P SadCharacterEffectProcess)
+]]
+function private.new_sub <Y, T> (effect: SadCharacterEffect, target: T, enum_type: EnumType)
+	local e0,c0 = HxEvent.new();
+	local this = main.new({
+		ThisEffect = effect,
+		ThisTarget = target,
+		ProcessType = enum_type,
+		
+		Duration = effect.Time.Value;
+		
+		Alive = true,
+		OnLifeEndedEvent = e0,
+	}, subclass)
+	
+	this.Cancel = function ()
+		if not this.Alive then return end
+		
+		this.Alive = false
+		c0.Call();
+		return c0:Destroy();
+	end :: typeof(subclass.Cancel)
+	
+	return this, c0
+end
 
 subclass.__index = main.Core.Classes.SadObject().class;
 subclass.ClassName = main.Mapping.Class.SadCharacterEffect;
 subclass.Source = script;
-subclass.Target = nil :: unknown;
+subclass.ThisTarget = nil :: unknown;
+subclass.ThisEffect = nil :: SadCharacterEffect?;
+subclass.Duration = 0;
+subclass.Alive = false;
+subclass.OnLifeEndedEvent = private.HxEventModFreeze;
+subclass.Cancel = private.c0.Destroy;
+subclass.Enums = main.Mapping.Enum.ProcessEffectType;
+subclass.ProcessType = nil :: EnumType?;
 
-type SadCharacterEffect = typeof(interface.new())
+
 type HxNumberModifier = typeof(HxNumberModifier.new())
 
 --[[
 	Конструктор экземпляра класса SadCharacterEffect.
-
-	Этот класс является наследником SadAbstractCharacterStats,
-	поскольку ему требуется синхронизация с данными всех свойств сущности.
 
 	@class SadCharacterEffect
 	@side all
 	@return Instance (@P SadCharacterEffect)
 ]]
 function private.new (Time: number?, Health: number?, Speed: number?)
-	local this = main.new(protected.constr({
+	local this = main.new({
 		Time = HxNumberModifier.new(Time),
-	}, Health, Speed), class)
-	
-	private.use_speed[this] = false
-	private.use_health[this] = false
+	}, class)
 	
 	return this
 end
 
-function private:get_health_use ()
-	local self = self :: SadCharacterEffect;
-	return not not private.use_health[self]
-end
-
-function private:get_speed_use ()
-	local self = self :: SadCharacterEffect;
-	return not not private.use_speed[self]
-end
-
-function private:set_health_use (value: boolean)
-	local self = self :: SadCharacterEffect;
-	private.use_health[self] = value
-end
-
-function private:set_speed_use (value: boolean)
-	local self = self :: SadCharacterEffect;
-	private.use_speed[self] = value;
-end
-
-function private:do_effect (...: any)
-	local self = self :: SadCharacterEffect;
+--[[
+	Этот эффект будет самостоятельно выполняться для цели в течение указанного ранее времени.
 	
-	return task.spawn(function (...)
-		while task.wait(self.Time.Value) do
-			self.Effect(self, ...)
+	После окончания отведенного времени жизни, эффект перестанет функционировать.
+
+	@class SadCharacterEffect
+	@side all
+	@return Instance (@P SadCharacterEffectProcess)
+]]
+function private:do_effect (target: HxNumberModifier, origin: number?, previous: number?,  ...)
+	local self = self :: SadCharacterEffect;
+	local this = private.new_sub(self, target, subclass.Enums.ChangeTarget);
+	local package = {...};
+	
+	local lambdatask = task.spawn(function ()
+		while task.wait(this.Duration) do
+			target.Value = private.callOr(self, origin, previous, unpack(package));
+			target:ApplyMod();
 		end
-	end, ...)
+	end)
+	
+	this.OnLifeEndedEvent:Once(function(...) 
+		task.cancel(lambdatask);
+	end)
+	
+	return this
 end
 
-function private.callOr (this: SadCharacterEffect, origin: number, previous: number) : number
-	return this:Effect(origin, previous) or previous or origin or 1
+function private.callOr (this: SadCharacterEffect, origin: number?, previous: number?, ...) : number
+	return this:Effect(origin, previous, ...) or previous or origin or 1
 end
 
-function private:mod_effect_health (target)
+--[[
+	Этот эффект будет учитываться для цели в течение указанного ранее времени.
+	
+	После окончания отведенного времени жизни, эффект перестанет функционировать.
+
+	@class SadCharacterEffect
+	@side all
+	@return Instance (@P SadCharacterEffectProcess)
+]]
+function private:mod_effect (target: HxNumberModifier, ...)
 	local self = self :: SadCharacterEffect;
-	local Health : HxNumberModifier = target.Health;
-	local Speed : HxNumberModifier = target.Speed;
+	local this = private.new_sub(self, target, subclass.Enums.TargetChanges);
+	local package = {...};
 	
-	if self:IsHealthUse() then
-		Health:AddMod(#Health.Modificators, function(...): number 
-			return private.callOr(self, ...)
-		end)
-	end
+	local labmda = function(origin: number, previous: number): number 
+		return private.callOr(self, origin, previous, unpack(package));
+	end;
+	local priority = #target.Modificators;
+	target:AddMod(priority, labmda);
 	
-	if self:IsSpeedUse() then
-		Speed:AddMod(#Speed.Modificators, function(...): number 
-			return private.callOr(self, ...)
-		end)
-	end
+	local labmdawait = task.spawn(function ()
+		
+		task.wait(this.Duration);
+		this:Cancel();
+	end);
+	
+	this.OnLifeEndedEvent:Once(function(...) 
+		target:RemoveMod(priority, labmda);
+		task.cancel(labmdawait);
+	end);
+	
+	return this
 end
 
 
 
 
 
-class.__index = main.__SadAbstractCharacterStats.class;
+class.__index = main.Core.Classes.SadObject().class;
 class.ClassName = main.Mapping.Class.SadCharacterEffect;
 class.Source = script;
-class.Time = protected.HxNumberModFreeze;
-class.SetHealthUse = protected.HxNumberModFreeze;
-class.SetSpeedUse = protected.HxNumberModFreeze;
-class.IsHealthUse = private.get_health_use;
-class.IsSpeedUse = private.get_speed_use;
-class.DoEffect = private.do_effect;
-class.Effect = warn :: (SadCharacterEffect: SadCharacterEffect, ...any) -> number?;
+class.Time = private.HxNumberModFreeze;
 
+class.DoEffectChanges = private.do_effect;
+class.DoEffectModifictator = private.mod_effect;
+
+class.Effect = warn :: (SadCharacterEffect: SadCharacterEffect, origin: number?, previous: number?, ...any) -> number?;
 
 interface.class = class;
 interface.subclass = subclass;
 interface.new = private.new;
+
+
+table.freeze(class)
+table.freeze(subclass)
+table.freeze(private)
+table.freeze(interface)
 
 return main:expand({SadCharacterEffect = interface})
