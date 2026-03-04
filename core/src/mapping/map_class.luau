@@ -9,13 +9,14 @@ local Sad_ClassNames = table.freeze({
 			SadPhysicGroup = 'SadPhysicGroup' :: 'SadPhysicGroup',
 			SadInstanceGroup = 'SadInstanceGroup' :: 'SadInstanceGroup',
 	
-		SadCharacterReference = 'SadCharacterReference' :: 'SadCharacterReference',
-	
-		SadAbstractCharacterStats = 'SadAbstractCharacterStats' :: 'SadAbstractCharacterStats',
-			SadCharacterProperties = 'SadDefaultCharacterProperties' :: 'SadDefaultCharacterProperties';
 	
 		SadGameEffect = 'SadGameEffect' :: 'SadGameEffect',
 			SadGameEffectProcess = 'SadGameEffectProcess' :: 'SadGameEffectProcess',
+	
+		SadCharacterReference = 'SadCharacterReference' :: 'SadCharacterReference',
+	
+		SadAbstractCharacterStats = 'SadAbstractCharacterStats' :: 'SadAbstractCharacterStats',
+			SadCharacterProperties = 'SadCharacterProperties' :: 'SadCharacterProperties';
 	
 		SadAbility = 'SadAbstractAbility' :: 'SadAbstractAbility',
 
@@ -23,11 +24,13 @@ local Sad_ClassNames = table.freeze({
 			SadPlayableCharacter = 'SadCharacter' :: 'SadCharacter',
 			SadScenarioCharacter = 'SadAiCharacter' :: 'SadAiCharacter',
 	
+		SadCharacterFabric = 'SadCharacterFabric' :: 'SadCharacterFabric',
+	
 		SadAbstractService = 'SadAbstractService' :: 'SadAbstractService',
 			SadDataService = 'SadDataService' :: 'SadDataService',
+			SadNetService = 'SadNetService' :: 'SadNetService',
 			SadGuiService = 'SadGuiService' :: 'SadGuiService',
 			SadFXService = 'SadFXService' :: 'SadFXService',
-			SadNetService = 'SadNetService' :: 'SadNetService',
 			SadGameService = 'SadGameService' :: 'SadGameService',
 	
 })
