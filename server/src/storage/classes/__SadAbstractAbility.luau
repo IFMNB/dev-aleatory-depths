@@ -11,6 +11,8 @@ local interface = {};
 
 private.e0, private.c0 = HxEvent.new();private.c0:Destroy()
 type Abilities = index<typeof(Mapping.Enum.AbilityType), keyof<typeof(Mapping.Enum.AbilityType)>>
+export type SadCharacterProperties = typeof(require('./__SadAbstractCharacterStats/SadCharacterProperties').SadCharacterProperties.new())
+export type SadCharacterReference <DM = Model> = typeof(require('./SadCharacterReference').SadCharacterReference.new(nil::DM))
 type SadAbstractAbility = typeof(class)
 
 private.mode = {__mode='k'}
@@ -60,7 +62,7 @@ end
 	@exception CodeException, GameException
 	@return ()
 ]]
-function private:Call (...)
+function private:Call (Properties: SadCharacterReference, Target: SadCharacterReference, ...)
 	local self = self :: SadAbstractAbility;
 	local ability = Mapping.Exception.CodeException:Assert(self.Ability)
 	
@@ -68,7 +70,7 @@ function private:Call (...)
 		return
 	end
 	
-	ability(...)
+	ability(Properties, Target, ...)
 end
 
 
@@ -108,8 +110,9 @@ class.Name = '';
 class.Reload = 0;
 class.Damage = 0;
 class.Stun = 0;
-class.Type = Mapping.Enum.AbilityType.Ignore :: Abilities;
-class.Ability = warn :: (...any) -> ();
+class.Enums = Mapping.Enum.AbilityType;
+class.Type = class.Enums.Ignore :: Abilities;
+class.Ability = warn :: (Properties: SadCharacterReference, Target: SadCharacterReference, ...any) -> ();
 
 class.IsReloading = private.IsReloading;
 class.Priority = 0;

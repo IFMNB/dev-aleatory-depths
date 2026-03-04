@@ -47,7 +47,7 @@ function private.new_sub <Y, T> (effect: SadCharacterEffect, target: T, enum_typ
 end
 
 subclass.__index = main.Core.Classes.SadObject().class;
-subclass.ClassName = main.Mapping.Class.SadCharacterEffect;
+subclass.ClassName = main.Mapping.Class.SadGameEffectProcess;
 subclass.Source = script;
 subclass.ThisTarget = nil :: unknown;
 subclass.ThisEffect = nil :: SadCharacterEffect?;
@@ -147,7 +147,7 @@ end
 
 
 class.__index = main.Core.Classes.SadObject().class;
-class.ClassName = main.Mapping.Class.SadCharacterEffect;
+class.ClassName = main.Mapping.Class.SadGameEffect;
 class.Source = script;
 class.Time = private.HxNumberModFreeze;
 

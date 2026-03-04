@@ -3,7 +3,7 @@ local main = require('../../');
 local Hx = main.Libs.Hexagon
 local HxEvent = Hx.Classes.HxEvent()
 local SadCharacterReference = require('./SadCharacterReference').SadCharacterReference
-local SadCharacterProperties = require('./SadCharacterProperties').SadCharacterProperties
+local SadCharacterProperties = require('./__SadAbstractCharacterStats/SadCharacterProperties').SadCharacterProperties
 
 local private = {};
 local class = {}; setmetatable(class, class);
