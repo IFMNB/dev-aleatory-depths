@@ -55,9 +55,6 @@ end
 --[[
 	Вызывает выполнение способности, проверяя ее перезарядку при этом
 
-	Вызов способности через этот метод никогда не будет возвращать результат выполнения,
-	мало того, всякий раз когда это будет происходить данный метод будет выдавать
-
 	@class SadAbstractAbility
 	@side all
 	@exception CodeException, GameException
@@ -71,10 +68,7 @@ function private:Call (...)
 		return
 	end
 	
-	local result = ability(...) :: never?
-	if result then
-		Mapping.Exception.TechicalException:Warn('The ability function must not return any value. This looks like a architecture error.')
-	end
+	ability(...)
 end
 
 

@@ -9,12 +9,19 @@ local Sad_ClassNames = table.freeze({
 			SadPhysicGroup = 'SadPhysicGroup' :: 'SadPhysicGroup',
 			SadInstanceGroup = 'SadInstanceGroup' :: 'SadInstanceGroup',
 	
+		SadCharacterReference = 'SadCharacterReference' :: 'SadCharacterReference',
+	
+		SadAbstractCharacterStats = 'SadAbstractCharacterStats' :: 'SadAbstractCharacterStats',
+			SadCharacterProperties = 'SadDefaultCharacterProperties' :: 'SadDefaultCharacterProperties';
+	
+		SadCharacterEffect = 'SadCharacterEffect' :: 'SadCharacterEffect',
+			SadCharacterEffectProcess = 'SadCharacterEffectProcess' :: 'SadCharacterEffectProcess',
+	
 		SadAbstractAbility = 'SadAbstractAbility' :: 'SadAbstractAbility',
 			SadCallbackAbility = 'SadCallbackAbility' :: 'SadCallbackAbility',
 			SadInstantAbility = 'SadInstantAbility' :: 'SadInstantAbility',
 	
-		SadCharacterReference = 'SadCharacterReference' :: 'SadCharacterReference',
-		SadCharacterProperties = 'SadDefaultCharacterProperties' :: 'SadDefaultCharacterProperties';
+
 		SadAbstractCharacter = 'SadAbstractCharacter' :: 'SadAbstractCharacter',
 			SadPlayableCharacter = 'SadCharacter' :: 'SadCharacter',
 			SadAiCharacter = 'SadAiCharacter' :: 'SadAiCharacter',
