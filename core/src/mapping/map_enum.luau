@@ -50,9 +50,9 @@ local Sad_Enums = table.freeze({
 	});
 	
 	CharacterController = table.freeze({ -- 
-		PlayerSide = Enum.new('PlayerSide'::'PlayerSide');
-		AiSide = Enum.new('AiSide'::'AiSide');
-		ScenarioSide = Enum.new('ScenarioSide'::'ScenarioSide');
+		PlayerSide = Enum.new('PlayerSide'::'PlayerSide'); -- aka only player
+		AiSide = Enum.new('AiSide'::'AiSide'); -- aka only ai
+		ScenarioSide = Enum.new('ScenarioSide'::'ScenarioSide'); -- aka null aka controlled by every
 	});
 	
 	

@@ -25,7 +25,7 @@ function private.new (Ability: typeof(class.Ability)?, Type: Abilities?, ReloadD
 	
 	return main.new({
 		Ability = Ability;
-		DoCall = main.Abstract.Wrap(c0.Call, class.DoCall, c1.Call);
+		DoCall = main.Abstract.Wrap(c0.Call, class.DoCall :: any, c1.Call) :: typeof(class.DoCall);
 		OnCallEvent = e0;
 		OnEndEvent = e1;
 		DoReload = main.Abstract.Wrap(c2.Call, class.DoReload);
@@ -82,7 +82,7 @@ end
 	@exception CodeException, GameException
 	@return ()
 ]]
-function private:Call (Properties: SadCharacterReference, Target: SadCharacterReference, ...)
+function private:Call (Properties: SadCharacterProperties, Target: SadCharacterReference, ...: any)
 	local self = self :: SadAbstractAbility;
 	local ability = Mapping.Exception.CodeException:Assert(self.Ability)
 	
@@ -131,7 +131,7 @@ class.DamageValue = 0;
 class.StunDuration = 0;
 class.Enums = Mapping.Enum.AbilityType;
 class.Type = class.Enums.Ignore :: Abilities;
-class.Ability = warn :: (Properties: SadCharacterReference, Target: SadCharacterReference, ...any) -> ();
+class.Ability = warn :: (Properties: SadCharacterProperties, Reference: SadCharacterReference, ...any) -> ();
 
 class.IsReloading = private.IsReloading;
 class.Priority = 0;
