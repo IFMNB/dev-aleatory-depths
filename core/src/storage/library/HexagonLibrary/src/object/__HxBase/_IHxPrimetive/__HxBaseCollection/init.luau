@@ -24,7 +24,7 @@ function private:clear ()
 	
 	for i,v in self.Value do
 		self.Value[i] = nil
-	end
+	end 
 end
 
 function private:contains_value (value: any)
@@ -107,7 +107,7 @@ function private:collect_index (index: any)
 	return new
 end
 
-class.__index = main.__HxAbstractPrimetive.class;
+class.__index = main._IHxPrimetive.class;
 class.ClassName = main.ClassNames.HxBaseCollection;
 class.Source = script;
 

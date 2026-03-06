@@ -5,24 +5,21 @@ local ClassNames_Hexagon_Map = {
 	
 		
 		HxBase = 'HxBase'::'HxBase',
+			HxConnection = 'HxConnection' :: 'HxConnection',
+			HxEvent = 'HxEvent' :: 'HxEvent',
 	
 			HxBaseProperty = 'HxBaseProperty'::'HxBaseProperty', 
 				HxSnapshot = 'HxSnapshot'::'HxSnapshot',
 				HxShade = 'HxShade'::'HxShade',
-	
+				
 				HxAbstractMetalink = 'HxAbstractMetalink'::'HxAbstractMetalink',
 					HxMetalinkCreator = 'HxMetalinkNew'::'HxMetalinkNew',
 	
 				HxHooker = 'HxHooker'::'HxHooker',
 				HxActionEmmiter = 'HxActionEmmiter',
+					HxEventCore = 'HxEventCore'::'HxEventCore',
 	
-
-	
-				HxEvent = 'HxEvent'::'HxEvent',
-					HxEventConnection = 'HxEventConnection'::'HxEventConnection',
-					HxEventProperties = 'HxEventProperties'::'HxEventProperties',
-	
-			HxAbstractPrimetive = 'HxAbstractPrimetive'::'HxAbstractPrimetive',
+			IHxPrimetive = 'IHxPrimetive'::'IHxPrimetive',
 				HxString = 'HxString'::'HxString',
 					HxTranslationString = 'HxTranslationString'::'HxTranslationString',
 	
@@ -40,19 +37,6 @@ local ClassNames_Hexagon_Map = {
 					IHxMap = 'IHxMap'::'IHxMap',
 						HxMap = 'HxMap'::'HxMap',
 						HxWeakMap = 'HxWeakMap'::'HxWeakMap',
-	
-	
-	
-			HxInstance = 'HxInstance'::'HxInstance',
-				HxInstanceProperties = 'HxInstanceProperties'::'HxInstanceProperties',
-				
-	
-				HxAbstractDataTree = 'HxAbstractDataTree'::'HxAbstractDataTree', -- Auto-Replicatable.
-					HxWorldStorage = 'HxWorldStorage'::'HxWorldStorage',
-	
-				HxBaseParallel = 'HxBaseParallel'::'HxBaseParallel', 
-					HxParallelWorker = 'HxParallelWorker'::'HxParallelWorker',
-					HxParallelConstantWorker = 'HxParallelConstantWorker'::'HxParallelConstantWorker',
 
 		EcsBase = 'EcsBase' :: 'EcsBase',
 			EcsComponent = 'EcsComponent'::'EcsComponent',

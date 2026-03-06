@@ -30,10 +30,10 @@ function private:IsA (ClassName: keyof<typeof(MAP)>|string) : boolean
 end
 -- Returns true if an object's class-constructor matches a given class.
 function private:ItAs (ClassName: keyof<typeof(MAP)>|string) : boolean
-	return private.Class(self) == ClassName
+	return private.Class(self).ClassName == ClassName
 end
--- Returns the ClassName of an object, gettering from the metatable.
-function private:Class () : string
+-- Returns the Class of an object, gettering from the metatable.
+function private:Class () : {[any]:any}
 	return getmetatable(self::any).__index
 end
 
@@ -64,6 +64,33 @@ function private.new <data> (data: data)
 	return main.new(data, class)
 end
 
+--[[
+	Returns a copy of this object.
+	
+	Please note that this copy may not have any logic associated with this new object at all.
+	
+	@class HxObject
+	@return Instance (@P *unknown*)
+]]
+function private:Clone (Full: boolean?)
+	local self = self :: HxObject;
+	if not Full then
+		return main.new(self, self:GetClass())
+	else
+		local this : HxObject = {} :: any;
+		for i,v in pairs(self) do
+			if self.IsA(v, 'HxObject') then
+				this[i] = self.Clone(v, Full)
+			else
+				this[i] = v
+			end
+		end
+		
+		return main.new(this, self:GetClass())
+	end
+end
+
+class.Clone = private.Clone;
 class.GetClass = private.Class;
 class.IsClass = private.ItAs;
 class.IsA = private.IsA;

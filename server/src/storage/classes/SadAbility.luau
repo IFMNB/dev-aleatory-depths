@@ -13,7 +13,7 @@ private.e0, private.c0 = HxEvent.new();private.c0:Destroy()
 type Abilities = index<typeof(Mapping.Enum.AbilityType), keyof<typeof(Mapping.Enum.AbilityType)>>
 export type SadCharacterProperties = typeof(require('./__SadAbstractCharacterStats/SadCharacterProperties').SadCharacterProperties.new())
 export type SadCharacterReference <DM = Model> = typeof(require('./SadCharacterReference').SadCharacterReference.new(nil::DM))
-type SadAbstractAbility = typeof(interface.new())
+type SadAbility = typeof(interface.new())
 
 private.mode = {__mode='k'}
 private.reload = setmetatable({},private.mode)
@@ -24,7 +24,7 @@ function private.new (Ability: typeof(class.Ability)?, Type: Abilities?, ReloadD
 	local e2, c2 = HxEvent.new();
 	
 	return main.new({
-		Ability = Ability;
+		Ability = Ability :: typeof(class.Ability);
 		DoCall = main.Abstract.Wrap(c0.Call, class.DoCall :: any, c1.Call) :: typeof(class.DoCall);
 		OnCallEvent = e0;
 		OnEndEvent = e1;
@@ -41,12 +41,12 @@ end
 --[[
 	Возвращает состояние перезарядки.
 	
-	@class SadAbstractAbility
+	@class SadAbility
 	@side all
 	@return boolean
 ]]
 function private:IsReloading ()
-	local self = self :: SadAbstractAbility;
+	local self = self :: SadAbility;
 	return not not private.reload[self]
 end
 
@@ -56,12 +56,12 @@ end
 	
 	Записывает временной штамп внутри и автоматически прерывает состояние перезарядки, если штамп совпадает.
 	
-	@class SadAbstractAbility
+	@class SadAbility
 	@side all
 	@return ()
 ]]
 function private:Reload ()
-	local self = self :: SadAbstractAbility;
+	local self = self :: SadAbility;
 	local stamp = tick()
 	private.reload[self] = stamp;
 	
@@ -77,20 +77,19 @@ end
 --[[
 	Вызывает выполнение способности, проверяя ее перезарядку при этом
 
-	@class SadAbstractAbility
+	@class SadAbility
 	@side all
 	@exception CodeException, GameException
 	@return ()
 ]]
 function private:Call (Properties: SadCharacterProperties, Target: SadCharacterReference, ...: any)
-	local self = self :: SadAbstractAbility;
-	local ability = Mapping.Exception.CodeException:Assert(self.Ability)
+	local self = self :: SadAbility;
 	
 	if self:IsReloading() then
 		return
 	end
 	
-	ability(Properties, Target, ...)
+	self:Ability(Properties, Target, ...)
 end
 
 
@@ -99,9 +98,9 @@ end
 	
 	Этот конструктор не предназначен для использование вне наследников.
 	
-	@class SadAbstractAbility
+	@class SadAbility
 	@side all
-	@return Instance (@P SadAbstractAbility)
+	@return Instance (@P SadAbility)
 ]]
 function private.constructor <T,C,U> (F: T, childClass: C, element: U)
 	local this = main.new(element, childClass)
@@ -131,7 +130,7 @@ class.DamageValue = 0;
 class.StunDuration = 0;
 class.Enums = Mapping.Enum.AbilityType;
 class.Type = class.Enums.Ignore :: Abilities;
-class.Ability = warn :: (Properties: SadCharacterProperties, Reference: SadCharacterReference, ...any) -> ();
+class.Ability = warn :: (self: SadAbility, Properties: SadCharacterProperties, Reference: SadCharacterReference, ...any) -> ();
 
 class.IsReloading = private.IsReloading;
 class.Priority = 0;

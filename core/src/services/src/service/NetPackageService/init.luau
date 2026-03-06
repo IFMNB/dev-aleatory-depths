@@ -9,7 +9,9 @@ local interface = {};
 local PackageTransport = main.ServiceLibs.PackageTransport
 type NetPackageService = typeof(interface.Service)
 type SadObject = typeof(main.Core.Classes.SadObject().class)
-type HxEvent = typeof(main.Core.Classes.HxEvent().new())
+type HxEventCore = typeof(main.Core.Classes.HxEventCore().new())
+type HxEvent = typeof(main.Core.Classes.HxEventCore().new(warn :: DefFunc):AddEvent())
+type HxEventG = typeof(main.Core.Classes.HxEventCore().new():AddEvent())
 type HxEventConnection = typeof(({}::HxEvent):Connect(function(...)  end))
 
 function private.PrepareToSend (...: any)
@@ -111,7 +113,7 @@ function private:SendAllClients (Event: RemoteEvent|UnreliableRemoteEvent, ...: 
 end
 
 private.watched = {}::{[RemoteEvent|UnreliableRemoteEvent]: HxEvent}
-
+type DefFunc = (arg1: Player|buffer|{}, arg2: buffer|{}|any?, ...any) -> ()
 
 --[[
 	Создает или возвращает HxEvent для события. Событие вызывается каждый раз, когда на локальной машине получается пакет.
@@ -121,7 +123,7 @@ private.watched = {}::{[RemoteEvent|UnreliableRemoteEvent]: HxEvent}
 	@exception *unknown*, SafetyException
 	@return HxEvent
 ]]
-function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent) : HxEvent
+function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent)
 	local self = self :: NetPackageService;
 	local event = Event :: RemoteEvent;
 	
@@ -135,7 +137,8 @@ function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent) : HxEvent
 		return private.watched[event]
 	end
 	
-	local HxEvent, HxEControll = main.Core.Classes.HxEvent().new();
+	local HxEventCore = main.Core.Classes.HxEventCore().new(warn :: DefFunc);
+	local HxEvent = HxEventCore:AddEvent()
 	
 	local con : RBXScriptConnection
 	event.Destroying:Once(function() 
@@ -157,9 +160,9 @@ function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent) : HxEvent
 			end
 			
 			if type(this) == 'table' then
-				HxEControll.Call(player, unpack(this))
+				HxEventCore:DoCall(player, unpack(this))
 			else
-				HxEControll.Call(player,this)
+				HxEventCore:DoCall(player,this)
 			end
 		end)
 	else
@@ -176,9 +179,9 @@ function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent) : HxEvent
 			end
 			
 			if type(this) == 'table' then
-				HxEControll.Call(unpack(this))
+				HxEventCore:DoCall(unpack(this))
 			else
-				HxEControll.Call(this)
+				HxEventCore:DoCall(this)
 			end
 		end)
 	end
@@ -220,11 +223,11 @@ function private:forplayer (Player: Player, Event: RemoteEvent|UnreliableRemoteE
 	end
 	
 	if (Event::any):IsA('SadObject') then
-		local Event = Event :: HxEvent
+		local Event = Event :: HxEventG
 		Event:Connect(lambda)
 	else
 		local Event = Event :: RemoteEvent|UnreliableRemoteEvent
-		con = self:ForEvent(Event):Connect(lambda)
+		con = (self:ForEvent(Event)::HxEventG):Connect(lambda)
 	end
 	
 	return con

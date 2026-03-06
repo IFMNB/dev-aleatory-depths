@@ -3,6 +3,7 @@ local root = {}
 root.ClassNames = require('@self/map')
 root.Abstract = require('@self/protected/__abstract')
 root.Async = require('@self/protected/__async')
+root.Comparator = setmetatable({} :: {[any]: any}, {__mode='kvs'})
 
 --[[
 	Regarding the alignment of class names and values in the hierarchy.
@@ -20,7 +21,6 @@ root.Async = require('@self/protected/__async')
 	@p1 - data for the new object.
 	@p2 - class of the new object.
 
-
 	About .new() and where it can exists:
 		Every time you access the constructor of a class, you pass in a certain state or data inside a specific function without a class argument.
 		This is the constructor of the class.
@@ -30,13 +30,27 @@ root.Async = require('@self/protected/__async')
 		Inside every class you should implement a __index metatable, that will be used for getting values from a table.
 		This __index should refers to the class that you want to use for getting values.
 		If you want to create an object of a class, you should use class constructor or this function wtih target class as second argument.
-		
-	
 ]]
 function root.new <data, class> (data: data, class: class)
 	local meta = getmetatable(data)
 	if meta then assert(type(meta)=='table','data have locked metatable') end
-	return setmetatable(table.clone(data),{__index=class})
+	local this
+	local metatable = root.Comparator[class]
+	if not metatable then
+		metatable = table.freeze({__index=class}::any)
+		root.Comparator[class] = metatable
+	end
+	
+	local data = table.clone(data)
+	
+	-- Returns a copy of the object
+	--function metatable.__call (self, ...)
+	--	return (root.new(data, class)::any) :: typeof(assert(this))
+	--end
+	
+	
+	this = setmetatable(data, metatable :: typeof(table.freeze({__index=class})))
+	return this
 end
 --[[
 	Used for self-class expansion, based on the class
