@@ -1,7 +1,8 @@
 local ClassNames_Hexagon_Map = {	
 	HxObject = 'HxObject'::'HxObject',
-		HxRuntimeException = 'HxRuntimeException'::'HxRuntimeException',
-		HxLocalEnum = 'HxLocalEnum'::'HxLocalEnum',
+		INet = 'INet' :: 'INet',
+			HxRuntimeException = 'HxRuntimeException'::'HxRuntimeException',
+			HxLocalEnum = 'HxLocalEnum'::'HxLocalEnum',
 	
 		
 		HxBase = 'HxBase'::'HxBase',
@@ -38,16 +39,7 @@ local ClassNames_Hexagon_Map = {
 						HxMap = 'HxMap'::'HxMap',
 						HxWeakMap = 'HxWeakMap'::'HxWeakMap',
 
-		EcsBase = 'EcsBase' :: 'EcsBase',
-			EcsComponent = 'EcsComponent'::'EcsComponent',
-	
-			EcsEntity = 'EcsEntity'::'EcsEntity',
-	
-			EcsBaseSystem = 'EcsBaseSystem'::'EcsBaseSystem',
-				EcsSystem = 'EcsSystem'::'EcsSystem', 
-				EcsSystemIO = 'EcsSystemIO'::'EcsSystemIO',
-	
-			EcsWorld = 'EcsWorld'::'EcsWorld',
+
 				
 }
 return table.freeze(ClassNames_Hexagon_Map)

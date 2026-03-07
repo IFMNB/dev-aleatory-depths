@@ -1,10 +1,12 @@
 local main = require('../')
 local Mapping = main.Mapping
 
-local HxEvent = main.Core.Classes.HxEvent()
+local HxEventCore = main.Core.Classes.HxEventCore()
 
 local private = {}
 local interface = {}
+
+type DefaultFunction = (Context: string, ...any)->()
 
 type HxEvent = typeof(private.e0);
 type HxEventProperties = typeof(private.c0)
@@ -17,8 +19,8 @@ private.registry = {} :: {[string]: ContextControler}
 --[[
 	Создает событие этого контекста.
 
-	Возвращает контроллер с основными статусными показателями, в том числе и
-	его статус жизни. Получить этот контроллер нельзя, все получатели будут
+	Возвращает контроллер с основными статусными показателями, в том числе и его
+	статус жизни. Получить этот контроллер позже нельзя, все получатели будут
 	брать HxEvent контроллера.
 
 	@class GameContextBusService;

@@ -2,17 +2,20 @@ local main = require('../..')
 local Mapping = main.Mapping
 
 local NetPackageService = require('./')
-local HxEvent = main.Core.Classes.HxEvent()
+local HxEventCore = main.Core.Classes.HxEventCore()
 
 local private = {}
 local interface = {}
 
-type Controller = {Event: HxEvent, Properties: HxEventProperties}
-type HxEvent = typeof(private.e0); type HxEventProperties = typeof(private.c0); type HxEventConnection = typeof(private.e0:Connect(function(...)  end))
+type DefaultFunction = (Context: string, ...any) -> ()
+type HxEventCore = typeof(HxEventCore.new(warn::DefaultFunction))
+type HxEvent = typeof(HxEventCore.new(warn::DefaultFunction):AddEvent())
+
+type Controller = {Event: HxEvent, Properties: HxEventCore}
+
 type NetContextGatewayService = typeof(interface.Service)
 private.controllers = setmetatable({} :: {[string]: Controller?},{__mode='v'})
 private.events = setmetatable({}::{[HxEvent]:Controller}, {__mode='k'})
-
 
 --[[
 	Регистрирует подписку на данный контекст, или возвращает уже созданную.
@@ -31,13 +34,17 @@ function private:new (Context: string)
 		self.OnActiveChangedEvent:Wait()
 	end
 	
-	local Controller : Controller = private.controllers[Context] :: any
-	if Controller then
+	local Controller : Controller = (private.controllers[Context] or {}) :: any
+	if Controller :: Controller then
 		return Controller.Event
 	end
 	
-	Controller = {} :: any
-	Controller.Event, Controller.Properties = HxEvent.new()
+	local Core = HxEventCore.new(warn::DefaultFunction);
+	local Event = Core:AddEvent();
+	
+	Controller.Properties = Core;
+	Controller.Event = Event
+	
 	private.controllers[Context] = Controller
 	private.events[Controller.Event]=Controller
 	
@@ -45,7 +52,7 @@ function private:new (Context: string)
 		self:PrintLog(`New context {Context}`)
 	end
 	
-	private.c0.Call(Context)
+	private.add:DoCall(Context)
 	
 	return Controller.Event
 end
@@ -98,7 +105,7 @@ function private:remove (Context: string)
 		self:PrintLog(`Removed context {Context}`)
 	end
 	
-	private.c1.Call(Context)
+	private.rem:DoCall(Context)
 end
 
 
@@ -112,7 +119,7 @@ end
 	@side all
 	@return HxEventConnection
 ]]
-function private:forplayer (Player: Player, Context: string, F: (...any)->(), Once: boolean?)
+function private:forplayer (Player: Player, Context: string, F: DefaultFunction, Once: boolean?)
 	local self = self :: NetContextGatewayService;
 	if not self:IsActive () then
 		self.OnActiveChangedEvent:Wait()
@@ -148,9 +155,8 @@ function private:sendContext (Context: string,  ... : any)
 	end
 end
 
-private.e0, private.c0 = HxEvent.new();
-private.e1, private.c1 = HxEvent.new();
-
+private.add = HxEventCore.new(warn::DefaultFunction);private.e_add=private.add:AddEvent();
+private.rem = HxEventCore.new(warn::DefaultFunction);private.e_rem=private.rem:AddEvent();
 
 interface.Enums = table.freeze({
 	Null = main.Mapping.Enum.Null
@@ -167,40 +173,43 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	ContextForPlayer = private.forplayer;
 	SendContext = private.sendContext;
 	
+	OnContextAddedEvent = private.e_add;
+	OnContextRemovedEvent = private.e_rem;
+	
 	Name = 'NetContextGatewayService'::'NetContextGatewayService';
 	Behavior = interface.Enums.Null;
 	IsControllable = false;
 })
 
-NetPackageService.Service:ForEvent(Mapping.Event.ContextNetwork):Connect(function(firstline: Player?|string, nextline: string|any, ...: any)
+NetPackageService.Service:ForEvent(Mapping.Event.ContextNetwork):Connect(function(arg1: Player | buffer | {  }, arg2: (any | buffer | {  })?, ...) 
 	if not interface.Service:IsActive() then return end
 	
 	local Controller
-	if typeof(firstline) == 'string' then
-		Controller = private.controllers[firstline]
+	if typeof(arg1) == 'string' then
+		Controller = private.controllers[arg1]
 		if Controller then
-			Controller.Properties.Call(nextline, ...)
+			Controller.Properties:DoCall(arg2, ...)
 			
 			if interface.Service:IsLogActive() then
-				interface.Service:PrintLog(string.format('Context %q called with args %q', firstline, table.concat({...},', ')))
+				interface.Service:PrintLog(string.format('Context %q called with args %q', arg1, table.concat({...},', ')))
 			end	
 		else
 			if interface.Service:IsLogActive() then
-				interface.Service:PrintLog(string.format('Context %q called, but controller not found', firstline))
+				interface.Service:PrintLog(string.format('Context %q called, but controller not found', arg1))
 			end
 		end
 	else
-		local nextline : string = interface.Exceptions.SafetyException:Assert(type(nextline) == 'string' and nextline)
+		local nextline : string = interface.Exceptions.SafetyException:Assert(type(arg2) == 'string' and arg2)
 		Controller = private.controllers[nextline]
 		if Controller then
-			Controller.Properties.Call(nextline, ...)
+			Controller.Properties:DoCall(nextline, ...)
 			
 			if interface.Service:IsLogActive() then
-				interface.Service:PrintLog(string.format('Context %q called with args %q by player %q', nextline, table.concat({...},', '), (firstline::Player).DisplayName))
+				interface.Service:PrintLog(string.format('Context %q called with args %q by player %q', nextline, table.concat({...},', '), (arg1::Player).DisplayName))
 			end
 		else
 			if interface.Service:IsLogActive() then
-				interface.Service:PrintLog(string.format('Context %q called by player %q, but controller not found', nextline, (firstline::Player).DisplayName))
+				interface.Service:PrintLog(string.format('Context %q called by player %q, but controller not found', nextline, (arg1::Player).DisplayName))
 			end
 		end
 	end

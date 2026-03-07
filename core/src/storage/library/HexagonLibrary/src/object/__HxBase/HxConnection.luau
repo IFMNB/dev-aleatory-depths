@@ -19,7 +19,7 @@ function private.new (Pulsar: Pulsar?)
 	return main.new({
 		Connected = true;
 		Disconnect = function (self: HxConnection)
-			if self.Connected then return end;
+			if not self.Connected then return end;
 			class.Disconnect(self);
 			if Pulsar then Pulsar(self) end
 			return

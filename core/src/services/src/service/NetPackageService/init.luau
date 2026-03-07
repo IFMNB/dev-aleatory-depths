@@ -201,7 +201,7 @@ end
 	@side server
 	@return HxEventConnection (Connection)
 ]]
-function private:forplayer (Player: Player, Event: RemoteEvent|UnreliableRemoteEvent|HxEvent, F: (...any)->(), Once: boolean?)
+function private:forplayer (Player: Player, Event: RemoteEvent|UnreliableRemoteEvent|HxEvent|HxEventG|any, F: (...any)->(), Once: boolean?)
 	interface.Exceptions.CodeException:Assert(game["Run Service"]:IsServer())
 	local self = self :: NetPackageService;
 	local con : HxEventConnection
@@ -222,12 +222,15 @@ function private:forplayer (Player: Player, Event: RemoteEvent|UnreliableRemoteE
 		end
 	end
 	
-	if (Event::any):IsA('SadObject') then
+	if (Event::any):IsA('HxEvent') then
 		local Event = Event :: HxEventG
 		Event:Connect(lambda)
-	else
+	elseif (Event::Instance):IsA('BaseRemoteEvent') then
 		local Event = Event :: RemoteEvent|UnreliableRemoteEvent
 		con = (self:ForEvent(Event)::HxEventG):Connect(lambda)
+	else
+		-- 
+		main.Mapping.Exception.CodeException:Throw()
 	end
 	
 	return con

@@ -22,7 +22,7 @@ end
 
 class.__index=main.Objects.class;
 class.Source=script;
-class.ClassName = main.ClassNames.HxSnapshot;
+class.ClassName = main.ClassNames.INet;
 class.IsReplicatable = true :: true;
 
 class.JSONEncode = private.jsonEncode;

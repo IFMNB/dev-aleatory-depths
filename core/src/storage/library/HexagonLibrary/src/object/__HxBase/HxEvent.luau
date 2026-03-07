@@ -7,13 +7,18 @@ local interface = {};
 type HxConnection = typeof(require('./HxConnection').HxConnection.new())
 type ConType = 'Connection'|'Once'
 type RunType = 'Parallel'|'Serial'
-type DefaultFunction = (...any)->()
-type FReactor = (DefaultFunction: DefaultFunction, ConnectionType: ConType, RunType: RunType)->HxConnection
+type ActionType = 'JustConnection' | 'Wait'
+type DefaultFunction<T=any,U=any> = (...U)->T
+type FReactor = (DefaultFunction: DefaultFunction, ConnectionType: ConType, RunType: RunType, ActionType: ActionType)->HxConnection
 type HxEvent <Reacor_ = FReactor> = typeof(private.new(nil::Reacor_))
 type DeadWatch = (HxEvent: HxEvent)->()
 
 --[[
 	Creates a new HxEvent. Also returns a function that destroys the event.
+
+	Please note: despite the fact that HxEvent instances are nominally always equal in one way or another,
+	due to the contravariance of functions and the structural type of event verification,
+	it is impossible to support this type of instance at the RBXScriptSignal level and not lose the typical markup for events.
 
 	@class HxEvent
 	@return Instance (@P HxEvent), Function
@@ -23,8 +28,9 @@ function private.new <T,U> (Reactor: FReactor, DefaultFunction: T|DefaultFunctio
 	local labmda : HxEvent
 	local watchers = {} :: {DeadWatch}
 	local alive = true
+	local result
 	
-	this.DefaultFunction = DefaultFunction or warn :: T
+	this.DefaultFunction = (DefaultFunction or class.DefaultFunction) :: T
 	
 	--[[
 		Returns a HxConnection that represents the connected function.
@@ -34,8 +40,8 @@ function private.new <T,U> (Reactor: FReactor, DefaultFunction: T|DefaultFunctio
 		@class HxEvent
 		@return Instance (@P HxConnection (Connection))
 	]]
-	function this:Connect (Function: T?)
-		return alive and Reactor(Function or this.DefaultFunction, 'Connection', 'Serial') or error('Event is dead')
+	function this:Connect (Function: T?) : HxConnection
+		return alive and Reactor(Function or this.DefaultFunction, 'Connection', 'Serial', 'JustConnection') or error('Event is dead')
 	end
 	
 	--[[
@@ -47,8 +53,8 @@ function private.new <T,U> (Reactor: FReactor, DefaultFunction: T|DefaultFunctio
 		@class HxEvent
 		@return Instance (@P HxConnection (Once))
 	]]
-	function this:Once (Function: T?)
-		return alive and Reactor(Function or this.DefaultFunction, 'Once', 'Serial') or error('Event is dead')
+	function this:Once (Function: T?) : HxConnection
+		return alive and Reactor(Function or this.DefaultFunction, 'Once', 'Serial', 'JustConnection') or error('Event is dead')
 	end
 	
 	--[[
@@ -59,8 +65,8 @@ function private.new <T,U> (Reactor: FReactor, DefaultFunction: T|DefaultFunctio
 		@class HxEvent
 		@return Instance (@P HxConnection (ConnectionParallel))
 	]]
-	function this:ConnectParallel (Function: T?)
-		return alive and Reactor(Function or this.DefaultFunction, 'Connection', 'Parallel') or error('Event is dead')
+	function this:ConnectParallel (Function: T?) : HxConnection
+		return alive and Reactor(Function or this.DefaultFunction, 'Connection', 'Parallel', 'JustConnection') or error('Event is dead')
 	end
 	
 	--[[
@@ -72,8 +78,8 @@ function private.new <T,U> (Reactor: FReactor, DefaultFunction: T|DefaultFunctio
 		@class HxEvent
 		@return Instance (@P HxConnection (OnceParallel))
 	]]
-	function this:OnceParallel (Function: T?)
-		return alive and Reactor(Function or this.DefaultFunction, 'Once', 'Parallel') or error('Event is dead')
+	function this:OnceParallel (Function: T?) : HxConnection
+		return alive and Reactor(Function or this.DefaultFunction, 'Once', 'Parallel', 'JustConnection') or error('Event is dead')
 	end
 	
 	--[[
@@ -85,7 +91,7 @@ function private.new <T,U> (Reactor: FReactor, DefaultFunction: T|DefaultFunctio
 		@return Function
 	
 	]]
-	function this:WatchDeath (Function: (HxEvent: HxEvent)->())
+	function this:WatchDeath (Function: (HxEvent: typeof(assert(result)))->())
 		if not alive then error('Event is dead') end
 		
 		table.insert(watchers,Function)
@@ -109,13 +115,14 @@ function private.new <T,U> (Reactor: FReactor, DefaultFunction: T|DefaultFunctio
 	]]
 	function this:Wait () : ...unknown
 		local thread = coroutine.running()
-		this:Once(function ()
-			return coroutine.resume(thread)
+		assert(alive, 'Event is dead')
+		task.defer(function ()
+			Reactor(function(...) coroutine.resume(thread, ...) return ... end, 'Once', 'Serial', 'Wait')
 		end)
 		return coroutine.yield()
 	end
 	
-	local result = main.new(this, class)
+	result = main.new(this, class)
 	labmda = result
 	
 	--[[
@@ -129,18 +136,18 @@ function private.new <T,U> (Reactor: FReactor, DefaultFunction: T|DefaultFunctio
 		this.Alive = false;
 		table.freeze(this);
 		for i,v in watchers do
-			task.spawn(v, result)
+			task.spawn(v, result :: any)
 		end
 		watchers = nil
 	end
 	
-	return result, labmda_disc
+	return result :: typeof(assert(result)), labmda_disc
 end
 
 class.__index = main.__HxBase.class;
 class.ClassName = main.ClassNames.HxEvent;
 class.Source = script;
-class.DefaultFunction = warn :: DefaultFunction;
+class.DefaultFunction = (warn::any) :: DefaultFunction;
 class.Connect = main.Abstract.SelfNotImplemented;
 class.Once = main.Abstract.SelfNotImplemented;
 class.ConnectParallel = main.Abstract.SelfNotImplemented;
@@ -148,7 +155,11 @@ class.OnceParallel = main.Abstract.SelfNotImplemented;
 class.WatchDeath = main.Abstract.SelfNotImplemented;
 class.Wait = main.Abstract.SelfNotImplemented;
 
+local instance, killinstance = private.new(nil::any, nil::any, nil::any);
+killinstance();table.freeze(instance);
+
 interface.class = class;
+interface.instance = instance
 interface.new = private.new;
 
 return main:expand({HxEvent = interface})
