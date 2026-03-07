@@ -3,7 +3,7 @@ local Mapping = main.Mapping
 
 local NetPackageService = main.Core.Services.NetPackageService()
 local HxSnapshot = main.Core.Classes.HxSnapshot()
-local HxEvent = main.Core.Classes.HxEvent()
+local HxEventCore = main.Core.Classes.HxEventCore()
 
 local private = {}
 local interface = {}
@@ -14,9 +14,9 @@ export type AwaitedHxSnapshotForCamera = typeof(HxSnapshot.new({CFrame = nil :: 
 export type AwaitedHxSnapshotForUserInput = typeof(HxSnapshot.new({UserInputType = nil :: Enum.UserInputType?, State = nil :: Enum.UserInputState?}))
 
 type HxEvent = typeof(private.e0)
-type HxEventProperties = typeof(private.c0)
+type HxEventProperties = typeof(private.global_c_core)
 type HxEventConnection = typeof(private.e0:Connect(function() end))
-type PlayerController = {Event: HxEvent, HxEventControl: HxEventProperties, NIS_connection: HxEventConnection, Destroy_Connection: RBXScriptConnection}
+type PlayerController = {Event: HxEvent|any, HxEventControl: HxEventProperties|any, NIS_connection: HxEventConnection, Destroy_Connection: RBXScriptConnection}
 type EventsPlayer = {[Player]: PlayerController}
 
 private.players_latest_key = {}
@@ -56,15 +56,16 @@ function private:GetPlayerKeyChangeEvent (player: Player)
 	end
 	
 	local Controller : PlayerController = {} :: any
-	local e0, c0 = HxEvent.new()
+	local Core = HxEventCore.new(warn::DF_K)
+	local Event = Core:AddEvent();
 	local con = self.OnGlobalKeyInputEvent:Connect(function(Player: Player, ...) 
 		if Player == player then
-			c0.Call(...)
+			Core:DoCall(...)
 		end
 	end)
 	
-	Controller.Event = e0
-	Controller.HxEventControl = c0
+	Controller.Event = Event
+	Controller.HxEventControl = Core
 	Controller.NIS_connection = con
 	Controller.Destroy_Connection = player.Destroying:Once(function() 
 		local alpha = private.players_key_event[player]
@@ -74,7 +75,7 @@ function private:GetPlayerKeyChangeEvent (player: Player)
 	end)
 	private.players_key_event[player] = Controller
 	
-	return e0
+	return Event
 end
 
 function private:GetPlayerCameraChangeEvent (player: Player)
@@ -84,15 +85,16 @@ function private:GetPlayerCameraChangeEvent (player: Player)
 	end
 	
 	local Controller : PlayerController = {} :: any
-	local e0, c0 = HxEvent.new()
+	local Core = HxEventCore.new(warn::DF_C)
+	local Event = Core:AddEvent();
 	local con = self.OnGlobalCameraEvent:Connect(function(Player: Player, ...) 
 		if Player == player then
-			c0.Call(...)
+			Core:DoCall(...)
 		end
 	end)
 	
-	Controller.Event = e0
-	Controller.HxEventControl = c0
+	Controller.Event = Event
+	Controller.HxEventControl = Core
 	Controller.NIS_connection = con
 	Controller.Destroy_Connection = player.Destroying:Once(function() 
 		local alpha = private.players_key_event[player]
@@ -102,7 +104,7 @@ function private:GetPlayerCameraChangeEvent (player: Player)
 	end)
 	private.players_camera_event[player] = Controller
 	
-	return e0
+	return Event
 end	
 
 function private:GetPlayerInputChangeEvent (player: Player)
@@ -112,15 +114,16 @@ function private:GetPlayerInputChangeEvent (player: Player)
 	end
 	
 	local Controller : PlayerController = {} :: any
-	local e0, c0 = HxEvent.new()
+	local Core = HxEventCore.new(warn::DF_I);
+	local Event = Core:AddEvent();
 	local con = self.OnGlobalInputEvent:Connect(function(Player: Player, ...) 
 		if Player == player then
-			c0.Call(...)
+			Core:DoCall(...)
 		end
 	end)
 	
-	Controller.Event = e0
-	Controller.HxEventControl = c0
+	Controller.Event = Event
+	Controller.HxEventControl = Core
 	Controller.NIS_connection = con
 	Controller.Destroy_Connection = player.Destroying:Once(function() 
 		local alpha = private.players_key_event[player]
@@ -130,7 +133,7 @@ function private:GetPlayerInputChangeEvent (player: Player)
 	end)
 	private.players_userinputtype_event[player] = Controller
 	
-	return e0
+	return Event
 end
 
 
@@ -147,7 +150,7 @@ function private:WatchKey (player: Player)
 			State = State;
 		})
 		
-		private.c5.Call(player, EI, State)
+		private.global_k_core:DoCall(player, EI, State)
 	end)
 	
 	player.Destroying:Once(function()
@@ -172,7 +175,7 @@ function private:WartchUserInputType (player: Player)
 			State = State;
 		})
 		
-		private.c0.Call(player, EI, State)
+		private.global_i_core:DoCall(player, EI, State)
 	end)
 	
 	player.Destroying:Once(function() 
@@ -194,7 +197,7 @@ function private:WatchCamera (player: Player)
 			CFrame = CF;
 		})
 		
-		private.c6.Call(player, CF)
+		private.global_c_core:DoCall(player, CF)
 	end)
 	
 	player.Destroying:Once(function() 
@@ -204,9 +207,17 @@ function private:WatchCamera (player: Player)
 	return this :: HxEventConnection
 end
 
-private.e0, private.c0 = HxEvent.new()
-private.e5, private.c5 = HxEvent.new()
-private.e6, private.c6 = HxEvent.new()
+type DF_I = (Player: Player, Input: Enum.UserInputType, State: Enum.UserInputState)->()
+type DF_K = (Player: Player, Key: Enum.KeyCode, State: Enum.UserInputState)->()
+type DF_C = (Player: Player, CameraCFrame: CFrame) -> ()
+
+private.global_i_core = HxEventCore.new(warn::DF_I);
+private.global_k_core = HxEventCore.new(warn::DF_K);
+private.global_c_core = HxEventCore.new(warn::DF_C);
+
+private.e0 = private.global_i_core:AddEvent();
+private.e5 = private.global_k_core:AddEvent();
+private.e6 = private.global_c_core:AddEvent();
 
 interface.Enums = table.freeze({
 	Null = Mapping.Enum.Null;
