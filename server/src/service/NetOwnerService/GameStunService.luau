@@ -3,7 +3,7 @@ local Mapping = main.Mapping
 local private = {}
 local interface = {}
 
-local HxEvent = main.Core.Classes.HxEvent()
+local HxEventCore = main.Core.Classes.HxEventCore()
 local NetOwnerService = require('./')
 local DebrisService = game:GetService('Debris')
 
@@ -41,7 +41,7 @@ function private:Stun (Character: Model, Time: number?, knockback: Vector3?)
 		Humanoid.EvaluateStateMachine = true
 	end)
 	
-	private.c0.Call(Character, Time)
+	private.stun:DoCall(Character, Time)
 end
 
 function private:Fall (Character: Model, Time: number?, knockbackAngle: Vector3?)
@@ -59,7 +59,7 @@ function private:Fall (Character: Model, Time: number?, knockbackAngle: Vector3?
 		Humanoid.EvaluateStateMachine = true
 	end)
 	
-	private.c1.Call(Character, Time)
+	private.fall:DoCall(Character, Time)
 end
 
 function private:PlrStun (Player: Player, Time: number?, knockback: Vector3?)
@@ -72,9 +72,12 @@ function private:PlrFall (Player: Player, Time: number?, knockbackAngle: Vector3
 	return self:DoModelFall(interface.Exceptions.GameException:Assert(Player.Character), Time, knockbackAngle)
 end
 
+type DF = (Character: Model, Time: number)->()
+private.stun = HxEventCore.new(warn::DF);
+private.fall = HxEventCore.new(warn::DF);
 
-private.e0,private.c0 = HxEvent.new()
-private.e1,private.c1 = HxEvent.new()
+private.e0 = private.stun:AddEvent()
+private.e1 = private.fall:AddEvent()
 interface.Enums = table.freeze({
 	Null = Mapping.Enum.Null;
 });
