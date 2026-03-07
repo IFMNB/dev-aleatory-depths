@@ -3,6 +3,7 @@ local main = require('./')
 
 local Hx = main.Libs.Hexagon
 local HxEvent = Hx.Classes.HxEvent()
+local HxEventCore = Hx.Classes.HxEventCore()
 
 local private = {};
 local class = {}; setmetatable(class,class);
@@ -170,23 +171,28 @@ function private.new_service <T,Y,Q> (Service: T & DefaultServiceNeedle<Y>, chil
 	local nolint = this :: any
 	
 	nolint:SetActive(false);
-	local e0, c0 = HxEvent.new();
-	local e1, c1 = HxEvent.new();
-	nolint.OnLogActiveChangedEvent, nolint.SetLogActive = e0, function (SAS: SadAbstractService, State :boolean?)
+	
+	local Core1 = HxEventCore.new();
+	local Core2 = HxEventCore.new();
+	
+	local Event1 = Core1:AddEvent();
+	local Event2 = Core2:AddEvent();
+
+	nolint.OnLogActiveChangedEvent, nolint.SetLogActive = Event1, function (SAS: SadAbstractService, State :boolean?)
 		local State = State or false
 		local this = SAS:IsLogActive()
 		class.SetLogActive (SAS, State)
 		if this ~= State then
-			c0.Call(State)
+			Core1:DoCall(State)
 		end
 	end
 	
-	nolint.OnActiveChangedEvent, nolint.SetActive = e1, function (SAS: SadAbstractService, State :boolean?)
+	nolint.OnActiveChangedEvent, nolint.SetActive = Event2, function (SAS: SadAbstractService, State :boolean?)
 		local State = State or false
 		local this = SAS:IsActive()
 		class.SetActive (SAS, State)
 		if this ~= State then
-			c1.Call(State)
+			Core2:DoCall(State)
 		end
 	end
 	
@@ -194,6 +200,8 @@ function private.new_service <T,Y,Q> (Service: T & DefaultServiceNeedle<Y>, chil
 	return this
 end
 
+type DF_S = (State: boolean)->()
+type StateEvent = typeof(HxEvent.new(nil::any,function()end::DF_S ))
 
 class.__index=main.SadObject.class;
 class.ClassName = main.Mapping.Class.SadAbstractService;
@@ -212,9 +220,8 @@ class.PrintLog = private.log;
 class.SetLogActive = private.set_active_log;
 class.IsLogActive = private.get_active_log;
 
-private.e0, private.c0 = HxEvent.new();private.c0:Destroy();
-class.OnActiveChangedEvent = private.e0;
-class.OnLogActiveChangedEvent = private.e0;
+class.OnActiveChangedEvent = HxEvent.instance :: StateEvent;
+class.OnLogActiveChangedEvent = HxEvent.instance :: StateEvent;
 
 
 protected.NewChild = private.new_service;
