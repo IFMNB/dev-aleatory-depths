@@ -2,6 +2,8 @@ local Sad_ClassNames = table.freeze({
 	
 	SadObject = 'SadObject' :: 'SadObject', 
 	
+		SadWorld = 'SadWorld' :: 'SadWorld';
+	
 		SadMap = 'SadMap' :: 'SadMap',
 		SadConfigSnapshot = 'SadConfigSnapshot' :: 'SadConfigSnapshot',
 	

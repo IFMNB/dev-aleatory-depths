@@ -18,6 +18,14 @@ function src.Classes.SadPhysicGroup ()
 	return require('../object/ISadGroup/SadPhysicGroup').SadPhysicGroup
 end
 
+--[[
+	Экземпляр-гибрид ECS структуры и OOP дизайна.
+	А вообще это не ECS, а EC в NodeMap, который еще и самовкладываемый
+]]
+function src.Classes.SadWorld ()
+	return require('../object/SadWorld').SadWorld
+end
+
 
 
 
