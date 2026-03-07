@@ -16,6 +16,10 @@ type Identity = string
 	Может содержать в себе как другие такие же объекты,
 	так и ничего не содержать кроме компонентов.
 	
+	SadWorld лучше всего представлять как дерево с множественными ветками.
+	Любой мир может быть как просто сущностью,
+	так и с множеством вложенных миров.
+	
 	@class SadWorld
 	@side all
 	@return Instance (@P SadWorld)
@@ -66,6 +70,21 @@ function private:iter_target (Callback: CallbackFunction, Identity: Identity)
 	end
 	
 	return false
+end
+
+--[[
+	Позволяет рекурсивно итерироваться по вообще всем объектам в дереве.
+	
+	@class SadWorld
+	@side all
+	@return ()
+]]
+function private:iter_recursive (Callback: CallbackFunction)
+	local self = self :: SadWorld
+	self:DoIter(function (world)
+		Callback(world)
+		world:DoIterRecursive(Callback)
+	end)
 end
 
 --[[
@@ -169,6 +188,7 @@ class.RemElement = private.rem;
 
 class.DoIter = private.iter_head;
 class.DoTarget = private.iter_target;
+class.DoIterRecursive = private.iter_recursive;
 
 class.Identity = '';
 class.Head = nil :: HxNode?;
