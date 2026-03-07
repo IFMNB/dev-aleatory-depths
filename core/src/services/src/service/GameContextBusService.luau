@@ -9,7 +9,7 @@ local interface = {}
 type DefaultFunction = (Context: string, ...any)->()
 
 type HxEvent = typeof(private.e0);
-type HxEventProperties = typeof(private.c0)
+type HxEventProperties = typeof(private.add_c)
 type HxEventConnection = typeof(private.e0:Connect(function(...)  end))
 type ContextControler = {Event: HxEvent, Properties: HxEventProperties, IsAlive: boolean}
 type GameContextBusService = typeof(interface.Service)
@@ -35,14 +35,14 @@ function private:new (Context: string)
 	end
 	
 	interface.Exceptions.CodeException:Assert(not private.registry[Context])
-	local e0,c0 = HxEvent.new()
-	private.registry[Context]={Event=e0;Properties=c0;IsAlive=true}
+	local core = HxEventCore.new(warn :: DefaultFunction)
+	private.registry[Context]={Event= core:AddEvent() ;Properties= core;IsAlive=true}
 	
 	if self:IsLogActive() then
 		self:PrintLog(string.format('Context %q has been registried', Context))
 	end
 	
-	private.c0.Call(Context)
+	private.add_c:DoCall(Context)
 	return private.registry[Context]
 end
 
@@ -73,7 +73,7 @@ function private:unregistry (Context: string)
 		self:PrintLog(string.format('Context %q has been destroyed', Context))
 	end
 	
-	private.c0.Call(Context)
+	private.rem_c:DoCall(Context)
 end
 
 --[[
@@ -124,8 +124,11 @@ function private:getregistry (Context: string)
 	end
 end
 
-private.e0, private.c0 = HxEvent.new();
-private.e1, private.c1 = HxEvent.new();
+
+private.add_c = HxEventCore.new(warn :: DefaultFunction)
+private.rem_c = HxEventCore.new(warn :: DefaultFunction)
+private.e0 = private.add_c:AddEvent();
+private.e1 = private.rem_c:AddEvent();
 
 interface.Enums = table.freeze({
 	Immediate = Mapping.Enum.ContextEventBehavior.Immediate;
