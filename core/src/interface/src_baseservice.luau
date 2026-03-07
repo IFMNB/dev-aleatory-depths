@@ -17,14 +17,6 @@ function src.Classes.SadDataService ()
 	return require('../object/__SadAbstractService/SadDataService').SadDataService
 end
 
-function src.Classes.SadInputService ()
-	return require('../object/__SadAbstractService/SadInputService').SadInputService
-end
-
-function src.Classes.SadSoundService ()
-	return require('../object/__SadAbstractService/SadSoundService').SadSoundService
-end
-
 function src.Classes.SadNetService ()
 	return require('../object/__SadAbstractService/SadNetService').SadNetService
 end

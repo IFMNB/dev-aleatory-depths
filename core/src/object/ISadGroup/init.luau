@@ -25,12 +25,10 @@ class.Add = main.Abstract.SelfOverride;
 class.Rem = main.Abstract.SelfOverride;
 class.AreElementInGroup = private.find;
 class.Elements = {} :: {any};
-class.OnElementAddedEvent, private.c0 = HxEvent.new();
-class.OnElementRemovedEvent, private.c1 = HxEvent.new();
+class.OnElementAddedEvent = HxEvent.instance;
+class.OnElementRemovedEvent = HxEvent.instance;
 
 
-private.c0:Destroy()
-private.c1:Destroy()
 interface.class = class;
 
 return main:expand({_ISadGroup = interface})

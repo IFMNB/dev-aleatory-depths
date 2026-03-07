@@ -1,7 +1,7 @@
 local main = require('./');
 
 local Hx = main.Libs.Hexagon
-local HxEvent = Hx.Classes.HxEvent()
+local HxEventCore = Hx.Classes.HxEventCore()
 
 local private = {};
 local class = {}; setmetatable(class, class);
@@ -14,18 +14,23 @@ type function def (t: type, t1: type)
 end
 
 function private.new <T> (Default: T?)
-	local e0, c0 = HxEvent.new(class.ClassName);
-	local e1, c1 = HxEvent.new(class.ClassName);
+	type DF = (Element: Instance)->()
+	local Core1 = HxEventCore.new(warn::DF);
+	local Core2 = HxEventCore.new(warn::DF);
+	
+	local Event1 = Core1:AddEvent();
+	local Event2 = Core2:AddEvent();
+	
 	
 	return main.new({
 		Elements = Default :: def<T, typeof(class.Elements)>;
 		Reactions = {} :: typeof(class.Reactions);
 		
-		Add = function (self, a0) class.Add(self, a0) c0.Call(a0) end :: typeof(class.Add);
-		Rem = function (self, a0) class.Rem(self, a0) c1.Call(a0) end :: typeof(class.Rem);
+		Add = main.Abstract.Wrap(nil,class.Add,function(self,a0) Core1:DoCall(a0) end);
+		Rem = main.Abstract.Wrap(nil,class.Rem,function(self,a0) Core2:DoCall(a0) end);
 		
-		OnElementAddedEvent = e0;
-		OnElementRemovedEvent = e1;
+		OnElementAddedEvent = Event1;
+		OnElementRemovedEvent = Event2;
 		
 	}, class)
 end
