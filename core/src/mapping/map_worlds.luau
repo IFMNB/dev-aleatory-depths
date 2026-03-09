@@ -4,6 +4,7 @@ local WorldsMap = table.freeze({
 	['game.world'] = 'game.world' :: 'game.world';
 	['game.world.characters'] = 'game.world.characters' :: 'game.world.characters';
 	['game.world.items'] = 'game.world.items' :: 'game.world.items';
+	
 })
 
 return WorldsMap

@@ -1,3 +1,6 @@
+--!native
+--!optimize 2
+
 local main = require('./');
 
 local HxNode = main.Libs.Hexagon.Classes.HxNode()
@@ -59,28 +62,11 @@ export type RawSadWorld = {
 	Components: {[string]: Component}
 }
 type Component = {[any]:unknown}
-type SharedSadWorld = SharedTable & RawSadWorld -- багует типы
+type SharedSadWorld = SharedTable & RawSadWorld
 type CallbackFunction = (World: SadWorld)->()
 type CallbackSharedFunction = (RawWorld: SharedSadWorld) -> ()
 
---[[
-	Выполняет CallbackFunction для всех объектов в цепи.
-	
-	@class SadWorld
-	@side all
-	@return boolean
-]]
-function private:iter_head (Callback: CallbackFunction)
-	local self = self :: SadWorld
-	local node = self.Head :: HxNode?
-	local iterated = false
-	while node do
-		xpcall(Callback,warn,node.Value)
-		node = node.NextNode
-		iterated = true
-	end
-	return iterated
-end
+
 
 
 
@@ -184,6 +170,32 @@ function private:push_component_to_shared (Name: string)
 	return false
 end
 
+
+
+
+--[[
+	Выполняет CallbackFunction для всех объектов в цепи.
+	
+	@class SadWorld
+	@side all
+	@return boolean
+]]
+function private:iter_head (Callback: CallbackFunction)
+	local self = self :: SadWorld
+	local node = self.Head :: HxNode?
+	local iterated = false
+	local seen = {}
+	
+	while node do
+		if seen[node] then break end
+		xpcall(Callback,warn,node.Value)
+		seen[node]=true
+		node = node.NextNode
+		iterated = true
+	end
+	return iterated
+end
+
 --[[
 	Выполняет CallbackFunction для целевого объекта.
 	
@@ -211,9 +223,17 @@ end
 ]]
 function private:iter_recursive (Callback: CallbackFunction)
 	local self = self :: SadWorld
-	return self:DoFor(function (world)
+	local seen = {}
+	local function Recursive (world: SadWorld)
+		if seen[world] then return false end
+		seen[world] = true
 		xpcall(Callback,warn,world)
-		world:DoForRecursive(Callback)
+		return true
+	end
+	return self:DoFor(function (world)
+		if Recursive(world) then
+			world:DoForRecursive(Callback)
+		end
 	end)
 end
 
@@ -233,8 +253,11 @@ function private:iter_shared (Callback: CallbackSharedFunction)
 	local this = SharedTableRegistry:GetSharedTable(self.Identity) :: SharedSadWorld
 	local node = this.Head :: HxNode?
 	local iterated = false
+	local seen = {}
 	while node do
+		if seen[node] then break end
 		xpcall(Callback,warn,node.Value)
+		seen[node] = true
 		node = node.NextNode
 		iterated = true
 	end
@@ -277,9 +300,17 @@ end
 ]]
 function private:iter_shared_recursive (Callback: CallbackSharedFunction)
 	local self = self :: SadWorld
-	return class.DoForShared(self:GetShared(), function (world)
+	local seen = {}
+	local function Recursive (world: SharedSadWorld)
+		if seen[world] then return false end
+		seen[world] = true
 		xpcall(Callback,warn,world)
-		class.DoForRecursiveShared(world,Callback)
+		return true
+	end
+	return class.DoForShared(class.GetShared(self), function (world)
+		if Recursive(world) then
+			class.DoForRecursiveShared(world,Callback)
+		end
 	end)
 end
 

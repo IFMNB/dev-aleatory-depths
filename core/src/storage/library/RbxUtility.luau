@@ -1,33 +1,24 @@
 local private = {};
 local interface = {};
 
--- Returns the path of the given instance, or an empty string if the argument is not an instance.
-@deprecated
-function private.GetPath (to: Instance)
-	if not game.IsA(to, 'Instance') then return '' end
-	
-	local list = {} :: {string}
-	local this : Instance? = to.Parent
-	table.insert(list, to.Name)
-	while this do
-		table.insert(list,this.Name)
-		this = this.Parent
+function private.FromPath (path: string) : Instance?
+	local current = game
+	for name in string.gmatch(path, "[^.]+") do
+		if name ~= "game" then
+			current = current:FindFirstChild(name)
+			if not current then
+				return nil
+			end
+		end
 	end
-	
-	local path = '@game'
-	for i=1, #list  do
-		local i2 = #list-i
-		if i2 == 0 then return path end
-		path = path..'/'..list[i2]
-	end
-	
-	return path
+	return current
 end
 
 function private.Path (to: Instance)
-	return to:GetFullName()
+	return to and to.GetFullName and to:GetFullName() or ''
 end
 
 interface.GetPath = private.Path;
+interface.FromPath = private.FromPath;
 
 return interface
