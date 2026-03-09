@@ -181,8 +181,9 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	IsControllable = false;
 })
 
-NetPackageService.Service:ForEvent(Mapping.Event.ContextNetwork):Connect(function(arg1: Player | buffer | {  }, arg2: (any | buffer | {  })?, ...) 
+NetPackageService.Service:ForEvent(Mapping.Event.ContextNetwork):Connect(function(arg1:any,arg2:any,...) 
 	if not interface.Service:IsActive() then return end
+	local arg1 : Player|string, arg2 : string = arg1 ,arg2
 	
 	local Controller
 	if typeof(arg1) == 'string' then

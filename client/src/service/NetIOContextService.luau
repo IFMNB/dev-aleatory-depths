@@ -109,7 +109,7 @@ local starter = function ()
 			
 			local IO = private.io[v] or {IO = v.DefaultIO; ST = v.DefaultState}
 			if (input.KeyCode == IO.IO or input.UserInputType == IO.IO) and input.UserInputState == IO.ST then
-				Controller.Properties.Call(interface.Service.Name)
+				Controller.Properties:DoCall(interface.Service.Name)
 				if interface.Service:IsLogActive() then
 					interface.Service:PrintLog(Name)
 				end

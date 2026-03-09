@@ -8,7 +8,7 @@ local Mapping = main.Mapping
 local private = {}
 local interface = {}
 
-local HxEvent = main.Core.Classes.HxEvent()
+local HxEventCore = main.Core.Classes.HxEventCore()
 local NetPackageService = main.Core.Services.NetPackageService()
 type GameIOMappingService = typeof(interface.Service)
 
@@ -27,7 +27,7 @@ function private:change_key (Context: string,  State: Enum.UserInputState, Key: 
 	end
 	
 	NetPackageService.Service:SendServer(Mapping.Event.ContextKeyNetwork, Context, Key, State)
-	private.c0.Call(Context,State,Key)
+	private.Core1:DoCall(Context,State,Key)
 end
 
 --[[
@@ -46,11 +46,17 @@ function private:change_input (Context: string,  State: Enum.UserInputState, Inp
 	end
 	
 	NetPackageService.Service:SendServer(Mapping.Event.ContextInputNetwork, Context, Input, State)
-	private.c1.Call(Context,State,Input)
+	private.Core2:DoCall(Context,State,Input)
 end
 
-private.e0, private.c0 = HxEvent.new();
-private.e1, private.c1 = HxEvent.new();
+type DFC1 = (Context: string, State: Enum.UserInputState, Key: Enum.KeyCode)->()
+type DFC2 = (Context: string, State: Enum.UserInputState, Input: Enum.UserInputType)->()
+
+private.Core1 = HxEventCore.new(warn::DFC1);
+private.Core2 = HxEventCore.new(warn::DFC2);
+private.Event1 = private.Core1:AddEvent();
+private.Event2 = private.Core2:AddEvent();
+
 
 interface.Enums = table.freeze({
 	Null = Mapping.Enum.Null;
@@ -62,8 +68,8 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	SendContextKeyChange = private.change_key;
 	SendContextInputChange = private.change_input;	
 	
-	OnContextKeyChange = private.c0;
-	OnContextInputChange = private.c1;
+	OnContextKeyChange = private.Event1;
+	OnContextInputChange = private.Event2;
 	
 	Name = 'GameIOMappingService'::'GameIOMappingService';
 	Behavior = interface.Enums.Null :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
