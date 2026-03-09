@@ -12,14 +12,7 @@ type SadWorld = typeof(private.new())
 type Identity = string
 
 --[[
-	Создает простой EC объект.
-	
-	Может содержать в себе как другие такие же объекты,  так и ничего не содержать кроме компонентов.
-	
-	SadWorld лучше всего представлять как дерево с множественными ветками.
-	Любой мир может быть как просто сущностью, так и с множеством вложенных миров.
-	
-	Shared-версия мира может отличаться от обычной, т.к экземпляры
+	Экземпляр этого класса взаимозаменяем фактически везде, включая даже в компонентах.
 	
 	@class SadWorld
 	@side all
@@ -29,19 +22,26 @@ function private.new (Identity: string?)
 	local this = main.new({
 		Elements = {} :: typeof(class.Elements);	
 		Identity = Identity or tostring(os.clock()..class.ClassName);
-		Components = {} :: typeof(class.Components);
+		Components = {} :: {[string]: Component};
+		Head = nil :: HxNode?;
 	}, class)
 	
 
 	local shared = SharedTableRegistry:GetSharedTable(this.Identity)
 	if not shared['Elements'] then
-		shared['Elements'] = {}
+		SharedTable.update(shared, 'Elements', function(arg) 
+			return {}
+		end)
 	end
 	if not shared['Components'] then
-		shared['Components'] = {}
+		SharedTable.update(shared, 'Components', function(arg) 
+			return {}
+		end)
 	end
 	if not shared['Identity'] then
-		shared['Identity'] = this.Identity
+		SharedTable.update(shared, 'Identity', function(arg) 
+			return Identity
+		end)
 	end
 	
 	return this
@@ -58,8 +58,8 @@ export type RawSadWorld = {
 	Identity: string;
 	Components: {[string]: Component}
 }
-type Component = {Name: string, [any]:any}
-type SharedSadWorld = RawSadWorld-- & SharedTable -- багует типы
+type Component = {[any]:unknown}
+type SharedSadWorld = SharedTable & RawSadWorld -- багует типы
 type CallbackFunction = (World: SadWorld)->()
 type CallbackSharedFunction = (RawWorld: SharedSadWorld) -> ()
 
@@ -75,28 +75,21 @@ function private:iter_head (Callback: CallbackFunction)
 	local node = self.Head :: HxNode?
 	local iterated = false
 	while node do
-		Callback(node.Value)
+		xpcall(Callback,warn,node.Value)
 		node = node.NextNode
 		iterated = true
 	end
 	return iterated
 end
 
---[[
-	Возвращает Shared версию мира.
 
-	@class SadWorld
-	@side all
-	@return Instance (@P SharedTable)
-]]
-function private:get_Shared ()
-	local self = self :: SadWorld
-	local this = SharedTableRegistry:GetSharedTable(self.Identity) :: SharedSadWorld
-	return this
-end
 
 --[[
-	Синхронизирует эту локальную версию мира с его Shared версией.
+	Синхронизирует локальные компоненты мира с их Shared версиями.
+
+	При обычной работе с SadWorld несколько систем могут атомарно или неатомарно работать с
+	одним и тем же миром, вставляя и удаляя объекты.
+	
 
 	@class SadWorld
 	@side all
@@ -105,20 +98,16 @@ end
 function private:sync_shared_components ()
 	local self = self :: SadWorld
 	local this = self:GetShared()
-	for i,v in this.Components do
-		local component = self.Components[i]
-		if component then
-			for i,v in v do
-				component[i]=v
-			end
+	local Components = SharedTable.cloneAndFreeze(this.Components, true) :: typeof(table.freeze({}::{[string]:Component}))
+	for Name, Component in Components do
+		for index,value in Component do
+			Component[index]=value
 		end
 	end
 end
 
 --[[
 	Выполняет CallbackFunction для целевого объекта.
-	
-	Вернет true если объект найден.
 	
 	@class SadWorld
 	@side all
@@ -128,7 +117,7 @@ function private:iter_target (Callback: CallbackFunction, Identity: Identity)
 	local self = self :: SadWorld
 	local node = self.Elements[Identity] :: HxNode?
 	if node then
-		Callback(node.Value)
+		xpcall(Callback,warn,node.Value)
 		return true
 	end
 	
@@ -145,7 +134,7 @@ end
 function private:iter_recursive (Callback: CallbackFunction)
 	local self = self :: SadWorld
 	return self:DoIter(function (world)
-		Callback(world)
+		xpcall(Callback,warn,world)
 		world:DoIterRecursive(Callback)
 	end)
 end
@@ -167,7 +156,7 @@ function private:iter_shared (Callback: CallbackSharedFunction)
 	local node = this.Head :: HxNode?
 	local iterated = false
 	while node do
-		Callback(node.Value)
+		xpcall(Callback,warn,node.Value)
 		node = node.NextNode
 		iterated = true
 	end
@@ -190,7 +179,7 @@ function private:iter_shared_target (Callback: CallbackSharedFunction, Identity:
 	local this = SharedTableRegistry:GetSharedTable(self.Identity) :: SharedSadWorld
 	local node = this.Elements[Identity] :: HxNode?
 	if node then
-		Callback(node.Value)
+		xpcall(Callback,warn,node.Value)
 		return true
 	end
 	
@@ -211,24 +200,11 @@ end
 function private:iter_shared_recursive (Callback: CallbackSharedFunction)
 	local self = self :: SadWorld
 	return class.DoSharedIter(SharedTableRegistry:GetSharedTable(self.Identity), function (world)
-		Callback(world)
+		xpcall(Callback,warn,world)
 		class.DoSharedIterRecursive(world, Callback)
 	end)
 end
 
-
-function private.addworld (this, Identity: Identity?)
-	local head = this.Head
-	local new_node : any = HxNode.new(private.new(Identity),nil,head)
-	if head then
-		head.BackNode = new_node
-	end
-	
-	this.Elements[new_node.Value.Identity] = new_node
-	this.Head = new_node
-	
-	return new_node.Value.Identity
-end
 
 --[[
 	Добавит в объект еще один такой же объект.
@@ -242,38 +218,47 @@ end
 ]]
 function private:add (Identity: Identity?)
 	local self = self :: SadWorld
-	if private.addworld(self,Identity) then
-		local this = SharedTableRegistry:GetSharedTable(self.Identity) :: SharedSadWorld
-		return private.addworld(this :: any,Identity)
-	end
+	local Identity = private.add_world_to_world(self, Identity)
+	private.add_shared_world_to_shared_world(self:GetShared(), Identity)
+	return Identity
 end
 
-function private.clearworld (this, Identity: Identity)
-	local node : RawHxNode|HxNode? = this.Elements[Identity]
-	
-	if node then
-		local backnode : RawHxNode|HxNode? = node.BackNode
-		local nextnode : RawHxNode|HxNode? = node.NextNode
-		
-		if backnode then
-			backnode.NextNode = nextnode
-		end
-		if nextnode then
-			nextnode.BackNode = backnode
-		end
-		
-		if node == this.Head then
-			(this::any).Head = nextnode
-		end
-		
-		this.Elements[Identity]=nil
-		return true
+function private.add_world_to_world (world: SadWorld, Identity: Identity?)
+	local head = world.Head
+	local new_world = private.new(Identity)
+	local new_node = HxNode.new(new_world,nil,head) :: HxNode
+	if head then
+		head.BackNode = new_node
 	end
-	return false
+	
+	world.Elements[new_world.Identity] = new_node
+	world.Head = new_node
+	
+	return new_world.Identity
+end
+
+function private.add_shared_world_to_shared_world (shared_world: SharedSadWorld, Identity: Identity?)
+	local head = shared_world.Head
+	local new_shared_world = private.new(Identity)
+	local new_node = HxNode.new(new_shared_world,nil,head) :: HxNode
+	if head then
+		SharedTable.update(head, 'BackNode', function(arg) 
+			return new_node
+		end)
+	end
+	
+	SharedTable.update(shared_world.Elements, new_shared_world.Identity, function(arg) 
+		return new_shared_world
+	end)
+	SharedTable.update(shared_world, 'Head', function(arg) 
+		return new_node
+	end)
+	
+	return new_shared_world.Identity
 end
 
 --[[
-	Удалит из объекта объект с заданным идентификатором.
+	Удалит из этого мира другой мир с заданным идентификатором.
 	
 	Вернет true если такой объект существовал.
 	
@@ -283,55 +268,101 @@ end
 ]]
 function private:rem(Identity: Identity)
 	local self = self :: SadWorld
-	if private.clearworld(self, Identity) then
-		local this = SharedTableRegistry:GetSharedTable(self.Identity) :: SharedSadWorld
-		private.clearworld(this,Identity)
+	return
+		private.remove_world_from_world(self, Identity) and
+		private.remove_shared_world_from_shared_world(self:GetShared(),Identity)
+end
+
+function private.remove_world_from_world (world: SadWorld, Identity: Identity)
+	local node = world.Elements[Identity] :: HxNode?
+	if node then
+		local back_node = node.BackNode :: HxNode?
+		local next_node = node.NextNode :: HxNode?
+		
+		if back_node then
+			back_node.NextNode = next_node
+		end
+		if next_node then
+			next_node.BackNode = back_node
+		end
+		if world.Head == node then
+			world.Head = next_node
+		end
+		
+		world.Elements[Identity]=nil
 		return true
 	end
 	return false
 end
 
-function private.add_component_global (this, Component: Component)
-	local name : string = Component.Name
-	this.Components[name] = Component
+function private.remove_shared_world_from_shared_world (shared_world: SharedTable, Identity: Identity)
+	local this = shared_world.Elements[Identity] :: SharedTable?
+	if this and this.Identity == Identity then
+		local node = this.Elements[Identity] :: SharedTable?
+		if node then
+			local back_node = node.BackNode :: SharedTable?
+			local next_node = node.NextNode :: SharedTable?
+			
+			if back_node then
+				SharedTable.update(back_node, 'NextNode', function(arg) 
+					return next_node
+				end)
+			end
+			if next_node then
+				SharedTable.update(next_node, 'BackNode', function(arg) 
+					return back_node
+				end)
+			end
+			if shared_world.Head == node then
+				SharedTable.update(shared_world, 'Head', function(arg) 
+					return next_node
+				end)
+			end
+			
+			SharedTable.update(shared_world.Elements, Identity, function(arg) 
+				return nil
+			end)
+			return true
+		end
+	end
+	return false
+end
+
+--[[
+	Добавит в объект компонент с заданным именем, если того не существует.
+
+	@class SadWorld
+	@side all
+	@return boolean
+]]
+function private:add_com (Name: string, Component)
+	local self = self :: SadWorld
+	return
+		private.add_component_to_world(self, Name, Component) and
+		private.add_component_to_shared_world(self:GetShared(),	Name, Component)
+end
+
+function private.add_component_to_world (world: SadWorld, name: string, component)
+	local ExistedComponent = world.Components[name] :: unknown
+	if ExistedComponent then
+		return false
+	end
+	
+	world.Components[name]=component
 	return true
 end
 
-function private.rem_component_global (this, Name: string)
-	if this.Components[Name] then
-		this.Components[Name]=nil
-		return true
+function private.add_component_to_shared_world (shared_world: SharedSadWorld, name: string, component)
+	local ExistedComponent = shared_world.Components[name] :: unknown
+	if ExistedComponent then
+		return false
 	end
-	return false
-end
-
---[[
-	Добавит в объект компонент с заданным именем.
-
-	@class SadWorld
-	@side all
-	@return ()
-]]
-function private:add_com (Component)
-	local self = self :: SadWorld
-	if private.add_component_global(self, Component) then
-		local this = SharedTableRegistry:GetSharedTable(self.Identity) :: SharedSadWorld
-		private.add_component_global(this, Component)
-		return true
-	end
-	return false
-end
-
---[[
-	Вернет компонент, если он есть.
 	
-	@class SadWorld
-	@side all
-	@return Component?
-]]
-function private:get_component (Name: string) : Component?
-	local self = self :: SadWorld
-	return self.Components[Name]
+	SharedTable.update(shared_world.Components, name, function(arg) 
+		return component
+	end)
+	
+	return true
 end
 
 --[[
@@ -345,13 +376,45 @@ end
 ]]
 function private:rem_com (Name)
 	local self = self :: SadWorld
-	if private.rem_component_global(self, Name) then
-		local this = SharedTableRegistry:GetSharedTable(self.Identity) :: SharedSadWorld
-		private.rem_component_global(this, Name)
+	return 
+		private.remove_component_from_world(self, Name) and
+		private.remove_component_from_shared_world(self:GetShared(), Name)
+end
+
+function private.remove_component_from_world (world: SadWorld, name: string)
+	local ExistedComponent = world.Components[name] :: unknown
+	if ExistedComponent then
+		world.Components[name]=nil
 		return true
 	end
 	return false
 end
+
+function private.remove_component_from_shared_world (shared_world: SharedSadWorld, name: string)
+	local ExistedComponent = shared_world.Components[name] :: unknown
+	if ExistedComponent then
+		SharedTable.update(shared_world.Components, name, function(arg) 
+			return nil
+		end)
+		return true
+	end
+	return false
+end
+
+
+--[[
+	Возвращает Shared версию мира.
+
+	@class SadWorld
+	@side all
+	@return Instance (@P SharedTable)
+]]
+function private:get_Shared ()
+	local self = self :: SadWorld
+	local this = SharedTableRegistry:GetSharedTable(self.Identity) :: SharedSadWorld
+	return this
+end
+
 
 class.__index = main.SadObject.class;
 class.Source = script;

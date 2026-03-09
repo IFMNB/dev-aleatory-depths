@@ -1,7 +1,9 @@
 local WorldsMap = table.freeze({
-	['game.characters'] = 'game.characters';
-	['game.items'] = 'game.items';
-	['storage.playerdata'] = 'storage.playerdata';
+	['game'] = 'game' :: 'game';
+	['game.player'] = 'game.player' :: 'game.player';
+	['game.world'] = 'game.world' :: 'game.world';
+	['game.world.characters'] = 'game.world.characters' :: 'game.world.characters';
+	['game.world.items'] = 'game.world.items' :: 'game.world.items';
 })
 
 return WorldsMap

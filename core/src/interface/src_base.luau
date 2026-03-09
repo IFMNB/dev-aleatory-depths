@@ -26,6 +26,15 @@ function src.Classes.SadWorld ()
 	return require('../object/SadWorld').SadWorld
 end
 
+--[[
+	Класс для встраивания в SadWorld компонентов.
+	
+	Хотя на деле встраивать компоненты в мир можно и без класса чистыми таблицами.
+]]
+function src.Classes.SadComponentFabric ()
+	return require('../object/SadComponentFabric').SadComponentFabric
+end
+
 
 
 

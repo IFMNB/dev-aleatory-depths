@@ -13,34 +13,5 @@ function interface.Classes.SadConfigSnapshot ()
 	return require('../storage/classes/SadConfigSnapshot').SadConfigSnapshot
 end
 
-function interface.Classes.SadCharacterReference ()
-	return require('../storage/classes/SadCharacterReference').SadCharacterReference
-end
-
-function interface.Classes.SadPlayableCharacter () 
-	return require('../storage/classes/__SadAbstractCharacter/SadPlayeableCharacter').SadPlayableCharacter
-end
-
-function interface.Classes.SadGameEffect ()
-	return require('../storage/classes/SadGameEffect').SadGameEffect
-end
-
-function interface.Classes.SadCharacterProperties ()
-	return require('../storage/classes/__SadAbstractCharacterStats/SadCharacterProperties').SadCharacterProperties
-end
-
-function interface.Classes.SadAbility ()
-	return require('../storage/classes/SadAbility').SadAbility
-end
-
-
-
-function interface.Abstracts.SadAbstractCharacterStats ()
-	return require('../storage/classes/__SadAbstractCharacterStats').__SadAbstractCharacterStats
-end
-
-function interface.Abstracts.SadAbstractCharacter ()
-	return require('../storage/classes/__SadAbstractCharacter').__SadAbstractCharacter
-end
 
 return interface
