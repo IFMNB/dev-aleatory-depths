@@ -30,17 +30,17 @@ function private.new (Identity: string?)
 	local shared = SharedTableRegistry:GetSharedTable(this.Identity)
 	if not shared['Elements'] then
 		SharedTable.update(shared, 'Elements', function(arg) 
-			return {}
+			return arg == nil and {} or arg
 		end)
 	end
 	if not shared['Components'] then
 		SharedTable.update(shared, 'Components', function(arg) 
-			return {}
+			return arg == nil and {} or arg
 		end)
 	end
 	if not shared['Identity'] then
 		SharedTable.update(shared, 'Identity', function(arg) 
-			return Identity
+			return arg == nil and Identity or arg
 		end)
 	end
 	
@@ -107,13 +107,91 @@ function private:sync_shared_components ()
 end
 
 --[[
+	Синхронизирует локальный компонент мира с его Shared версией, если он есть.
+	
+	@class SadWorld
+	@side all
+	@return boolean
+]]
+function private:sync_shared_component (Name: string)
+	local self = self :: SadWorld
+	local this = self:GetShared()
+	local Component = this.Components[Name] :: SharedTable?
+	if Component then
+		local Component = SharedTable.cloneAndFreeze(Component, true) :: typeof(table.freeze({}::{[any]:unknown}))
+		local LocalComponent = self.Components[Name]
+		if LocalComponent then
+			for index,value in Component do
+				LocalComponent[index]=value
+			end
+			return true
+		end
+	end
+	return false
+end
+
+--[[
+	Загружает в Shared все компоненты данного мира.
+
+	@class SadWorld
+	@side all
+	@return ()
+]]
+function private:push_components_to_shared ()
+	local self = self :: SadWorld
+	local this = self:GetShared()
+	local Components = self.Components
+	for Name, Component in Components do
+		local SharedComponent = this.Components[Name]
+		if SharedComponent then
+			for index,value in Component do
+				local Last = SharedComponent[index]
+				SharedTable.update(SharedComponent, index, function(arg) 
+					return arg == Last and value or arg
+				end)
+			end
+		else
+			SharedTable.update(this.Components, Name, function(arg) 
+				return arg == SharedComponent and Component or arg
+			end)
+		end
+	end
+end
+
+--[[
+	Синхронизирует Shared компонент мира с его локальной версией, если он есть.
+
+	@class SadWorld
+	@side all
+	@return boolean
+]]
+function private:push_component_to_shared (Name: string)
+	local self = self :: SadWorld
+	local this = self:GetShared()
+	local Component = self.Components[Name]
+	if Component then
+		local SharedComponent = this.Components[Name]
+		if SharedComponent then
+			for index,value in Component do
+				local Last = SharedComponent[index]
+				SharedTable.update(SharedComponent, index, function(arg) 
+					return arg == Last and value or arg
+				end)
+			end
+			return true
+		end
+	end
+	return false
+end
+
+--[[
 	Выполняет CallbackFunction для целевого объекта.
 	
 	@class SadWorld
 	@side all
 	@return boolean
 ]]
-function private:iter_target (Callback: CallbackFunction, Identity: Identity)
+function private:iter_target (Identity: Identity, Callback: CallbackFunction)
 	local self = self :: SadWorld
 	local node = self.Elements[Identity] :: HxNode?
 	if node then
@@ -133,9 +211,9 @@ end
 ]]
 function private:iter_recursive (Callback: CallbackFunction)
 	local self = self :: SadWorld
-	return self:DoIter(function (world)
+	return self:DoFor(function (world)
 		xpcall(Callback,warn,world)
-		world:DoIterRecursive(Callback)
+		world:DoForRecursive(Callback)
 	end)
 end
 
@@ -174,7 +252,7 @@ end
 	@side all
 	@return boolean
 ]]
-function private:iter_shared_target (Callback: CallbackSharedFunction, Identity: Identity)
+function private:iter_shared_target ( Identity: Identity, Callback: CallbackSharedFunction)
 	local self = self :: SadWorld
 	local this = SharedTableRegistry:GetSharedTable(self.Identity) :: SharedSadWorld
 	local node = this.Elements[Identity] :: HxNode?
@@ -199,9 +277,9 @@ end
 ]]
 function private:iter_shared_recursive (Callback: CallbackSharedFunction)
 	local self = self :: SadWorld
-	return class.DoSharedIter(SharedTableRegistry:GetSharedTable(self.Identity), function (world)
+	return class.DoForShared(self:GetShared(), function (world)
 		xpcall(Callback,warn,world)
-		class.DoSharedIterRecursive(world, Callback)
+		class.DoForRecursiveShared(world,Callback)
 	end)
 end
 
@@ -243,15 +321,15 @@ function private.add_shared_world_to_shared_world (shared_world: SharedSadWorld,
 	local new_node = HxNode.new(new_shared_world,nil,head) :: HxNode
 	if head then
 		SharedTable.update(head, 'BackNode', function(arg) 
-			return new_node
+			return arg == head and new_node or arg
 		end)
 	end
 	
 	SharedTable.update(shared_world.Elements, new_shared_world.Identity, function(arg) 
-		return new_shared_world
+		return arg == nil and new_shared_world or arg
 	end)
 	SharedTable.update(shared_world, 'Head', function(arg) 
-		return new_node
+		return arg == head and new_node or arg
 	end)
 	
 	return new_shared_world.Identity
@@ -305,22 +383,34 @@ function private.remove_shared_world_from_shared_world (shared_world: SharedTabl
 			
 			if back_node then
 				SharedTable.update(back_node, 'NextNode', function(arg) 
-					return next_node
+					if arg == node then
+						return next_node
+					end
+					return arg
 				end)
 			end
 			if next_node then
 				SharedTable.update(next_node, 'BackNode', function(arg) 
-					return back_node
+					if arg == node then
+						return back_node
+					end
+					return arg
 				end)
 			end
 			if shared_world.Head == node then
 				SharedTable.update(shared_world, 'Head', function(arg) 
-					return next_node
+					if arg == node then
+						return next_node
+					end
+					return arg
 				end)
 			end
 			
 			SharedTable.update(shared_world.Elements, Identity, function(arg) 
-				return nil
+				if arg == node then
+					return nil
+				end
+				return arg
 			end)
 			return true
 		end
@@ -358,11 +448,16 @@ function private.add_component_to_shared_world (shared_world: SharedSadWorld, na
 		return false
 	end
 	
+	local WritedProperly = true
 	SharedTable.update(shared_world.Components, name, function(arg) 
-		return component
+		if arg == ExistedComponent then
+			return component
+		end
+		WritedProperly = false
+		return arg
 	end)
 	
-	return true
+	return WritedProperly
 end
 
 --[[
@@ -393,10 +488,15 @@ end
 function private.remove_component_from_shared_world (shared_world: SharedSadWorld, name: string)
 	local ExistedComponent = shared_world.Components[name] :: unknown
 	if ExistedComponent then
+		local WritedProperly = true
 		SharedTable.update(shared_world.Components, name, function(arg) 
-			return nil
+			if arg == ExistedComponent then
+				return nil
+			end
+			WritedProperly = false
+			return arg
 		end)
-		return true
+		return WritedProperly
 	end
 	return false
 end
@@ -425,14 +525,18 @@ class.RemComponent = private.rem_com;
 class.AddElement = private.add;
 class.RemElement = private.rem;
 
-class.DoIter = private.iter_head;
-class.DoTarget = private.iter_target;
-class.DoIterRecursive = private.iter_recursive;
+class.DoFor = private.iter_head;
+class.DoForTarget = private.iter_target;
+class.DoForRecursive = private.iter_recursive;
 
-class.DoSharedIter = private.iter_shared;
-class.DoSharedTarget = private.iter_shared_target;
-class.DoSharedIterRecursive = private.iter_shared_recursive;
-class.DoSynchronizeComponents = private.sync_shared_components;
+class.DoForShared = private.iter_shared;
+class.DoForTargetShared = private.iter_shared_target;
+class.DoForRecursiveShared = private.iter_shared_recursive;
+
+class.DoPush = private.push_components_to_shared;
+class.DoPushTarget = private.push_component_to_shared;
+class.DoPull = private.sync_shared_components;
+class.DoPullTarget = private.sync_shared_component;
 
 class.GetShared = private.get_Shared;
 
