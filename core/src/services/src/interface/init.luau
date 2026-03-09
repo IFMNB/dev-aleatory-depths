@@ -73,4 +73,14 @@ function interface.NetContextGatewayService ()
 	return require('./service/NetPackageService/NetContextGatewayService')
 end
 
+--[[
+	Сервис для единой точки доступа к существующим мирам в текущем конкретном потоке.
+
+	@fullAuto false
+	@side all
+]]
+function interface.GameWorldsService ()
+	return require('./service/GameWorldsService')
+end
+
 return interface

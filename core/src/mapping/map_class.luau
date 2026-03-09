@@ -27,7 +27,7 @@ local Sad_ClassNames = table.freeze({
 			SadPlayableCharacter = 'SadCharacter' :: 'SadCharacter',
 			SadScenarioCharacter = 'SadAiCharacter' :: 'SadAiCharacter',
 	
-		SadCharacterFabric = 'SadCharacterFabric' :: 'SadCharacterFabric',
+		SadEntityFabric = 'SadEntityFabric' :: 'SadEntityFabric',
 	
 		SadAbstractService = 'SadAbstractService' :: 'SadAbstractService',
 			SadDataService = 'SadDataService' :: 'SadDataService',

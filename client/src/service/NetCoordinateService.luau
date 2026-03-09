@@ -20,7 +20,9 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	IsControllable = false;
 });
 
-NetPackageService.Service:ForEvent(main.Mapping.Event.CoordinateNetwork):Connect(function(Pos: Vector3, Look: Vector3, Up: Vector3) 
+NetPackageService.Service:ForEvent(main.Mapping.Event.CoordinateNetwork):Connect(function(Pos:any, Look:any, Up:any) 
+	local Pos : Vector3, Look : Vector3, Up :Vector3 = Pos, Look, Up
+	
 	if not interface.Service:IsActive() then return end
 	
 	if interface.Service.Behavior == interface.Enums.Client then return end

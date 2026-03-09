@@ -15,13 +15,13 @@ type SadWorld = typeof(private.new())
 type Identity = string
 
 --[[
-	Экземпляр этого класса взаимозаменяем фактически везде, включая даже в компонентах.
+	Экземпляр этого класса взаимозаменяем фактически везде, включая компоненты.
 	
 	@class SadWorld
 	@side all
 	@return Instance (@P SadWorld)
 ]]
-function private.new (Identity: string?)
+function private.new (Identity: string?)	
 	local this = main.new({
 		Elements = {} :: typeof(class.Elements);	
 		Identity = Identity or tostring(os.clock()..class.ClassName);
@@ -340,6 +340,7 @@ function private.add_world_to_world (world: SadWorld, Identity: Identity?)
 		head.BackNode = new_node
 	end
 	
+	main.Mapping.Exception.CodeException:Assert(not world.Elements[new_world.Identity])
 	world.Elements[new_world.Identity] = new_node
 	world.Head = new_node
 	

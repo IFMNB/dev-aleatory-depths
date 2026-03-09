@@ -1,3 +1,6 @@
+local storage = script.Parent.Parent.models
+local map : Model = storage.maps.test_map or storage.err_mdl
+
 local class = require('../../interface/src_class')
 local map = class.Classes.SadMap().new({
 	Name = 'TestZone',
@@ -6,7 +9,7 @@ local map = class.Classes.SadMap().new({
 		Vector3.new(366.479, -115.549, -179.445),
 		Vector3.new(476.176, 10.198, 241.603)
 	},
-	Map = script.test_map
+	Map = map
 })
 
 return map

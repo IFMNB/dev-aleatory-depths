@@ -78,14 +78,12 @@ private.fall = HxEventCore.new(warn::DF);
 
 private.e0 = private.stun:AddEvent()
 private.e1 = private.fall:AddEvent()
-interface.Enums = table.freeze({
-	Null = Mapping.Enum.Null;
-});
+
 interface.Exceptions = table.freeze({
 	GameException = main.Mapping.Exception.GameException;
 	CodeException = main.Mapping.Exception.CodeException;
 });
-interface.Service = main.Core.Classes.SadNetService().new({
+interface.Service = main.Core.Classes.SadGameService().new({
 	DoModelStun = private.Stun;
 	DoModelFall = private.Fall;
 	
@@ -98,7 +96,6 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	
 	Name = 'GameStunService'::'GameStunService';
 	IsControllable = false;
-	Behavior = interface.Enums.Null :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
 })
 
 

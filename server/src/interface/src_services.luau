@@ -31,19 +31,5 @@ function src.NetInputService ()
 	return require('../service/NetInputService')
 end
 
---[[
-	Сервис более не поддерживается. В Дальнейшем используйте NetIOContextService.
-	
-	Этот сервис определял зарегистрированные контекстные аналогии и имел как регистрацию глобального контекста,
-	так и регистарцию контекста на каждого игрока отдельно. Позволял переопределять клавишы.
-	
-	@fullAuto false
-	@side server
-]]
-@deprecated
-function src.GameIOMappingService ()
-	return require('../service/NetInputService/GameIOMappingService')
-end
-
 
 return src

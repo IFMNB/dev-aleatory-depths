@@ -47,13 +47,11 @@ end
 
 
 
-interface.Enums = table.freeze({
-	Null = Mapping.Enum.Null;
-});
+
 interface.Exceptions = table.freeze({
 	CodeException = Mapping.Exception.CodeException;
 });
-interface.Service = main.Core.Classes.SadNetService().new({
+interface.Service = main.Core.Classes.SadGameService().new({
 	RemoveGroup = private.DestroyGroup;
 	GetGroup = private.GetGroup;
 	NewGroup = private.new_group;
@@ -62,7 +60,6 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	
 	Name = 'GameCollisionService'::'GameCollisionService';
 	IsControllable = false;
-	Behavior = interface.Enums.Null :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
 })
 
 export type PreRegisteredGroups = 'SurvivorCollision' | 'WeaponCollision' | 'EnvironmentCollision' | 'EnemyCollision' | 'DebrisCollision' | 'IgnoreCollision'

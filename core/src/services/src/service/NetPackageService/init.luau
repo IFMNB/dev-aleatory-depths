@@ -113,7 +113,11 @@ function private:SendAllClients (Event: RemoteEvent|UnreliableRemoteEvent, ...: 
 end
 
 private.watched = {}::{[RemoteEvent|UnreliableRemoteEvent]: HxEvent}
-type DefFunc = (arg1: Player|buffer|{}, arg2: buffer|{}|any?, ...any) -> ()
+type DefFunc = (...any) -> ()
+-- С позиции дизайна такой формат передачи аргументов обязывает приводить,
+-- или определять настоящий тип переданных данных. 
+-- Хотя сам по себе сервис также защищает и от незарегистированного вмешательства
+
 
 --[[
 	Создает или возвращает HxEvent для события. Событие вызывается каждый раз, когда на локальной машине получается пакет.
