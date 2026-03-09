@@ -1,4 +1,4 @@
-local main = require('../')
+local main = require('../../');
 
 local Mapping = main.Mapping
 local NetPackageService = main.Core.Services.NetPackageService()

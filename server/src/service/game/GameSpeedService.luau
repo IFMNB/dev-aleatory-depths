@@ -1,7 +1,8 @@
-local main = require('../');
+local main = require('../../');
 local Mapping = main.Mapping
-local private = {};
-local interface = {};
+local private = {}
+local interface = {}
+
 
 interface.Enums = table.freeze({
 	Null = Mapping.Enum.Null;
@@ -9,10 +10,11 @@ interface.Enums = table.freeze({
 interface.Exceptions = table.freeze({
 	
 });
-interface.Service = main.Core.Classes.SadGameService().new({
+interface.Service = main.Core.Classes.SadNetService().new({
 	
 	
-	Name = 'GameAbilityService'::'GameAbilityService';
+	
+	Name = 'GameSpeedService'::'GameSpeedService';
 	IsControllable = true;
 	Behavior = interface.Enums.Null :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
 })

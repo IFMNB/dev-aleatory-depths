@@ -11,6 +11,7 @@ local GameStunService = server.Services.GameStunService()
 local GameCollisionService = server.Services.GameCollisionService()
 local GameHitScanService = server.Services.GameHitScanService()
 local GameContextBusService = server.Services.GameContextBusService()
+local GameWorldsService = server.Services.GameWorldsService()
 
 GameMapService.Service:SetActive(true)
 GameStunService.Service:SetActive(true)
@@ -19,6 +20,8 @@ GameHitScanService.Service:SetActive(true)
 GameHitScanService.Service:SetLogActive(true)
 GameContextBusService.Service:SetActive(true)
 GameContextBusService.Service:SetLogActive(true)
+GameWorldsService.Service:SetActive(true)
+GameWorldsService.Service:SetLogActive(true)
 
 NetPackageService.Service:SetActive(true)
 NetPackageService.Service:SetLogActive()
@@ -34,3 +37,13 @@ NetContextGatewayService.Service:SetLogActive(true)
 
 local TestZone = GameMapService.Service:GetMap('TestZone')
 TestZone:MapLoad() 
+
+local world = GameWorldsService.Service:GetWorld('game.world')
+local Fortuna = server.Characters.Fortuna()
+
+world:DoForTarget(Fortuna:DoCreate(world), function(World) 
+	Fortuna:DoAddComponents(World)
+	Fortuna:DoAddAbilities(World)
+end)
+
+warn(world)

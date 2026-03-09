@@ -3,6 +3,8 @@
 
 local main = require('../')
 
+local Libs = require('../interface/src_libs'):Libs()
+
 local private = {};
 local interface = {};
 
@@ -14,10 +16,12 @@ type HxEvent = typeof(main.Core.Classes.HxEventCore().new(warn :: DefFunc):AddEv
 type HxEventG = typeof(main.Core.Classes.HxEventCore().new():AddEvent())
 type HxEventConnection = typeof(({}::HxEvent):Connect(function(...)  end))
 
+private.stampin='KB'
+
 function private.PrepareToSend (...: any)
 	local Transport = PackageTransport.Write(...);
-	local b, s, B = main.Libs.LarsenBufferize.Table.size({...})
-	interface.Service.NetworkWriteSum += B;
+	local Beta, size_b, Byte = Libs.LarsenBufferize.Table.size({...})
+	interface.Service.NetworkWriteSum += Byte/1024;
 
 	return Transport 
 end
@@ -27,7 +31,7 @@ function private.GotPackage (Transport: buffer|any)
 	local size = buffer.len(
 		typeof(Transport) == 'buffer' and Transport or buffer.create(0)
 	)
-	interface.Service.NetworkReadSum += size;
+	interface.Service.NetworkReadSum += size/1024;
 end
 
 --[[
@@ -281,7 +285,7 @@ interface.Exceptions = table.freeze({
 	CodeException = main.Mapping.Exception.CodeException,
 	SafetyException = main.Mapping.Exception.SafetyException,
 })
-interface.Service = main.Core.Classes.SadNetService().new({
+interface.Service = main.Core.Classes.SadCoreService().new({
 	SendClient = private.SendClient;
 	SendServer = private.SendServer;
 	SendToClients = private.SendPlayers;
@@ -313,7 +317,8 @@ local function logger ()
 	end)
 	
 	while task.wait(interface.Service.LoggerTime) do
-		interface.Service:PrintLog(string.format('NetworkByteLogStamp\nRead %q, Write %q\nDeltaRead %q, DeltaWrite %q\nServiceTimeout %s, StampDeltaTime %s ',
+		interface.Service:PrintLog(string.format('Network%sLogStamp\nRead %q, Write %q\nDeltaRead %q, DeltaWrite %q\nServiceTimeout %s, StampDeltaTime %s ',
+			private.stampin,
 			tostring(interface.Service.NetworkReadSum),
 			tostring(interface.Service.NetworkWriteSum),
 			tostring(interface.Service.NetworkReadSum - saved_Read),

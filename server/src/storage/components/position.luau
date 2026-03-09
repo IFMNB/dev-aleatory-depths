@@ -1,9 +1,10 @@
-	local main = require('../../');
+local main = require('../../');
 local component = table.freeze(main.Core.Classes.SadComponentFabric().new(
 	script.Name,
 	{
-		Path = workspace:GetFullName();
-		IsTemporal = false;
+		Up = Vector3.zero,
+		Look = Vector3.zero,
+		Right = Vector3.zero,
 	}
 ))
 

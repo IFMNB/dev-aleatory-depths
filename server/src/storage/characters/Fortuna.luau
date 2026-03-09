@@ -1,15 +1,24 @@
 local main = require('../../')
+local SadEntityFabric = main.Core.Classes.SadEntityFabric()
 
-local SadCharacterProperties = require('../classes/__SadAbstractCharacterStats/SadCharacterProperties').SadCharacterProperties
-local SadAbility = require('../classes/SadAbility').SadAbility
-local SadCharacterFabric = require('../classes/SadCharacterFabric').SadCharacterFabric
+local storage = script.Parent.Parent
+local components = storage.components
+local health = require(components.health);
+local position = require(components.position);
+local rotation = require(components.rotation);
+local velocity = require(components.velocity);
+local model = require(components.model);
 
-local Fortuna = SadCharacterFabric.new(SadCharacterProperties.new(
-		100, 20, 1, 0.8	
-	), script.Parent.Parent.models.characters.Fortuna,
-	SadAbility.new(function(Properties, Reference, ...) 
-		
-	end)
-)
 
-return Fortuna
+local model_component = model:GetValue()
+model_component.Path = storage.models.characters.Fortuna:GetFullName()
+
+local Fortuna = SadEntityFabric.new({},{
+	[health.Name]=health:GetValue();
+	[position.Name] = position:GetValue();
+	[rotation.Name] = rotation:GetValue();
+	[velocity.Name] = velocity:GetValue();
+	[model.Name] = model_component;
+})
+
+return Fortuna 

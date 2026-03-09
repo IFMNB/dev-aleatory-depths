@@ -4,7 +4,7 @@ local private = {}
 local interface = {}
 
 local HxEventCore = main.Core.Classes.HxEventCore()
-local NetOwnerService = require('./')
+local NetOwnerService = require('../net/NetOwnerService')
 local DebrisService = game:GetService('Debris')
 
 type GameStunService = typeof(interface.Service);

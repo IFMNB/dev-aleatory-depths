@@ -24,7 +24,7 @@ type Identity = string
 function private.new (Identity: string?)	
 	local this = main.new({
 		Elements = {} :: typeof(class.Elements);	
-		Identity = Identity or tostring(os.clock()..class.ClassName);
+		Identity = Identity or main.Libs.CodeUtility.RandomStr();
 		Components = {} :: {[string]: Component};
 		Head = nil :: HxNode?;
 	}, class)

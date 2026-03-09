@@ -1,41 +1,29 @@
 local Sad_ClassNames = table.freeze({
 	
 	SadObject = 'SadObject' :: 'SadObject', 
+		SadConfigSnapshot = 'SadConfigSnapshot' :: 'SadConfigSnapshot',
 	
 		SadWorld = 'SadWorld' :: 'SadWorld';
 		SadComponentFabric = 'SadComponentFabric' :: 'SadComponentFabric';
-			
+	
+		SadAbility = 'SadAbstractAbility' :: 'SadAbstractAbility',
+		SadEntityFabric = 'SadEntityFabric' :: 'SadEntityFabric',
+	
 		SadMap = 'SadMap' :: 'SadMap',
-		SadConfigSnapshot = 'SadConfigSnapshot' :: 'SadConfigSnapshot',
 	
 		ISadGroup = 'ISadGroup' :: 'ISadGroup',
 			SadPhysicGroup = 'SadPhysicGroup' :: 'SadPhysicGroup',
 			SadInstanceGroup = 'SadInstanceGroup' :: 'SadInstanceGroup',
-	
-	
-		SadGameEffect = 'SadGameEffect' :: 'SadGameEffect',
-			SadGameEffectProcess = 'SadGameEffectProcess' :: 'SadGameEffectProcess',
-	
-		SadCharacterReference = 'SadCharacterReference' :: 'SadCharacterReference',
-	
-		SadAbstractCharacterStats = 'SadAbstractCharacterStats' :: 'SadAbstractCharacterStats',
-			SadCharacterProperties = 'SadCharacterProperties' :: 'SadCharacterProperties';
-	
-		SadAbility = 'SadAbstractAbility' :: 'SadAbstractAbility',
 
-		SadAbstractCharacter = 'SadAbstractCharacter' :: 'SadAbstractCharacter',
-			SadPlayableCharacter = 'SadCharacter' :: 'SadCharacter',
-			SadScenarioCharacter = 'SadAiCharacter' :: 'SadAiCharacter',
-	
-		SadEntityFabric = 'SadEntityFabric' :: 'SadEntityFabric',
-	
 		SadAbstractService = 'SadAbstractService' :: 'SadAbstractService',
+			SadCoreService = 'SadCoreService' :: 'SadCoreService';
 			SadDataService = 'SadDataService' :: 'SadDataService',
 			SadNetService = 'SadNetService' :: 'SadNetService',
 			SadGuiService = 'SadGuiService' :: 'SadGuiService',
 			SadFXService = 'SadFXService' :: 'SadFXService',
 			SadGameService = 'SadGameService' :: 'SadGameService',
-	
+			SadWorldService = 'SadWorldService' :: 'SadWorldService';
+			SadService = 'SadService' :: 'SadService';	
 })
 
 return Sad_ClassNames

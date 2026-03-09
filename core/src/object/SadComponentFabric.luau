@@ -27,8 +27,15 @@ function private.new <T, tbl, i, v> (Name: T & string, Component)
 	return main.new(raw,class)
 end
 
-function private.clone_value (self: SadComponentFabric)
-	return type(self) == 'table' and table.clone(self.Value) or self.Value;	
+--[[
+	Возвращает клон значения этой ткани.
+	
+	@class SadComponentFabric
+	@side all
+	@return *unknown*
+]]
+function private:clone_value ()
+	return (type(self) == 'table' and table.clone(self.Value) or self.Value) :: typeof(self.Value)
 end
 
 --[[
@@ -44,7 +51,7 @@ end
 function private:create <T> (To)
 	local self = self :: SadComponentFabric;
 	local AddComponent : ((unknown, string, any)->any)? = To.AddComponent;
-	local Components : {[string]: any} = To.Components
+	local Components = To.Components
 	
 	
 	local result = pcall(function(...) 
@@ -69,10 +76,8 @@ end
 	@return *unknown*
 ]]
 function private:get_from (To)
-	local Components : {[string]:any} = To.Components
+	local Components = To.Components
 	return main.Mapping.Exception.RaceConditionException:Assert(Components[self.Name::string]) :: typeof(self.Value)
-	
-	-- здесь self ~= type SadComponentFabric потому что добиться возврата типа self.Value и правильного отображения self:GetFrom(...) в редакторе нельзя
 end
 
 --[[
@@ -87,7 +92,7 @@ end
 ]]
 function private:is_exists (To)
 	local self = self :: SadComponentFabric;
-	local Components : {[string]:any} = To.Components
+	local Components  = To.Components
 	return Components[self.Name::string] ~= nil
 end
 
@@ -99,6 +104,7 @@ class.Source = script;
 class.DoInsert = private.create;
 class.GetFrom = private.get_from;
 class.IsExistsIn = private.is_exists;
+class.GetValue = private.clone_value;
 
 interface.class = class;
 interface.new = private.new;

@@ -40,7 +40,7 @@ function private:get_world(Identity: Worlds | string)
 	return World
 end
 
-interface.Service = main.Core.Classes.SadGameService().new({
+interface.Service = main.Core.Classes.SadCoreService().new({
 	GetWorld = private.get_world;
 	
 	Name = 'GameCollisionService'::'GameCollisionService';

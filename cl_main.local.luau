@@ -12,7 +12,7 @@ local NetIOContextService = client.Services.NetIOContextService()
 local NetContextGatewayService = client.Services.NetContextGatewayService()
 
 NetPackageService.Service:SetActive(true)
-NetPackageService.Service:SetLogActive(true)
+NetPackageService.Service:SetLogActive()
 
 NetCoordinateService.Service:SetActive(true)
 --GameIOMappingService.Service:SetActive(true)
@@ -20,7 +20,7 @@ NetCoordinateService.Service:SetActive(true)
 --GameIOMappingService.Service:SendContextKeyChange('aalf', Enum.UserInputState.Begin, Enum.KeyCode.W)
 
 NetContextGatewayService.Service:SetActive(true)
-NetContextGatewayService.Service:SetLogActive(true)
+NetContextGatewayService.Service:SetLogActive()
 NetIOContextService.Service:SetActive(true)
 NetIOContextService.Service:SetAuto(true)
 NetIOContextService.Service:SetLogActive(true)

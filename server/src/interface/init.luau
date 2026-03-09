@@ -6,6 +6,7 @@ interface.Classes = classes.Classes
 interface.Abstracts = classes.Abstracts
 interface.Interfaces = classes.Interfaces
 interface.Components = require('@self/src_components')
+interface.Characters = require('@self/src_characters')
 
 function interface:GetConfigs ()
 	return require('@self/src_config')

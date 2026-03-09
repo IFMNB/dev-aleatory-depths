@@ -1,7 +1,7 @@
-local main = require('../')
+local main = require('../../');
 
 local Mapping = main.Mapping
-local Maps = require('../interface/src_maps')
+local Maps = require('../../interface/src_maps')
 
 local private = {}
 local interface = {}

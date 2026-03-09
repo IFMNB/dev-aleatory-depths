@@ -166,7 +166,7 @@ interface.Exceptions = table.freeze({
 	CodeException = Mapping.Exception.CodeException;
 	RaceConditionException = Mapping.Exception.RaceConditionException;
 })
-interface.Service = main.Core.Classes.SadNetService().new({
+interface.Service = main.Core.Classes.SadCoreService().new({
 	GetContext = private.get;
 	RemoveContext = private.remove;
 	AddContext = private.new;

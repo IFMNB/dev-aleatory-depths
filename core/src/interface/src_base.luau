@@ -35,7 +35,12 @@ function src.Classes.SadComponentFabric ()
 	return require('../object/SadComponentFabric').SadComponentFabric
 end
 
-
+--[[
+	Шаблон сущности.
+]]
+function src.Classes.SadEntityFabric ()
+	return require('../object/SadEntityFabric').SadEntityFabric
+end
 
 
 
