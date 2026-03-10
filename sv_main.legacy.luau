@@ -43,7 +43,11 @@ local Fortuna = server.Characters.Fortuna()
 
 world:DoForTarget(Fortuna:DoCreate(world), function(World) 
 	Fortuna:DoAddComponents(World)
-	Fortuna:DoAddAbilities(World)
+    Fortuna:DoAddAbilities(World)
+    Fortuna.Fabrics.model:DoCatchFrom(World, function(Component) 
+        print(Component)
+    end)
 end)
+
 
 warn(world)

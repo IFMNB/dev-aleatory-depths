@@ -6,7 +6,7 @@ function private.random ()
     local b = tick()
     local str = {}
     local t = os.clock()
-    for i=1, math.random(32,128) do
+    for i=1, 32 do
         math.randomseed((i/t)-t+math.random(1,tick()))
         local i0 = i/2
         table.insert(str, 

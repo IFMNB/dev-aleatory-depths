@@ -16,14 +16,15 @@ type SadWorld = typeof(require('./SadWorld').SadWorld.new())
 	@side all
 	@return Instance (@P SadEntityFabric)
 ]]
-function private.new <T,U> (Abilities, Components)
+function private.new <T,U> (Abilities, Components, Fabrics)
 	
 	Abilities = main.Mapping.Exception.CodeException:Assert(type(Abilities)=='table' and Abilities)
 	Components = main.Mapping.Exception.CodeException:Assert(type(Components)=='table' and Components)
 	
 	local this = main.new({
 		Abilities = Abilities;
-		Components = Components;
+        Components = Components;
+        Fabrics = Fabrics;
 	}, class)
 	
 	return this
@@ -119,6 +120,7 @@ class.Enums = main.Mapping.Enum.CharacterController
 
 class.Abilities = {} :: {[string]: unknown};
 class.Components = {} :: {[string]: unknown};
+class.Fabrics = {} :: {[string]: unknown};
 
 class.DoCreate = private.create;
 

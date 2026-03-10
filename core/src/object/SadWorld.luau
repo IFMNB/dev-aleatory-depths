@@ -533,6 +533,46 @@ function private.remove_component_from_shared_world (shared_world: SharedSadWorl
 	return false
 end
 
+--[[
+	Проверяет нахождение указанных компонентов в обоих версиях мира
+
+	@class SadWorld
+	@side all
+	@return boolean
+]]
+function private:is_components_exists_both (...: string)
+    local self = self
+    return private.is_components_exists_in_world(self,...) and private.is_components_exists_in_shared_world(self, ...)
+end
+
+--[[
+	Проверяет нахождение указанных компонентов в мире
+
+	@class SadWorld
+	@side all
+	@return boolean
+]]
+function private:is_components_exists_in_world (...: string)
+	local world = self :: SadWorld;
+	for i,v in {...} do
+		if not world.Components[v] then
+			return false
+		end
+	end
+	return true
+end
+--[[
+	Проверяет нахождение указанных компонентов в Shared версии мира
+
+	@class SadWorld
+	@side all
+	@return boolean
+]]
+function private:is_components_exists_in_shared_world (...: string)
+	local world = (self::SadWorld):GetShared()
+	return private.is_components_exists_in_world(world, ...)
+end
+
 
 --[[
 	Возвращает Shared версию мира.
@@ -571,6 +611,10 @@ class.DoPull = private.sync_shared_components;
 class.DoPullTarget = private.sync_shared_component;
 
 class.GetShared = private.get_Shared;
+
+class.IsComponentsExists = private.is_components_exists_both;
+class.IsComponentsExistsInWorld = private.is_components_exists_in_world;
+class.IsComponentsExistsInShared = private.is_components_exists_in_shared_world;
 
 class.Identity = '';
 class.Head = nil :: HxNode?;

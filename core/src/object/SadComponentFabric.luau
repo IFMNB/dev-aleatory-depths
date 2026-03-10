@@ -68,20 +68,25 @@ function private:create <T> (To)
 end
 
 --[[
-	Возвращает компонент из мира.
+	Выполняет операцию с компонентом, если он существует.
 	
 	@class SadComponentFabric
 	@side all
-	@exception RaceConditionException
-	@return *unknown*
+	@return boolean
 ]]
-function private:get_from (To)
-	local Components = To.Components
-	return main.Mapping.Exception.RaceConditionException:Assert(Components[self.Name::string]) :: typeof(self.Value)
+function private:get_from (To, F)
+    local Components = To.Components
+    local F : (Component: typeof(self.Value))->() = F
+    local TargetComponent = Components[self.Name::string]
+    if TargetComponent then
+        xpcall(F,warn,TargetComponent)
+        return true
+    end
+    return false
 end
 
 --[[
-	Ищет собственный компонент в объекте.
+	Ищет собственный компонент в объекте, и возвращает true, если он существует.
 	
 	Если требуется поиск в любой другой среде, которая здесь не поддерживается,
 	то сделайте это вручную.
@@ -102,9 +107,9 @@ class.ClassName = main.Mapping.Class.SadComponentFabric;
 class.Source = script;
 
 class.DoInsert = private.create;
-class.GetFrom = private.get_from;
+class.DoCatchFrom = private.get_from;
 class.IsExistsIn = private.is_exists;
-class.GetValue = private.clone_value;
+class.DoCloneValue = private.clone_value;
 
 interface.class = class;
 interface.new = private.new;
