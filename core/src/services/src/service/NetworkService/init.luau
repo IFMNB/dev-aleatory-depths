@@ -16,7 +16,7 @@ type HxEvent = typeof(main.Core.Classes.HxEventCore().new(warn :: DefFunc):AddEv
 type HxEventG = typeof(main.Core.Classes.HxEventCore().new():AddEvent())
 type HxEventConnection = typeof(({}::HxEvent):Connect(function(...)  end))
 
-private.stampin='KB'
+private.stampin='KB' :: 'KB'|'B'|'MB'
 
 function private.PrepareToSend (...: any)
 	local Transport = PackageTransport.Write(...);

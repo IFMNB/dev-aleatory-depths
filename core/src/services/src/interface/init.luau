@@ -69,8 +69,8 @@ end
 	@fullAuto false
 	@side all
 ]]
-function interface.NetworkContextGateway ()
-	return require('./service/NetworkService/NetworkContextGateway')
+function interface.ContextGateway ()
+	return require('./service/NetworkService/ContextGateway')
 end
 
 --[[

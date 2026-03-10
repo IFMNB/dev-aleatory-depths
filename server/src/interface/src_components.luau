@@ -14,7 +14,17 @@ local components = table.freeze({
 	end,
 	Velocity = function ()
 		return require(path.velocity)
-	end
+	end,
+	Lifeform = function ()
+		return require(path.lifeform)
+	end,
+	Height = function ()
+		return require(path.height)
+	end,
+	-- Физическая форма (может быть PrimaryPart модели)
+	Form = function ()
+		return require(path.form)
+	end,
 	
 })
 

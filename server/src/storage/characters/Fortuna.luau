@@ -2,17 +2,19 @@ local main = require('../../')
 local SadEntityFabric = main.Core.Classes.SadEntityFabric()
 
 local storage = script.Parent.Parent
-local components = storage.components
+local components = require('../../interface/src_components')
 local fabrics = {}
-fabrics.health = require(components.health);
-fabrics.position = require(components.position);
-fabrics.rotation = require(components.rotation);
-fabrics.velocity = require(components.velocity);
-fabrics.model = require(components.model);
-
+fabrics.health = components.Health()
+fabrics.position = components.Position();
+fabrics.rotation = components.Rotation();
+fabrics.velocity = components.Velocity();
+fabrics.model = components.Model();
+fabrics.form = components.Form();
 
 local model_component = fabrics.model:DoCloneValue()
 model_component.Path = storage.models.characters.Fortuna:GetFullName()
+local form_component = fabrics.form:DoCloneValue()
+form_component.Path = main.Mapping.Exception.TechicalException:Assert(storage.models.characters.Fortuna.PrimaryPart):GetFullName()
 
 local Fortuna = SadEntityFabric.new({},{
     [fabrics.health.Name]=fabrics.health:DoCloneValue();
@@ -20,6 +22,7 @@ local Fortuna = SadEntityFabric.new({},{
 	[fabrics.rotation.Name] = fabrics.rotation:DoCloneValue();
     [fabrics.velocity.Name] = fabrics.velocity:DoCloneValue();
 	[fabrics.model.Name] = model_component;
+	[fabrics.form.Name] = form_component;
 }, fabrics)
 
 return Fortuna 

@@ -22,10 +22,13 @@ function private.new <T, tbl, i, v> (Name: T & string, Component)
 	local raw = {
 		Name = tostring(Name) :: tostring<T>;
 		Value = Component;
+		DoCatchFrom = (nil::any)::<T>(self: unknown, To: T,F: Func<typeof(Component)>)->()
 	}
 	
 	return main.new(raw,class)
 end
+
+type Func <T=unknown> = (Component: T)->()
 
 --[[
 	Возвращает клон значения этой ткани.
@@ -74,10 +77,9 @@ end
 	@side all
 	@return boolean
 ]]
-function private:get_from (To, F)
-    local Components = To.Components
-    local F : (Component: typeof(self.Value))->() = F
-    local TargetComponent = Components[self.Name::string]
+function private:get_from (To, F: Func)
+	local Components = To.Components
+    local TargetComponent = Components[self.Name]
     if TargetComponent then
         xpcall(F,warn,TargetComponent)
         return true

@@ -32,4 +32,10 @@ function src.NetInputService ()
 end
 
 
+
+function src.SystemPosition ()
+	return require('../service/system/SystemPosition')
+end
+
+
 return src
