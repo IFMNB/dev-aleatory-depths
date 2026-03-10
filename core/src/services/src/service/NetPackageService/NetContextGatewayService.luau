@@ -158,9 +158,6 @@ end
 private.add = HxEventCore.new(warn::DefaultFunction);private.e_add=private.add:AddEvent();
 private.rem = HxEventCore.new(warn::DefaultFunction);private.e_rem=private.rem:AddEvent();
 
-interface.Enums = table.freeze({
-	Null = main.Mapping.Enum.Null
-})
 interface.Exceptions = table.freeze({
 	SafetyException = Mapping.Exception.SafetyException;
 	CodeException = Mapping.Exception.CodeException;
@@ -177,8 +174,6 @@ interface.Service = main.Core.Classes.SadCoreService().new({
 	OnContextRemovedEvent = private.e_rem;
 	
 	Name = 'NetContextGatewayService'::'NetContextGatewayService';
-	Behavior = interface.Enums.Null;
-	IsControllable = false;
 })
 
 NetPackageService.Service:ForEvent(Mapping.Event.ContextNetwork):Connect(function(arg1:any,arg2:any,...) 

@@ -95,7 +95,6 @@ interface.Service = main.Core.Classes.SadGameService().new({
 	
 	
 	Name = 'GameStunService'::'GameStunService';
-	IsControllable = false;
 })
 
 

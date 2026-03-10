@@ -13,50 +13,13 @@ local interface = {};
 local http = game:GetService('HttpService')
 
 export type DefaultServiceNeedle <Name=string> = {
-	Name: Name,
-	IsControllable: boolean
+	Name: Name
 }
 type SadAbstractService = typeof(class)
 
 
 private.states = setmetatable({}::{[{}]: boolean}, {__mode='k'})
 private.logstates = setmetatable({}::{[{}]: boolean}, {__mode='k'})
-private.autostates = setmetatable({}::{[{}]: boolean}, {__mode='k'})
-
-
---[[
-	Получает состояние сервиса, а точнее должен ли он работать в автоматическом режиме или нет.
-
-	@class SadAbstractService
-	@side all
-	@return boolean
-]]
-function private:get_active_auto()
-	local self = self::SadAbstractService;
-	return self.IsControllable and not not private.autostates[self::any] or false
-end
-
---[[
-	Устанавливает состояние сервиса, а точнее должен ли он работать в автоматическом режиме или нет.
-
-	@class SadAbstractService
-	@side all
-	@return ()
-]]
-function private:set_active_auto (value: boolean?)
-	local self = self::SadAbstractService;
-	if private.autostates[class] then
-		class:PrintLog(string.format('Automode for %s is set to %s', self.Name, value and 'true' or 'false'))
-	end
-	
-	if private.autostates[self::any] == value then
-		return
-	end
-	
-	if not self.IsControllable then
-		return main.Mapping.Exception.CodeException:Warn(string.format('[%q] - Cannot set the automatic mode of operation on a service where it is not provided for by the IsControllable variable.', self.Name)) end
-	private.autostates[self] = value or false
-end
 
 --[[
 	Устанавливает состояние сервиса, а точнее должен ли он работать вообще или нет.
@@ -208,10 +171,6 @@ class.ClassName = main.Mapping.Class.SadAbstractService;
 class.Source = script;
 
 class.Name = class.ClassName;
-class.IsControllable = false;
-
-class.SetAuto = private.set_active_auto;
-class.IsAuto = private.get_active_auto;
 
 class.SetActive = private.set_active;
 class.IsActive = private.get_active;

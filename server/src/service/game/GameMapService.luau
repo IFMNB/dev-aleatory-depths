@@ -18,7 +18,6 @@ end
 interface.Service = main.Core.Classes.SadGameService().new({
 	Name = 'GameMapService' :: 'GameMapService';
 	GetMap = private.get;
-	IsControllable = false;
 });
 
 return interface

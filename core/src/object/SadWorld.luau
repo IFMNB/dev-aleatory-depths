@@ -341,9 +341,9 @@ function private.add_world_to_world (world: SadWorld, Identity: Identity?)
 	end
 	
 	main.Mapping.Exception.CodeException:Assert(not world.Elements[new_world.Identity])
-	new_world.Parent = world
 	world.Head = new_node
 	world.Elements[new_world.Identity] = new_node
+	new_world.Parent = world
 	
 	return new_world.Identity
 end
@@ -360,12 +360,15 @@ function private.add_shared_world_to_shared_world (shared_world: SharedSadWorld,
 	
 	main.Mapping.Exception.CodeException:Assert(not shared_world.Elements[new_shared_world.Identity])
 	
-	shared_world.Elements[new_shared_world.Identity].Parent = shared_world
 	SharedTable.update(shared_world, 'Head', function(arg) 
 		return arg == head and new_node or arg
 	end)
 	SharedTable.update(shared_world.Elements, new_shared_world.Identity, function(arg) 
 		return arg == nil and new_shared_world or arg
+	end)
+	
+	SharedTable.update(shared_world.Elements[new_shared_world.Identity], 'Parent', function(arg)
+		return arg == nil and shared_world or arg
 	end)
 	
 	return new_shared_world.Identity

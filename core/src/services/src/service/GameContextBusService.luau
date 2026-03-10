@@ -130,9 +130,6 @@ private.rem_c = HxEventCore.new(warn :: DefaultFunction)
 private.e0 = private.add_c:AddEvent();
 private.e1 = private.rem_c:AddEvent();
 
-interface.Enums = table.freeze({
-	Immediate = Mapping.Enum.ContextEventBehavior.Immediate;
-});
 interface.Exceptions = table.freeze({
 	CodeException = Mapping.Exception.CodeException;
 	RaceConditionException = Mapping.Exception.RaceConditionException;
@@ -146,7 +143,6 @@ interface.Service = main.Core.Classes.SadCoreService().new({
 	OnContextRemovedEvent = private.e1;
 	
 	Name = 'GameContextBusService' :: 'GameContextBusService';
-	Behavior = interface.Enums.Immediate :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
 	IsControllable = false;
 	Timeout = 5;
 })

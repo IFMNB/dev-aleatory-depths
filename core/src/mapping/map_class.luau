@@ -22,7 +22,7 @@ local Sad_ClassNames = table.freeze({
 			SadGuiService = 'SadGuiService' :: 'SadGuiService',
 			SadFXService = 'SadFXService' :: 'SadFXService',
 			SadGameService = 'SadGameService' :: 'SadGameService',
-			SadWorldService = 'SadWorldService' :: 'SadWorldService';
+			SadSystemService = 'SadSystemService' :: 'SadSystemService';
 			SadService = 'SadService' :: 'SadService';	
 })
 

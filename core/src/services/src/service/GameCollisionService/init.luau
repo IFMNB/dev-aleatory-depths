@@ -59,7 +59,6 @@ interface.Service = main.Core.Classes.SadCoreService().new({
 	GetGroupCount = private.get_Count;
 	
 	Name = 'GameCollisionService'::'GameCollisionService';
-	IsControllable = false;
 })
 
 export type PreRegisteredGroups = 'SurvivorCollision' | 'WeaponCollision' | 'EnvironmentCollision' | 'EnemyCollision' | 'DebrisCollision' | 'IgnoreCollision'

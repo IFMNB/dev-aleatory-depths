@@ -21,6 +21,10 @@ function src.Classes.SadCoreService ()
 	return require('../object/__SadAbstractService/SadCoreService').SadCoreService
 end
 
+function src.Classes.SadSystemService ()
+	return require('../object/__SadAbstractService/SadSystemService').SadSystemService
+end
+
 function src.Classes.SadNetService ()
 	return require('../object/__SadAbstractService/SadNetService').SadNetService
 end

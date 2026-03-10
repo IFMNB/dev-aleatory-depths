@@ -44,7 +44,6 @@ interface.Service = main.Core.Classes.SadCoreService().new({
 	GetWorld = private.get_world;
 	
 	Name = 'GameCollisionService'::'GameCollisionService';
-	IsControllable = false;
 })
 
 return interface

@@ -277,9 +277,7 @@ function private:waitplayer (Player: Player, Event: RemoteEvent|UnreliableRemote
 end
 
 
-interface.Enums = table.freeze({
-	Buffered = main.Mapping.Enum.NetworkTrasportationType.Buffered;
-})
+
 interface.Exceptions = table.freeze({
 	NetworkException = main.Mapping.Exception.NetworkException,
 	CodeException = main.Mapping.Exception.CodeException,
@@ -297,12 +295,10 @@ interface.Service = main.Core.Classes.SadCoreService().new({
 	
 	Name = 'NetPackageService'::'NetPackageService',
 	
-	IsControllable = false;
 	Timeout = 5;
 	LoggerTime = 2;
 	NetworkReadSum = 0;
 	NetworkWriteSum = 0;
-	Behavior = interface.Enums.Buffered :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
 })
 
 local function logger ()
