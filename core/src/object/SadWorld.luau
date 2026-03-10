@@ -341,8 +341,9 @@ function private.add_world_to_world (world: SadWorld, Identity: Identity?)
 	end
 	
 	main.Mapping.Exception.CodeException:Assert(not world.Elements[new_world.Identity])
-	world.Elements[new_world.Identity] = new_node
+	new_world.Parent = world
 	world.Head = new_node
+	world.Elements[new_world.Identity] = new_node
 	
 	return new_world.Identity
 end
@@ -357,11 +358,14 @@ function private.add_shared_world_to_shared_world (shared_world: SharedSadWorld,
 		end)
 	end
 	
-	SharedTable.update(shared_world.Elements, new_shared_world.Identity, function(arg) 
-		return arg == nil and new_shared_world or arg
-	end)
+	main.Mapping.Exception.CodeException:Assert(not shared_world.Elements[new_shared_world.Identity])
+	
+	shared_world.Elements[new_shared_world.Identity].Parent = shared_world
 	SharedTable.update(shared_world, 'Head', function(arg) 
 		return arg == head and new_node or arg
+	end)
+	SharedTable.update(shared_world.Elements, new_shared_world.Identity, function(arg) 
+		return arg == nil and new_shared_world or arg
 	end)
 	
 	return new_shared_world.Identity
@@ -386,6 +390,7 @@ end
 function private.remove_world_from_world (world: SadWorld, Identity: Identity)
 	local node = world.Elements[Identity] :: HxNode?
 	if node then
+		local value = node.Value :: SadWorld
 		local back_node = node.BackNode :: HxNode?
 		local next_node = node.NextNode :: HxNode?
 		
@@ -400,6 +405,7 @@ function private.remove_world_from_world (world: SadWorld, Identity: Identity)
 		end
 		
 		world.Elements[Identity]=nil
+		value.Parent = nil
 		return true
 	end
 	return false
@@ -410,8 +416,10 @@ function private.remove_shared_world_from_shared_world (shared_world: SharedTabl
 	if this and this.Identity == Identity then
 		local node = this.Elements[Identity] :: SharedTable?
 		if node then
+			local value = node.Value :: SharedTable
 			local back_node = node.BackNode :: SharedTable?
 			local next_node = node.NextNode :: SharedTable?
+			local parent = value.Parent;
 			
 			if back_node then
 				SharedTable.update(back_node, 'NextNode', function(arg) 
@@ -444,6 +452,14 @@ function private.remove_shared_world_from_shared_world (shared_world: SharedTabl
 				end
 				return arg
 			end)
+			
+			SharedTable.update(value, 'Parent', function(arg) 
+				if arg == parent then
+					return nil
+				end
+				return arg
+			end)
+			
 			return true
 		end
 	end
@@ -612,12 +628,13 @@ class.DoPullTarget = private.sync_shared_component;
 
 class.GetShared = private.get_Shared;
 
-class.IsComponentsExists = private.is_components_exists_both;
-class.IsComponentsExistsInWorld = private.is_components_exists_in_world;
-class.IsComponentsExistsInShared = private.is_components_exists_in_shared_world;
+--class.IsComponentsExists = private.is_components_exists_both;
+class.IsComponentsExists= private.is_components_exists_in_world;
+class.IsComponentsExistsShared = private.is_components_exists_in_shared_world;
 
 class.Identity = '';
 class.Head = nil :: HxNode?;
+class.Parent = nil :: SadWorld?;
 class.Components = {};
 class.Elements = {};
 
