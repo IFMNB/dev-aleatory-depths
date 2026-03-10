@@ -9,7 +9,7 @@ local private = {}
 local interface = {}
 
 local HxEventCore = main.Core.Classes.HxEventCore()
-local NetPackageService = main.Core.Services.NetPackageService()
+local NetworkService = main.Core.Services.NetworkService()
 type GameIOMappingService = typeof(interface.Service)
 
 --[[
@@ -26,7 +26,7 @@ function private:change_key (Context: string,  State: Enum.UserInputState, Key: 
 		self:PrintLog(string.format('Changed context %q to key %s', Context, Key.Name))
 	end
 	
-	NetPackageService.Service:SendServer(Mapping.Event.ContextKeyNetwork, Context, Key, State)
+	NetworkService.Service:SendServer(Mapping.Event.ContextKeyNetwork, Context, Key, State)
 	private.Core1:DoCall(Context,State,Key)
 end
 
@@ -45,7 +45,7 @@ function private:change_input (Context: string,  State: Enum.UserInputState, Inp
 		self:PrintLog(string.format('Changed context %q to input %s', Context, Input.Name))
 	end
 	
-	NetPackageService.Service:SendServer(Mapping.Event.ContextInputNetwork, Context, Input, State)
+	NetworkService.Service:SendServer(Mapping.Event.ContextInputNetwork, Context, Input, State)
 	private.Core2:DoCall(Context,State,Input)
 end
 

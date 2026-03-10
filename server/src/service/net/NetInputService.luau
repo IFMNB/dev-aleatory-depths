@@ -1,7 +1,7 @@
 local main = require('../../');
 local Mapping = main.Mapping
 
-local NetPackageService = main.Core.Services.NetPackageService()
+local NetworkService = main.Core.Services.NetworkService()
 local HxSnapshot = main.Core.Classes.HxSnapshot()
 local HxEventCore = main.Core.Classes.HxEventCore()
 
@@ -139,7 +139,7 @@ end
 
 function private:WatchKey (player: Player)
 	local self = self :: NetInputService;
-	local this = NetPackageService.Service:ForPlayer(player, Mapping.Event.KeyCodeNetwork, function(EI: Enum.KeyCode, State: Enum.UserInputState) 
+	local this = NetworkService.Service:ForPlayer(player, Mapping.Event.KeyCodeNetwork, function(EI: Enum.KeyCode, State: Enum.UserInputState) 
 		if not self:IsActive() then return end
 		if self:IsLogActive() then self:PrintLog(string.format('Got %q from %s with content %s, %s', 'KeyCode', player.DisplayName, tostring(EI), tostring(State))) end
 		
@@ -164,7 +164,7 @@ end
 
 function private:WartchUserInputType (player: Player)
 	local self = self :: NetInputService;
-	local this = NetPackageService.Service:ForPlayer(player, Mapping.Event.UserInputNetwork, function(EI: Enum.UserInputType, State: Enum.UserInputState)
+	local this = NetworkService.Service:ForPlayer(player, Mapping.Event.UserInputNetwork, function(EI: Enum.UserInputType, State: Enum.UserInputState)
 		if not self:IsActive() then return end
 		if self:IsLogActive() then self:PrintLog(string.format('Got %q from %s with content %s, %s', 'UserInput', player.DisplayName, tostring(EI), tostring(State))) end
 		
@@ -187,7 +187,7 @@ end
 
 function private:WatchCamera (player: Player)
 	local self = self :: NetInputService;
-	local this = NetPackageService.Service:ForPlayer(player, Mapping.Event.CameraNetwork, function(CF: CFrame)
+	local this = NetworkService.Service:ForPlayer(player, Mapping.Event.CameraNetwork, function(CF: CFrame)
 		if not self:IsActive() then return end
 		if self:IsLogActive() then self:PrintLog(string.format('Got %q from %s with content %s', 'Camera', player.DisplayName, tostring(CF))) end
 		

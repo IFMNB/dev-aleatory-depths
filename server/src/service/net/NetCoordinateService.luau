@@ -1,7 +1,7 @@
 local main = require('../../');
 
 local Mapping = main.Mapping
-local NetPackageService = main.Core.Services.NetPackageService()
+local NetworkService = main.Core.Services.NetworkService()
 
 local private = {}
 local interface = {}
@@ -36,7 +36,7 @@ function private:Send (player: Player, deltaTime: number?)
 	
 	cframe = character:GetPivot()
 	
-	NetPackageService.Service:SendClient(player, Mapping.Event.CoordinateNetwork, cframe.Position,cframe.LookVector,cframe.UpVector)
+	NetworkService.Service:SendClient(player, Mapping.Event.CoordinateNetwork, cframe.Position,cframe.LookVector,cframe.UpVector)
 	return
 end
 
@@ -105,10 +105,7 @@ end
 
 
 
-interface.Enums = table.freeze({
-	Server = Mapping.Enum.Server;
-	Client = Mapping.Enum.Client;
-});
+interface.Enums = Mapping.Enum.MachineSide;
 interface.Exceptions = table.freeze({
 	GameException = Mapping.Exception.GameException;
 	CodeException = Mapping.Exception.CodeException;

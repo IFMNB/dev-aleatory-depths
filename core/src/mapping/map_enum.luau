@@ -4,6 +4,11 @@ local Enum = Libs:Libs().Hexagon.Classes.HxLocalEnum()
 local Sad_Enums = table.freeze({
 	Null = Enum.new('Null'::'Null');
 	
+	MachineSide = table.freeze({
+		Server = Enum.new('Server'::'Server');
+		Client = Enum.new('Client'::'Client');
+	});
+	
 	MathOperationType = table.freeze({
 		Add = Enum.new('Add' :: 'Add');
 		Sub = Enum.new('Sub' :: 'Sub');

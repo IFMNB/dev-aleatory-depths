@@ -19,8 +19,8 @@ end
 	@fullAuto false
 	@side all
 ]]
-function interface.NetPackageService ()
-	return require('./service/NetPackageService')
+function interface.NetworkService ()
+	return require('./service/NetworkService')
 end
 
 --[[
@@ -31,8 +31,8 @@ end
 	@fullAuto false
 	@side all
 ]]
-function interface.GameCollisionService ()
-	return require('./service/GameCollisionService')
+function interface.CollisionService ()
+	return require('./service/CollisionService')
 end
 
 --[[
@@ -44,8 +44,8 @@ end
 	@side all
 
 ]]
-function interface.GameHitScanService ()
-	return require('./service/GameCollisionService/GameHitScanService')
+function interface.HitScanService ()
+	return require('./service/CollisionService/HitScanService')
 end
 
 --[[
@@ -59,8 +59,8 @@ end
 	@fullAuto false
 	@side all
 ]]
-function interface.GameContextBusService ()
-	return require('./service/GameContextBusService')
+function interface.ContextBus ()
+	return require('./service/ContextBus')
 end
 
 --[[
@@ -69,8 +69,8 @@ end
 	@fullAuto false
 	@side all
 ]]
-function interface.NetContextGatewayService ()
-	return require('./service/NetPackageService/NetContextGatewayService')
+function interface.NetworkContextGateway ()
+	return require('./service/NetworkService/NetworkContextGateway')
 end
 
 --[[
@@ -79,8 +79,8 @@ end
 	@fullAuto false
 	@side all
 ]]
-function interface.GameWorldsService ()
-	return require('./service/GameWorldsService')
+function interface.WorldsService ()
+	return require('./service/WorldsService')
 end
 
 return interface

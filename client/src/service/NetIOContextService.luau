@@ -9,8 +9,8 @@ type ContextThis = index<Context,Contexts>
 type NetIOContextService = typeof(interface.Service)
 type IO = {IO: EnumItem, ST: EnumItem}
 
-local NetContextGatewayService = main.Core.Services.NetContextGatewayService()
-local GameContextBusService = main.Core.Services.GameContextBusService()
+local ContextGateway = main.Core.Services.ContextGateway()
+local ContextBus = main.Core.Services.ContextBus()
 local UserInputService = game:GetService('UserInputService')
 private.io = setmetatable({} :: {[ContextThis]: IO}, {__mode='k'})
 
@@ -99,7 +99,7 @@ interface.Service = main.Core.Classes.SadNetService().new({
 
 local starter = function ()
 	for i,v in Mapping.InputContextMap :: {[string]: ContextThis} do
-		local Controller = GameContextBusService.Service:AddContext(v.Name);
+		local Controller = ContextBus.Service:AddContext(v.Name);
 		local Name = string.format('Activated IO Context for %q', v.Name)
 		
 		local function Reactor (input: InputObject, gameProcessedEvent: boolean)
@@ -113,7 +113,7 @@ local starter = function ()
 				if interface.Service:IsLogActive() then
 					interface.Service:PrintLog(Name)
 				end
-				NetContextGatewayService.Service:SendContext(v.Name)
+				ContextGateway.Service:SendContext(v.Name)
 			end
 		end
 		
@@ -122,10 +122,10 @@ local starter = function ()
 	end
 end
 
-if GameContextBusService.Service:IsActive() then
+if ContextBus.Service:IsActive() then
 	starter()
 else
-	GameContextBusService.Service.OnActiveChangedEvent:Once(starter)
+	ContextBus.Service.OnActiveChangedEvent:Once(starter)
 end
 
 

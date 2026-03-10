@@ -5,7 +5,7 @@ local private = {}
 local interface = {}
 
 local UIS = game:GetService('UserInputService')
-local NetPackageService = main.Core.Services.NetPackageService()
+local NetworkService = main.Core.Services.NetworkService()
 
 function private.PrintInput (Input: InputObject, state: Enum.UserInputState)
 	local self = interface.Service;
@@ -25,21 +25,21 @@ function private:KeyInputBegan (Input: InputObject)
 	if not interface.Service:IsActive() then return end
 	if Input.KeyCode == Enum.KeyCode.Unknown then return end
 	private.PrintInput(Input, Input.UserInputState)
-	NetPackageService.Service:SendServer(Mapping.Event.KeyCodeNetwork, Input.KeyCode, Input.UserInputState)
+	NetworkService.Service:SendServer(Mapping.Event.KeyCodeNetwork, Input.KeyCode, Input.UserInputState)
 end
 
 function private:KeyInputEnded (Input: InputObject)
 	if not interface.Service:IsActive() then return end
 	if Input.KeyCode == Enum.KeyCode.Unknown then return end
 	private.PrintInput(Input, Input.UserInputState)
-	NetPackageService.Service:SendServer(Mapping.Event.KeyCodeNetwork, Input.KeyCode, Input.UserInputState)
+	NetworkService.Service:SendServer(Mapping.Event.KeyCodeNetwork, Input.KeyCode, Input.UserInputState)
 end
 
 function private:UserInputBegan (Input: InputObject)
 	if not interface.Service:IsActive() then return end
 	if Input.UserInputType ~= Enum.UserInputType.None then
 		private.PrintInput(Input, Input.UserInputState)
-		NetPackageService.Service:SendServer(Mapping.Event.UserInputNetwork, Input.UserInputType, Input.UserInputState)
+		NetworkService.Service:SendServer(Mapping.Event.UserInputNetwork, Input.UserInputType, Input.UserInputState)
 	end
 end
 
@@ -47,20 +47,20 @@ function private:UserInputEnded (Input: InputObject)
 	if not interface.Service:IsActive() then return end
 	if Input.UserInputType ~= Enum.UserInputType.None then
 		private.PrintInput(Input, Input.UserInputState)
-		NetPackageService.Service:SendServer(Mapping.Event.UserInputNetwork, Input.UserInputType, Input.UserInputState)
+		NetworkService.Service:SendServer(Mapping.Event.UserInputNetwork, Input.UserInputType, Input.UserInputState)
 	end
 end
 
 function private:Keycode (EnumKeycode: Enum.KeyCode, State: boolean)
 	if not interface.Service:IsActive() then return end
 	private.PrintEnum(EnumKeycode, State)
-	NetPackageService.Service:SendServer(Mapping.Event.KeyCodeNetwork, EnumKeycode, State)
+	NetworkService.Service:SendServer(Mapping.Event.KeyCodeNetwork, EnumKeycode, State)
 end
 
 function private:Mousecode (EnumUserInput: Enum.UserInputType, State: boolean)
 	if not interface.Service:IsActive() then return end
 	private.PrintEnum(EnumUserInput, State)
-	NetPackageService.Service:SendServer(Mapping.Event.UserInputNetwork, EnumUserInput, State)
+	NetworkService.Service:SendServer(Mapping.Event.UserInputNetwork, EnumUserInput, State)
 end
 
 private.prev = nil :: CFrame?
@@ -69,7 +69,7 @@ function private:Camera ()
 	if not interface.Service:IsActive() then end
 	local cframe = Mapping.Exception.PermissionException:Assert(workspace.CurrentCamera).CFrame
 	private.prev = cframe
-	NetPackageService.Service:SendServer(Mapping.Event.CameraNetwork, cframe)
+	NetworkService.Service:SendServer(Mapping.Event.CameraNetwork, cframe)
 end
 
 interface.Enums = table.freeze({

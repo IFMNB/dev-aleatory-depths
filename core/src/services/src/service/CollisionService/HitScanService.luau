@@ -153,13 +153,10 @@ end
 
 
 
-interface.Enums = table.freeze({
-	Null = Mapping.Enum.Null;
-});
 interface.Exceptions = table.freeze({
 	CodeException = Mapping.Exception.CodeException;
 });
-interface.Service = main.Core.Classes.SadNetService().new({
+interface.Service = main.Core.Classes.SadCoreService().new({
 	ScanSphereForModels = private.ScanSphereForFirstModelAncestor;
 	ScanCoordinateForModels = private.ScanCoordinateForFirstModelAncestor;
 	ScanSphereForCharacters = private.ScanSphereForPlayersCharacter;
@@ -168,8 +165,6 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	ScanRaycastForCharacters = private.ScanRaycastForPlayersCharacter;
 	
 	Name = 'GameHitScanService'::'GameHitScanService';
-	IsControllable = false;
-	Behavior = interface.Enums.Null :: index<typeof(interface.Enums), keyof<typeof(interface.Enums)>>;
 })
 
 

@@ -4,12 +4,9 @@ local private = {}
 local interface = {}
 
 
-local NetPackageService = main.Core.Services.NetPackageService()
+local NetworkService = main.Core.Services.NetworkService()
 
-interface.Enums = table.freeze({
-	Server = main.Mapping.Enum.Server;
-	Client = main.Mapping.Enum.Client;
-});
+interface.Enums = main.Mapping.Enum.MachineSide;
 interface.Exceptions = table.freeze({
 	GameException = main.Mapping.Exception.GameException;
 });
@@ -20,7 +17,7 @@ interface.Service = main.Core.Classes.SadNetService().new({
 	IsControllable = false;
 });
 
-NetPackageService.Service:ForEvent(main.Mapping.Event.CoordinateNetwork):Connect(function(Pos:any, Look:any, Up:any) 
+NetworkService.Service:ForEvent(main.Mapping.Event.CoordinateNetwork):Connect(function(Pos:any, Look:any, Up:any) 
 	local Pos : Vector3, Look : Vector3, Up :Vector3 = Pos, Look, Up
 	
 	if not interface.Service:IsActive() then return end
