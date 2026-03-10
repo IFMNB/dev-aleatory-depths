@@ -4,7 +4,6 @@
 local main = require('./');
 
 local HxNode = main.Libs.Hexagon.Classes.HxNode()
-local SharedTableRegistry = game:GetService('SharedTableRegistry')
 
 local private = {};
 local class = {}; setmetatable(class,class);
@@ -14,6 +13,9 @@ type HxNode = typeof(HxNode.new(private.new()))
 type SadWorld = typeof(private.new())
 type Identity = string
 
+local Registry : {string}? = game["Run Service"]:IsStudio() and {} or nil
+class._debug_registry = Registry
+
 --[[
 	Экземпляр этого класса взаимозаменяем фактически везде, включая компоненты.
 	
@@ -21,30 +23,26 @@ type Identity = string
 	@side all
 	@return Instance (@P SadWorld)
 ]]
-function private.new (Identity: string?)	
+function private.new (Identity: string?)
+	Identity = Identity or main.Libs.CodeUtility.RandomStr(); 
+	
+	local shared = SharedTable.clone(class.Shared,true) :: SharedSadWorld
+	shared.Identity = Identity;
+	
 	local this = main.new({
 		Elements = {} :: typeof(class.Elements);	
-		Identity = Identity or main.Libs.CodeUtility.RandomStr();
+		Identity = Identity;
 		Components = {} :: {[string]: Component};
 		Head = nil :: HxNode?;
+		Shared = shared;
 	}, class)
 	
+	
 
-	local shared = SharedTableRegistry:GetSharedTable(this.Identity)
-	if not shared['Elements'] then
-		SharedTable.update(shared, 'Elements', function(arg) 
-			return arg == nil and {} or arg
-		end)
-	end
-	if not shared['Components'] then
-		SharedTable.update(shared, 'Components', function(arg) 
-			return arg == nil and {} or arg
-		end)
-	end
-	if not shared['Identity'] then
-		SharedTable.update(shared, 'Identity', function(arg) 
-			return arg == nil and Identity or arg
-		end)
+	if Registry then
+		if not table.find(Registry, this.Identity) then
+			table.insert(Registry, this.Identity)
+		end
 	end
 	
 	return this
@@ -250,18 +248,16 @@ end
 ]]
 function private:iter_shared (Callback: CallbackSharedFunction)
 	local self = self :: SadWorld
-	local this = SharedTableRegistry:GetSharedTable(self.Identity) :: SharedSadWorld
+	local this = self:GetShared()
 	local node = this.Head :: HxNode?
-	local iterated = false
 	local seen = {}
 	while node do
 		if seen[node] then break end
 		xpcall(Callback,warn,node.Value)
 		seen[node] = true
 		node = node.NextNode
-		iterated = true
 	end
-	return iterated
+	return not not node
 end
 
 --[[
@@ -277,7 +273,7 @@ end
 ]]
 function private:iter_shared_target ( Identity: Identity, Callback: CallbackSharedFunction)
 	local self = self :: SadWorld
-	local this = SharedTableRegistry:GetSharedTable(self.Identity) :: SharedSadWorld
+	local this = self:GetShared()
 	local node = this.Elements[Identity] :: HxNode?
 	if node then
 		xpcall(Callback,warn,node.Value)
@@ -327,14 +323,14 @@ end
 ]]
 function private:add (Identity: Identity?)
 	local self = self :: SadWorld
-	local Identity = private.add_world_to_world(self, Identity)
-	private.add_shared_world_to_shared_world(self:GetShared(), Identity)
-	return Identity
+	local new_world = private.new(Identity) 
+	private.add_world_to_target(self, new_world)
+	private.add_shared_to_target(self, new_world)
+	return new_world.Identity
 end
 
-function private.add_world_to_world (world: SadWorld, Identity: Identity?)
+function private.add_world_to_target (world: SadWorld, new_world: SadWorld)
 	local head = world.Head
-	local new_world = private.new(Identity)
 	local new_node = HxNode.new(new_world,nil,head) :: HxNode
 	if head then
 		head.BackNode = new_node
@@ -348,10 +344,11 @@ function private.add_world_to_world (world: SadWorld, Identity: Identity?)
 	return new_world.Identity
 end
 
-function private.add_shared_world_to_shared_world (shared_world: SharedSadWorld, Identity: Identity?)
+function private.add_shared_to_target (world: SadWorld,  new_world: SadWorld)
+	local shared_world = world.Shared
 	local head = shared_world.Head
-	local new_shared_world = private.new(Identity)
-	local new_node = HxNode.new(new_shared_world,nil,head) :: HxNode
+	local new_shared_world = new_world.Shared
+	local new_node = HxNode.new(new_shared_world,nil,head) 
 	if head then
 		SharedTable.update(head, 'BackNode', function(arg) 
 			return arg == head and new_node or arg
@@ -365,10 +362,6 @@ function private.add_shared_world_to_shared_world (shared_world: SharedSadWorld,
 	end)
 	SharedTable.update(shared_world.Elements, new_shared_world.Identity, function(arg) 
 		return arg == nil and new_shared_world or arg
-	end)
-	
-	SharedTable.update(shared_world.Elements[new_shared_world.Identity], 'Parent', function(arg)
-		return arg == nil and shared_world or arg
 	end)
 	
 	return new_shared_world.Identity
@@ -456,12 +449,6 @@ function private.remove_shared_world_from_shared_world (shared_world: SharedTabl
 				return arg
 			end)
 			
-			SharedTable.update(value, 'Parent', function(arg) 
-				if arg == parent then
-					return nil
-				end
-				return arg
-			end)
 			
 			return true
 		end
@@ -478,9 +465,10 @@ end
 ]]
 function private:add_com (Name: string, Component)
 	local self = self :: SadWorld
-	return
-		private.add_component_to_world(self, Name, Component) and
-		private.add_component_to_shared_world(self:GetShared(),	Name, Component)
+	local this = self:GetShared()
+	
+	local result = private.add_component_to_world(self, Name, Component) and private.add_component_to_shared_world(self, Name, Component)
+	return result
 end
 
 function private.add_component_to_world (world: SadWorld, name: string, component)
@@ -493,21 +481,19 @@ function private.add_component_to_world (world: SadWorld, name: string, componen
 	return true
 end
 
-function private.add_component_to_shared_world (shared_world: SharedSadWorld, name: string, component)
-	local ExistedComponent = shared_world.Components[name] :: unknown
-	if ExistedComponent then
-		return false
-	end
+function private.add_component_to_shared_world (world: SadWorld, name: string, component)
+	local shared_world = world:GetShared()
 	
+	local ExistedComponent = shared_world.Components[name] :: unknown
 	local WritedProperly = true
-	SharedTable.update(shared_world.Components, name, function(arg) 
+	SharedTable.update(shared_world.Components, name, function(arg)
 		if arg == ExistedComponent then
 			return component
 		end
 		WritedProperly = false
 		return arg
 	end)
-	
+
 	return WritedProperly
 end
 
@@ -600,9 +586,9 @@ end
 	@side all
 	@return Instance (@P SharedTable)
 ]]
-function private:get_Shared ()
+function private:get_Shared () : SharedSadWorld
 	local self = self :: SadWorld
-	local this = SharedTableRegistry:GetSharedTable(self.Identity) :: SharedSadWorld
+	local this = self.Shared
 	return this
 end
 
@@ -640,6 +626,7 @@ class.Head = nil :: HxNode?;
 class.Parent = nil :: SadWorld?;
 class.Components = {};
 class.Elements = {};
+class.Shared = SharedTable.cloneAndFreeze(SharedTable.new({Head=nil,Identity='',Components={},Elements={}}),true) :: SharedSadWorld;
 
 interface.class = class;
 interface.new = private.new;

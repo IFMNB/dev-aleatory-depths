@@ -48,15 +48,11 @@ SystemPosition.Service:SetActive(true)
 local world = WorldsService.Service:GetWorld('game.world')
 local Fortuna = server.Characters.Fortuna()
 
-world:DoForTarget(Fortuna:DoCreate(world), function(World) 
+local abobo = Fortuna:DoCreate(world)
+
+world:DoForTarget(abobo, function(World) 
 	Fortuna:DoAddComponents(World)
 	Fortuna:DoAddAbilities(World)
-	print(World:IsComponentsExists(Fortuna.Fabrics.model.Name))
-    Fortuna.Fabrics.model:DoCatchFrom(World, function(Component) 
-        print(Component)
-	end)
-	warn(world:GetShared(),World)
 end)
 
-
-warn(world)
+print('GLOBAL WORLD', world)
