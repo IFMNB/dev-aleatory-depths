@@ -65,10 +65,10 @@ end
 
 interface.Service = main.Core.Classes.SadSystemService().new({
 	Name = script.Name;
-	TargetWorld = WorldsService.Service:GetWorld('game.world');
+	TargetWorld = WorldsService.Service:GetSharedWorld('game.world');
 });
 
-interface.Service:DoWhileActive():Connect(function(deltaTime: boolean, NewCycle: boolean)
+interface.Service:DoWhileActive():Connect(function(deltaTime: number, NewCycle: boolean)
 	if not interface.Service.TargetWorld then return end
 	
 	interface.Service.TargetWorld:DoFor(private.ForWorld);

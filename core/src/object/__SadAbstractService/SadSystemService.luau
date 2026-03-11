@@ -7,7 +7,7 @@ local interface = {};
 local HxEventCore = main.Libs.Hexagon.Classes.HxEventCore()
 type SadSystemService = typeof(private.new({Name=''}))
 
-type DefaultF = (deltaTime: boolean, NewCycle: boolean)->()
+type DefaultF = (deltaTime: number, NewCycle: boolean)->()
 type Core = typeof(HxEventCore.new(warn::DefaultF))
 type Controller = {Core:Core,Count:number,Me:SadSystemService}
 

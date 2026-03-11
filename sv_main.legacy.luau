@@ -40,9 +40,13 @@ TestZone:MapLoad()
 
 
 local SystemPosition = server.Services.SystemPosition()
-
+local SystemSurface = server.Services.SystemSurface()
 
 SystemPosition.Service:SetActive(true)
+SystemSurface.Service:SetActive(true)
+SystemSurface.Service:SetLogActive(true)
+
+
 --SystemPosition.Service:SetLogActive(true)
 
 local world = WorldsService.Service:GetWorld('game.world')

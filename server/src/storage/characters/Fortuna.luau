@@ -10,6 +10,8 @@ fabrics.rotation = components.Rotation();
 fabrics.velocity = components.Velocity();
 fabrics.model = components.Model();
 fabrics.form = components.Form();
+fabrics.surface = components.Surface();
+fabrics.height = components.Height();
 
 local model_component = fabrics.model:DoCloneValue()
 model_component.Path = storage.models.characters.Fortuna:GetFullName()
@@ -20,8 +22,10 @@ local Fortuna = SadEntityFabric.new({},{
     [fabrics.health.Name]=fabrics.health:DoCloneValue();
     [fabrics.position.Name] = fabrics.position:DoCloneValue();
 	[fabrics.rotation.Name] = fabrics.rotation:DoCloneValue();
-    [fabrics.velocity.Name] = fabrics.velocity:DoCloneValue();
+	[fabrics.velocity.Name] = fabrics.velocity:DoCloneValue();
+	[fabrics.surface.Name] = fabrics.surface:DoCloneValue();
 	[fabrics.model.Name] = model_component;
+	[fabrics.height.Name] = fabrics.height:DoCloneValue();
 	[fabrics.form.Name] = form_component;
 }, fabrics)
 

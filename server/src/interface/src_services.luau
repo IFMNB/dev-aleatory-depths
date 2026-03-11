@@ -37,5 +37,9 @@ function src.SystemPosition ()
 	return require('../service/system/SystemPosition')
 end
 
+function src.SystemSurface ()
+	return require('../service/system/SystemSurface')
+end
+
 
 return src

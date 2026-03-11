@@ -13,9 +13,6 @@ type HxNode = typeof(HxNode.new(private.new()))
 type SadWorld = typeof(private.new())
 type Identity = string
 
-local Registry : {string}? = game["Run Service"]:IsStudio() and {} or nil
-class._debug_registry = Registry
-
 --[[
 	Экземпляр этого класса взаимозаменяем фактически везде, включая компоненты.
 	
@@ -37,13 +34,6 @@ function private.new (Identity: string?)
 		Shared = shared;
 	}, class)
 	
-	
-
-	if Registry then
-		if not table.find(Registry, this.Identity) then
-			table.insert(Registry, this.Identity)
-		end
-	end
 	
 	return this
 end

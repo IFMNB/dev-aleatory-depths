@@ -25,6 +25,10 @@ local components = table.freeze({
 	Form = function ()
 		return require(path.form)
 	end,
+	-- Результат рейкаста от известной позиции сугубо в -Up вектор
+	Surface = function ()
+		return require(path.surface)
+	end,
 	
 })
 
