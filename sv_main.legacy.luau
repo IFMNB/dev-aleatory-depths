@@ -46,12 +46,12 @@ SystemSpawner.Service:SetLogActive(false)
 
 --SystemPosition.Service:SetLogActive(true)
 
-local world = WorldsService.Service:GetSharedWorld('game.world')
+local world = WorldsService.Service:GetWorld('game.world')
 local Fortuna = server.Characters.Fortuna()
 
 local abobo = Fortuna:DoCreate(world)
 
-world:DoForTarget(abobo, function(World) 
+world:DoCallForCatchedWorld(abobo, function(World) 
 	Fortuna:DoAddComponents(World)
 	Fortuna:DoAddAbilities(World)
 end)
@@ -62,6 +62,6 @@ task.wait(1)
 
 print(world)
 
-print(world:DoForTarget(abobo, function(World) 
+print(world:DoCallForCatchedWorld(abobo, function(World) 
 	print(World:IsComponentsExists('surface'), World.Components['surface'])
 end))

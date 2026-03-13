@@ -11,11 +11,11 @@ local interface = {};
 
 type System = typeof(interface.Service)
 type World = typeof(interface.Service.TargetWorld)
-type SharedWorld = typeof(interface.Service.TargetWorld:GetShared())
+type SharedWorld = typeof(interface.Service.TargetWorld)
 
 interface.Service = main.Core.Classes.SadSystemService().new({
 	Name = script.Name;
-	TargetWorld = WorldsService.Service:GetSharedWorld('game.world');
+	TargetWorld = WorldsService.Service:GetWorld('game.world');
 });
 
 function private.Subact (Component)
@@ -33,7 +33,7 @@ end
 
 interface.Service:DoWhileActive():Connect(function(deltaTime: number, NewCycle: boolean)
 	local TargetWorld = interface.Service.TargetWorld;
-	TargetWorld:DoFor(function (World)
+	TargetWorld:DoForWorlds(function (World)
 		local Service = interface.Service
 		local Phase = {}
 		
@@ -44,16 +44,15 @@ interface.Service:DoWhileActive():Connect(function(deltaTime: number, NewCycle: 
 			
 			if Phase[1] or Phase[2] then
 				Phase[3] = model:DoCatchFrom(World, function(Component: { IsTemporal: boolean, Path: string }) 
-					local shared = World:GetShared()
 					if Phase[1] then
-						model:DoCatchFrom(shared, function(OldComponent: { IsTemporal: boolean, Path: string }) 
+						model:DoCatchFrom(World.Components, function(OldComponent: { IsTemporal: boolean, Path: string }) 
 							OldComponent.Path = Component.Path
 							OldComponent.IsTemporal = Component.IsTemporal
 						end)
 					end
 					
 					if Phase[2] then
-						form:DoCatchFrom(shared, function(OldComponent: { IsTemporal: boolean, Path: string }) 
+						form:DoCatchFrom(World.Components, function(OldComponent: { IsTemporal: boolean, Path: string }) 
 							OldComponent.Path = Component.Path
 							OldComponent.IsTemporal = Component.IsTemporal
 						end)

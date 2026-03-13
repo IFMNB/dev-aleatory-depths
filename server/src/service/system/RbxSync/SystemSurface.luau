@@ -16,11 +16,11 @@ local interface = {};
 
 type System = typeof(interface.Service)
 type World = typeof(interface.Service.TargetWorld)
-type SharedWorld = typeof(interface.Service.TargetWorld:GetShared())
+type SharedWorld = typeof(interface.Service.TargetWorld)
 
 interface.Service = main.Core.Classes.SadSystemService().new({
 	Name = script.Name;
-	TargetWorld = WorldsService.Service:GetSharedWorld('game.world');
+	TargetWorld = WorldsService.Service:GetWorld('game.world');
 });
 
 function private.Action (World)
@@ -140,7 +140,7 @@ end
 interface.Service:DoWhileActive():ConnectParallel(function(deltaTime: number, NewCycle: boolean)
 	local TargetWorld = interface.Service.TargetWorld;
 	--	TargetWorld:DoFor(private.Action)
-	TargetWorld:DoForShared(private.Action)
+	TargetWorld:DoForWorlds(private.Action)
 end)
 
 return interface
