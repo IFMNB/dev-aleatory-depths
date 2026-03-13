@@ -8,7 +8,7 @@ local HxSnapshot = main.Libs.Hexagon.Classes.HxSnapshot()
 
 type SadWorld = typeof(private.new())
 type Component = (SharedTable & {[any]:unknown}) | unknown
-type SWorlds = SharedTable & {[string]:SadWorld}
+type SWorlds = SharedTable & {[string]:DWorld}
 type SComponents = SharedTable & {[string]: Component}
 type DWorld = {
 	Worlds: {[string]: DWorld},
@@ -79,12 +79,16 @@ end
 function private:AddWorldNew(Identity: string?)
 	local self = self :: SadWorld;
 	local new = interface.new(Identity)
+	local result : string
 	SharedTable.update(self.Worlds,new.Identity, function(arg) 
 		if arg ~= nil then
+			result = arg.Identity
 			return arg
 		end
+		result = new.Identity
 		return new
 	end)
+	return result
 end
 
 function private:AddWorld(World: SadWorld)
@@ -120,12 +124,16 @@ end
 
 function private:AddComponent(Name:string, Component: Component)
 	local self = self :: SadWorld
-	SharedTable.update(self.Components, Name, function(arg) 
-		if arg == nil then
-			return Component
-		end
-		return arg
-	end)
+	if not self.Components[Name] then
+		SharedTable.update(self.Components, Name, function(arg) 
+			if arg == nil then
+				return Component
+			end
+			return arg
+		end)
+		return true	
+	end	
+	return false
 end
 
 function private:RemComponent(Name:string)

@@ -55,13 +55,3 @@ world:DoCallForCatchedWorld(abobo, function(World)
 	Fortuna:DoAddComponents(World)
 	Fortuna:DoAddAbilities(World)
 end)
-
-print('GLOBAL WORLD', world)
-
-task.wait(1)
-
-print(world)
-
-print(world:DoCallForCatchedWorld(abobo, function(World) 
-	print(World:IsComponentsExists('surface'), World.Components['surface'])
-end))

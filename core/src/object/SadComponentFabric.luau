@@ -74,8 +74,6 @@ end
 	Выполняет операцию с компонентом, если он существует.
 	
 	@class SadComponentFabric
-	@side all
-	@return boolean
 ]]
 function private:get_from (To, F: Func)
 	local Components = To.Components
@@ -90,12 +88,7 @@ end
 --[[
 	Ищет собственный компонент в объекте, и возвращает true, если он существует.
 	
-	Если требуется поиск в любой другой среде, которая здесь не поддерживается,
-	то сделайте это вручную.
-	
 	@class SadComponentFabric
-	@side all
-	@return boolean
 ]]
 function private:is_exists (To)
 	local self = self :: SadComponentFabric;

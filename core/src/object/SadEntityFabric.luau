@@ -4,8 +4,9 @@ local private = {};
 local class = {};
 local interface = {};
 
+local SadWorld = require('./SadWorld').SadWorld
 type SadEntityFabric <T0=string,T1=typeof(class.Abilities), T2=typeof(class.Components)> = typeof(private.new(nil::T0,nil::T1,nil::T2))
-type SadWorld = typeof(require('./SadWorld').SadWorld.new())
+type SadWorld = typeof(SadWorld.new())
 
 --[[
 	Создает ткань для создания персонажа.
@@ -30,7 +31,7 @@ function private.new <T,U> (Abilities, Components, Fabrics)
 	return this
 end
 
-function private:insert_abilities_indo (World:SadWorld, ...: any)
+function private:insert_abilities_indo (World, ...: any)
 	local self = self :: SadEntityFabric;
 	local Abilities = self.Abilities :: typeof(class.Abilities)
 	local Names = {...}
@@ -39,7 +40,7 @@ function private:insert_abilities_indo (World:SadWorld, ...: any)
 	
 	for Position,AbilityName in Names do
 		if Abilities[AbilityName] then
-			if not World:AddComponent(AbilityName,Abilities[AbilityName]) then
+			if not SadWorld.class.AddComponent(World, AbilityName,Abilities[AbilityName]) then
 				main.Mapping.Exception.TechicalException:Warn(
 					string.format('Ability %s already exists in world %s',AbilityName,World.Identity),
 					false
@@ -51,14 +52,14 @@ function private:insert_abilities_indo (World:SadWorld, ...: any)
 	return true
 end
 
-function private:unpack_abilities_into (World:SadWorld)
+function private:unpack_abilities_into (World)
 	local self = self :: SadEntityFabric;
 	local Abilities = self.Abilities :: typeof(class.Abilities)
 	
 	if not World.Components then return false end
 	
 	for i,v in Abilities do
-		if not World:AddComponent(i,v) then
+		if not SadWorld.class.AddComponent(World,i,v) then
 			main.Mapping.Exception.TechicalException:Warn(
 				string.format('Ability %s already exists in world %s',i,World.Identity),
 				false
@@ -69,14 +70,14 @@ function private:unpack_abilities_into (World:SadWorld)
 	return true
 end
 
-function private:unpack_components_into (World:SadWorld)
+function private:unpack_components_into (World)
 	local self = self :: SadEntityFabric;
 	local Components = self.Components ::  typeof(class.Components)
 	
 	if not World.Components then return false end
 	
 	for i,v in Components do
-		if not World:AddComponent(i,v) then
+		if not SadWorld.class.AddComponent(World,i,v) then
 			main.Mapping.Exception.TechicalException:Warn(
 				string.format('Component %s already exists in world %s',i,World.Identity),
 				false
@@ -87,7 +88,7 @@ function private:unpack_components_into (World:SadWorld)
 	return true
 end
 
-function private:insert_components_into (World:SadWorld, Identity: string, ...: any)
+function private:insert_components_into (World, Identity: string, ...: any)
 	local self = self :: SadEntityFabric;
 	local Components = self.Components :: typeof(class.Components)
 	local Names = {...}
@@ -95,7 +96,7 @@ function private:insert_components_into (World:SadWorld, Identity: string, ...: 
 	if not World.Components then return false end
 	
 	for Position,ComponentName in Names do
-		if not World:AddComponent(ComponentName,Components[ComponentName]) then
+		if not SadWorld.class.AddComponent(World,ComponentName,Components[ComponentName]) then
 			main.Mapping.Exception.TechicalException:Warn(
 				string.format('Component %s already exists in world %s',ComponentName,World.Identity),
 				false
@@ -106,10 +107,9 @@ function private:insert_components_into (World:SadWorld, Identity: string, ...: 
 	return true
 end
 
-function private:create (World:SadWorld)
+function private:create (World)
 	local self = self :: SadEntityFabric;
-	local AddElement : (...any)->string = World.AddElement
-	return AddElement(World)
+	return SadWorld.class.AddWorldNew(World)
 end
 
 
