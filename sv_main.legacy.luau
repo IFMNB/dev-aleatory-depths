@@ -39,17 +39,14 @@ local TestZone = GameMapService.Service:GetMap('TestZone')
 TestZone:MapLoad() 
 
 
-local SystemPosition = server.Services.SystemPosition()
-local SystemSurface = server.Services.SystemSurface()
+local SystemSpawner = server.Services.SystemSpawner()
 
-SystemPosition.Service:SetActive(true)
-SystemSurface.Service:SetActive(true)
-SystemSurface.Service:SetLogActive(true)
-
+SystemSpawner.Service:SetActive(true)
+SystemSpawner.Service:SetLogActive(false)
 
 --SystemPosition.Service:SetLogActive(true)
 
-local world = WorldsService.Service:GetWorld('game.world')
+local world = WorldsService.Service:GetSharedWorld('game.world')
 local Fortuna = server.Characters.Fortuna()
 
 local abobo = Fortuna:DoCreate(world)
@@ -60,3 +57,11 @@ world:DoForTarget(abobo, function(World)
 end)
 
 print('GLOBAL WORLD', world)
+
+task.wait(1)
+
+print(world)
+
+print(world:DoForTarget(abobo, function(World) 
+	print(World:IsComponentsExists('surface'), World.Components['surface'])
+end))

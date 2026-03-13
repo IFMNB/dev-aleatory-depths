@@ -1,32 +1,32 @@
 
 local client = require('@game/StarterPlayer/client')
 
-local NetPackageService = client.Services.NetPackageService()
+local NetworkService = client.Services.NetworkService()
 local NetCoordinateService = client.Services.NetCoordinateService()
 local NetInputService = client.Services.NetInputService()
-local GameContextBusService = client.Services.GameContextBusService()
+local ContextBus = client.Services.ContextBus()
 
 --local GameIOMappingService = client.Services.GameIOMappingService()
 --local GameCameraService = client.Services.GameCameraService()
 local NetIOContextService = client.Services.NetIOContextService()
-local NetContextGatewayService = client.Services.NetContextGatewayService()
+local ContextGateway = client.Services.ContextGateway()
 
-NetPackageService.Service:SetActive(true)
-NetPackageService.Service:SetLogActive()
+NetworkService.Service:SetActive(true)
+NetworkService.Service:SetLogActive()
 
 NetCoordinateService.Service:SetActive(true)
 --GameIOMappingService.Service:SetActive(true)
 --GameIOMappingService.Service:SetLogActive(true)
 --GameIOMappingService.Service:SendContextKeyChange('aalf', Enum.UserInputState.Begin, Enum.KeyCode.W)
 
-NetContextGatewayService.Service:SetActive(true)
-NetContextGatewayService.Service:SetLogActive()
+ContextGateway.Service:SetActive(true)
+ContextGateway.Service:SetLogActive()
 NetIOContextService.Service:SetActive(true)
 NetIOContextService.Service:SetAuto(true)
 NetIOContextService.Service:SetLogActive(true)
 
-GameContextBusService.Service:SetActive(true)
-GameContextBusService.Service:SetLogActive(true)
+ContextBus.Service:SetActive(true)
+ContextBus.Service:SetLogActive(true)
 
 
 

@@ -16,7 +16,7 @@ type SharedWorld = typeof(interface.Service.TargetWorld:GetShared())
 
 interface.Service = main.Core.Classes.SadSystemService().new({
 	Name = script.Name;
-	TargetWorld = WorldsService.Service:GetWorld('game.world');
+	TargetWorld = WorldsService.Service:GetSharedWorld('game.world');
 });
 
 function private.ActionGlide (World: World)

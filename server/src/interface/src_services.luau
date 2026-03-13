@@ -32,13 +32,20 @@ function src.NetInputService ()
 end
 
 
+function src.SystemRotation ()
+	return require('../service/system/RbxSync/SystemRotation')
+end
 
 function src.SystemPosition ()
-	return require('../service/system/SystemPosition')
+	return require('../service/system/RbxSync/SystemPosition')
+end
+
+function src.SystemSpawner ()
+	return require('../service/system/SystemSpawner')
 end
 
 function src.SystemSurface ()
-	return require('../service/system/SystemSurface')
+	return require('../service/system/RbxSync/SystemSurface')
 end
 
 
