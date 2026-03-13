@@ -1,7 +1,7 @@
 local main = require('../')
 local Mapping = main.Mapping
 
-local HxEventCore = main.Core.Classes.HxEventCore()
+local HxSignal = main.Core.Classes.HxSignal()
 
 local private = {}
 local interface = {}
@@ -35,7 +35,7 @@ function private:new (Context: string)
 	end
 	
 	interface.Exceptions.CodeException:Assert(not private.registry[Context])
-	local core = HxEventCore.new(warn :: DefaultFunction)
+	local core = HxSignal.new(warn :: DefaultFunction)
 	private.registry[Context]={Event= core:AddEvent() ;Properties= core;IsAlive=true}
 	
 	if self:IsLogActive() then
@@ -125,8 +125,8 @@ function private:getregistry (Context: string)
 end
 
 
-private.add_c = HxEventCore.new(warn :: DefaultFunction)
-private.rem_c = HxEventCore.new(warn :: DefaultFunction)
+private.add_c = HxSignal.new(warn :: DefaultFunction)
+private.rem_c = HxSignal.new(warn :: DefaultFunction)
 private.e0 = private.add_c:AddEvent();
 private.e1 = private.rem_c:AddEvent();
 

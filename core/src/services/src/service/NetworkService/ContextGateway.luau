@@ -2,16 +2,16 @@ local main = require('../..')
 local Mapping = main.Mapping
 
 local NetPackageService = require('./')
-local HxEventCore = main.Core.Classes.HxEventCore()
+local HxSignal = main.Core.Classes.HxSignal()
 
 local private = {}
 local interface = {}
 
 type DefaultFunction = (Context: string, ...any) -> ()
-type HxEventCore = typeof(HxEventCore.new(warn::DefaultFunction))
-type HxEvent = typeof(HxEventCore.new(warn::DefaultFunction):AddEvent())
+type HxSignal = typeof(HxSignal.new(warn::DefaultFunction))
+type HxEvent = typeof(HxSignal.new(warn::DefaultFunction):AddEvent())
 
-type Controller = {Event: HxEvent, Properties: HxEventCore}
+type Controller = {Event: HxEvent, Properties: HxSignal}
 
 type NetContextGatewayService = typeof(interface.Service)
 private.controllers = setmetatable({} :: {[string]: Controller?},{__mode='v'})
@@ -39,7 +39,7 @@ function private:new (Context: string)
 		return Controller.Event
 	end
 	
-	local Core = HxEventCore.new(warn::DefaultFunction);
+	local Core = HxSignal.new(warn::DefaultFunction);
 	local Event = Core:AddEvent();
 	
 	Controller.Properties = Core;
@@ -155,8 +155,8 @@ function private:sendContext (Context: string,  ... : any)
 	end
 end
 
-private.add = HxEventCore.new(warn::DefaultFunction);private.e_add=private.add:AddEvent();
-private.rem = HxEventCore.new(warn::DefaultFunction);private.e_rem=private.rem:AddEvent();
+private.add = HxSignal.new(warn::DefaultFunction);private.e_add=private.add:AddEvent();
+private.rem = HxSignal.new(warn::DefaultFunction);private.e_rem=private.rem:AddEvent();
 
 interface.Exceptions = table.freeze({
 	SafetyException = Mapping.Exception.SafetyException;

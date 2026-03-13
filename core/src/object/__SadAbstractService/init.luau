@@ -3,7 +3,7 @@ local main = require('./')
 
 local Hx = main.Libs.Hexagon
 local HxEvent = Hx.Classes.HxEvent()
-local HxEventCore = Hx.Classes.HxEventCore()
+local HxSignal = Hx.Classes.HxSignal()
 
 local private = {};
 local class = {}; setmetatable(class,class);
@@ -135,8 +135,8 @@ function private.new_service <T,Y,Q> (Service: T & DefaultServiceNeedle<Y>, chil
 	
 	nolint:SetActive(false);
 	
-	local Core1 = HxEventCore.new();
-	local Core2 = HxEventCore.new();
+	local Core1 = HxSignal.new();
+	local Core2 = HxSignal.new();
 	
 	local Event1 = Core1:AddEvent();
 	local Event2 = Core2:AddEvent();
@@ -164,7 +164,7 @@ function private.new_service <T,Y,Q> (Service: T & DefaultServiceNeedle<Y>, chil
 end
 
 type DF_S = (State: boolean)->()
-type StateEvent = typeof(HxEvent.new(nil::any,function()end::DF_S ))
+type StateEvent = typeof(HxEvent.new(nil::any, warn::DF_S, nil ).Value.Event)
 
 class.__index=main.SadObject.class;
 class.ClassName = main.Mapping.Class.SadAbstractService;
@@ -181,7 +181,6 @@ class.IsLogActive = private.get_active_log;
 
 class.OnActiveChangedEvent = HxEvent.instance :: StateEvent;
 class.OnLogActiveChangedEvent = HxEvent.instance :: StateEvent;
-
 
 protected.NewChild = private.new_service;
 

@@ -3,7 +3,7 @@ local Mapping = main.Mapping
 
 local NetworkService = main.Core.Services.NetworkService()
 local HxSnapshot = main.Core.Classes.HxSnapshot()
-local HxEventCore = main.Core.Classes.HxEventCore()
+local HxSignal = main.Core.Classes.HxSignal()
 
 local private = {}
 local interface = {}
@@ -56,7 +56,7 @@ function private:GetPlayerKeyChangeEvent (player: Player)
 	end
 	
 	local Controller : PlayerController = {} :: any
-	local Core = HxEventCore.new(warn::DF_K)
+	local Core = HxSignal.new(warn::DF_K)
 	local Event = Core:AddEvent();
 	local con = self.OnGlobalKeyInputEvent:Connect(function(Player: Player, ...) 
 		if Player == player then
@@ -85,7 +85,7 @@ function private:GetPlayerCameraChangeEvent (player: Player)
 	end
 	
 	local Controller : PlayerController = {} :: any
-	local Core = HxEventCore.new(warn::DF_C)
+	local Core = HxSignal.new(warn::DF_C)
 	local Event = Core:AddEvent();
 	local con = self.OnGlobalCameraEvent:Connect(function(Player: Player, ...) 
 		if Player == player then
@@ -114,7 +114,7 @@ function private:GetPlayerInputChangeEvent (player: Player)
 	end
 	
 	local Controller : PlayerController = {} :: any
-	local Core = HxEventCore.new(warn::DF_I);
+	local Core = HxSignal.new(warn::DF_I);
 	local Event = Core:AddEvent();
 	local con = self.OnGlobalInputEvent:Connect(function(Player: Player, ...) 
 		if Player == player then
@@ -211,9 +211,9 @@ type DF_I = (Player: Player, Input: Enum.UserInputType, State: Enum.UserInputSta
 type DF_K = (Player: Player, Key: Enum.KeyCode, State: Enum.UserInputState)->()
 type DF_C = (Player: Player, CameraCFrame: CFrame) -> ()
 
-private.global_i_core = HxEventCore.new(warn::DF_I);
-private.global_k_core = HxEventCore.new(warn::DF_K);
-private.global_c_core = HxEventCore.new(warn::DF_C);
+private.global_i_core = HxSignal.new(warn::DF_I);
+private.global_k_core = HxSignal.new(warn::DF_K);
+private.global_c_core = HxSignal.new(warn::DF_C);
 
 private.e0 = private.global_i_core:AddEvent();
 private.e5 = private.global_k_core:AddEvent();

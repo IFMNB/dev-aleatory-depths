@@ -11,9 +11,9 @@ local interface = {};
 local PackageTransport = main.ServiceLibs.PackageTransport
 type NetPackageService = typeof(interface.Service)
 type SadObject = typeof(main.Core.Classes.SadObject().class)
-type HxEventCore = typeof(main.Core.Classes.HxEventCore().new())
-type HxEvent = typeof(main.Core.Classes.HxEventCore().new(warn :: DefFunc):AddEvent())
-type HxEventG = typeof(main.Core.Classes.HxEventCore().new():AddEvent())
+type HxSignal = typeof(main.Core.Classes.HxSignal().new())
+type HxEvent = typeof(main.Core.Classes.HxSignal().new(warn :: DefFunc):AddEvent())
+type HxEventG = typeof(main.Core.Classes.HxSignal().new():AddEvent())
 type HxEventConnection = typeof(({}::HxEvent):Connect(function(...)  end))
 
 private.stampin='KB' :: 'KB'|'B'|'MB'
@@ -145,8 +145,8 @@ function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent)
 		return private.watched[event]
 	end
 	
-	local HxEventCore = main.Core.Classes.HxEventCore().new(warn :: DefFunc);
-	local HxEvent = HxEventCore:AddEvent()
+	local HxSignal = main.Core.Classes.HxSignal().new(warn :: DefFunc);
+	local HxEvent = HxSignal:AddEvent()
 	
 	local con : RBXScriptConnection
 	event.Destroying:Once(function() 
@@ -168,9 +168,9 @@ function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent)
 			end
 			
 			if type(this) == 'table' then
-				HxEventCore:DoCall(player, unpack(this))
+				HxSignal:DoCall(player, unpack(this))
 			else
-				HxEventCore:DoCall(player,this)
+				HxSignal:DoCall(player,this)
 			end
 		end)
 	else
@@ -187,9 +187,9 @@ function private:WatchEvent (Event: RemoteEvent|UnreliableRemoteEvent)
 			end
 			
 			if type(this) == 'table' then
-				HxEventCore:DoCall(unpack(this))
+				HxSignal:DoCall(unpack(this))
 			else
-				HxEventCore:DoCall(this)
+				HxSignal:DoCall(this)
 			end
 		end)
 	end

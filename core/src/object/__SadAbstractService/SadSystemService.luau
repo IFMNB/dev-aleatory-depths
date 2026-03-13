@@ -4,11 +4,11 @@ local private = {}
 local class = {}; setmetatable(class,class);
 local interface = {};
 
-local HxEventCore = main.Libs.Hexagon.Classes.HxEventCore()
+local HxSignal = main.Libs.Hexagon.Classes.HxSignal()
 type SadSystemService = typeof(private.new({Name=''}))
 
 type DefaultF = (deltaTime: number, NewCycle: boolean)->()
-type Core = typeof(HxEventCore.new(warn::DefaultF))
+type Core = typeof(HxSignal.new(warn::DefaultF))
 type Controller = {Core:Core,Count:number,Me:SadSystemService}
 
 function private.new <T,Y> (Service: T & main.DefaultServiceNeedle<Y>)
@@ -32,7 +32,7 @@ function private:while_active_do ()
 	local Controller = private.task_map[self]
 	local Core : Core = Controller and Controller.Core
 	if not Core then
-		Core = HxEventCore.new(warn::DefaultF)
+		Core = HxSignal.new(warn::DefaultF)
 		Controller = {Core=Core,Count=0,Me=self}
 		private.task_map[self] = Controller
 		table.insert(private.task_list, Controller)

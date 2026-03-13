@@ -1,7 +1,7 @@
 local main = require('./')
 
 local Hx = main.Libs.Hexagon
-local HxEventCore = Hx.Classes.HxEventCore()
+local HxSignal = Hx.Classes.HxSignal()
 
 local private = {}
 local class = {}; setmetatable(class,class);
@@ -13,8 +13,8 @@ type SadPhysicGroup <T=string> = typeof(interface.new(nil::T))
 
 function private.new (name: string)
 	type DF = (Element: BasePart)->()
-	local Core1 = HxEventCore.new(warn::DF);
-	local Core2 = HxEventCore.new(warn::DF);
+	local Core1 = HxSignal.new(warn::DF);
+	local Core2 = HxSignal.new(warn::DF);
 	
 	local Event1 = Core1:AddEvent();
 	local Event2 = Core2:AddEvent();

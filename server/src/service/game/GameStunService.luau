@@ -3,7 +3,7 @@ local Mapping = main.Mapping
 local private = {}
 local interface = {}
 
-local HxEventCore = main.Core.Classes.HxEventCore()
+local HxSignal = main.Core.Classes.HxSignal()
 local NetOwnerService = require('../net/NetOwnerService')
 local DebrisService = game:GetService('Debris')
 
@@ -73,8 +73,8 @@ function private:PlrFall (Player: Player, Time: number?, knockbackAngle: Vector3
 end
 
 type DF = (Character: Model, Time: number)->()
-private.stun = HxEventCore.new(warn::DF);
-private.fall = HxEventCore.new(warn::DF);
+private.stun = HxSignal.new(warn::DF);
+private.fall = HxSignal.new(warn::DF);
 
 private.e0 = private.stun:AddEvent()
 private.e1 = private.fall:AddEvent()

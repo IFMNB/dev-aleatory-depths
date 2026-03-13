@@ -110,10 +110,7 @@ function private:DoFor (Model: Model, F: (Model: Model, Primary: BasePart)->())
 	self:SetModelOwnerTo(Model, owner)
 end
 
-interface.Enums = table.freeze({
-	Server = Mapping.Enum.Server;
-	Client = Mapping.Enum.Client;
-})
+interface.Enums = main.Mapping.Enum.MachineSide;
 interface.Service = main.Core.Classes.SadNetService().new({
 	Name = 'NetOwnerService' :: 'NetOwnerService';
 	

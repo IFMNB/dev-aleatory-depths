@@ -2,7 +2,7 @@ local main = require('../..');
 
 local SadObject = main.Core.Classes.SadObject()
 local HxEvent = main.Core.Classes.HxEvent()
-local HxEventCore = main.Core.Classes.HxEventCore()
+local HxSignal = main.Core.Classes.HxSignal()
 
 local private = {};
 local class = {}; setmetatable(class, class);
@@ -18,8 +18,8 @@ type MapManifest <q=string, m=Model> = {
 function private.new <map, q> (Manifest: MapManifest<q> )	
 	type DefaultFunction = () -> ()
 	type MapSpawn = (Survivors: {Player}, Killers: {Player})->()
-	local Core1 = HxEventCore.new(warn::DefaultFunction)
-	local Core2 = HxEventCore.new(warn::MapSpawn)
+	local Core1 = HxSignal.new(warn::DefaultFunction)
+	local Core2 = HxSignal.new(warn::MapSpawn)
 	local Event1 = Core1:AddEvent();
 	local Event2 = Core2:AddEvent();
 	
@@ -27,8 +27,8 @@ function private.new <map, q> (Manifest: MapManifest<q> )
 		InGame=SadObject.new(Manifest);
 		OnLoadedEvent = Event1;
 		OnSpawnedEvent = Event2;
-		MapLoad = main.Abstract.Wrap(nil,class.MapLoad,Core1.SelfCall);
-		MapSpawn = main.Abstract.Wrap(nil,class.MapSpawn,Core2.SelfCall);
+		MapLoad = main.Abstract.Wrap(nil,class.MapLoad,Core1.DoCallSelf);
+		MapSpawn = main.Abstract.Wrap(nil,class.MapSpawn,Core2.DoCallSelf);
 	}, class)
 end
 
