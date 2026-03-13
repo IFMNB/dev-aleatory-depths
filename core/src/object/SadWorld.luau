@@ -67,12 +67,12 @@ end
 
 function private:GetSnapshotComponents ()
 	local self = self :: SadWorld
-	return HxSnapshot.new(SharedTable.cloneAndFreeze(self.Components,true))
+	return HxSnapshot.new(SharedTable.clone(self.Components))
 end
 
 function private:GetSnapshotWorlds ()
 	local self = self :: SadWorld
-	return HxSnapshot.new(SharedTable.cloneAndFreeze(self.Worlds))
+	return HxSnapshot.new(SharedTable.clone(self.Worlds))
 end
 
 

@@ -93,14 +93,58 @@ function private.task_list_react ()
 	end)
 end
 
+--[[
+	Учитывает фазовую логику как отдельные действия системы.
+	Используется для отслеживания статуса обработки объектов, или этапа на котором упала система.
+	
+	@class SadSystemService
+]]
+function private:phased_log (PrintNoneJobNotifications: boolean?)
+	local self = self :: SadSystemService;
+	local phases : {boolean} = {}
+	return {
+		Insert = function (PhaseNumber: number, to: boolean)
+			table.insert(phases, to)
+		end,
+		EndLog = function (ProcessedElement: unknown)
+			table.freeze(phases)
+			
+			if self:IsLogActive() then
+				local state : boolean?
+				for i,v in phases do
+					if v == false then
+						state = false
+						break
+					elseif v == true then
+						state = true
+					else
+						main.Mapping.Exception.TechicalException:Throw()
+					end
+				end
+				
+				if state == nil then
+					if PrintNoneJobNotifications then
+						self:PrintLog(string.format('Nothing to do for %s', tostring(ProcessedElement)))
+					end		
+				elseif state == false then
+					self:PrintLog(string.format('Error for %s', tostring(ProcessedElement)))
+				elseif state == true then
+					self:PrintLog(string.format('Success for %s', tostring(ProcessedElement)))
+				end
+			end
+			
+		end,
+	}
+end
 
 
 class.__index = main.__SadAbstractService.class;
 class.ClassName = main.Mapping.Class.SadSystemService;
 class.Source = script;
 class.DoWhileActive = private.while_active_do;
-class.UpdateRate = 1/5;
+class.UpdateRate = 1/2;
 
+class.DoPhaseLog = private.phased_log;
 class.SetDevActive = private.set_dev_active;
 class.IsDevActive = private.is_dev_active;
 

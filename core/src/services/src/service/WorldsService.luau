@@ -14,11 +14,30 @@ private.shared_worlds = {} :: {[string]: SadWorld}
 function private:get_shared_world (Identity: Worlds | string)
 	local self = self :: GameWorldsService;
 	local world = private.shared_worlds[Identity]
-	if not world then
-		world = SadWorld.new(Identity)
-		private.shared_worlds[world.Identity]=world
+	if world then
+		return world
 	end
-
+	
+	local shared = SharedTableRegistry:GetSharedTable(Identity)
+	world = SadWorld.new(Identity)
+	
+	if not shared.Identity then
+		for i,v in world do
+			SharedTable.update(shared, i, function(arg) 
+				if arg == nil then
+					return v
+				end
+				return arg
+			end)
+			print(i,v)
+		end
+	else
+		world.Worlds = shared.Worlds
+		world.Components = shared.Components		
+	end
+	
+	private.shared_worlds[Identity]=world
+	
 	return world
 end
 
@@ -26,6 +45,11 @@ function private:remove_shared_world (Identity: Worlds | string)
 	local self = self :: GameWorldsService;
 
 	private.shared_worlds[Identity]=nil
+	SharedTableRegistry:SetSharedTable(Identity,nil)
+end
+
+function private.is_world_exists_in_SharedRegistry (Identity: string)
+	return SharedTableRegistry:GetSharedTable(Identity).Identity ~= nil
 end
 
 function private:is_world_exist (Identity: Worlds | string)

@@ -67,4 +67,10 @@ return table.freeze({
 		'The error occurs when the code tries to perform an operation that can only be performed in the future tense due to a lack of data in the present.'
 		::'The error occurs when the code tries to perform an operation that can only be performed in the future tense due to a lack of data in the present.'
 	),
+	
+	ParallelConditionException = exception.new(
+		'ParallelConditionException' :: 'ParallelConditionException',
+		'The error occurs if the code does not allow simultaneous modification of any parameter from another source.'
+		::'The error occurs if the code does not allow simultaneous modification of any parameter from another source.'
+	),
 })

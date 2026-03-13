@@ -8,7 +8,6 @@ local position = components.Position()
 local rotation = components.Rotation()
 local height = components.Height()
 local model = components.Model()
-local form = components.Form()
 local surface = components.Surface()
 
 local private = {};
@@ -44,14 +43,7 @@ function private.Action (World)
 			
 			local IgnoreList = {}
 			
-			Phase[5] = form:DoCatchFrom(World, function(Component5: { IsTemporal: boolean, Path: string }) 
-				local value = main.Libs.RbxUtility.FromPath(Component5.Path)
-				if value then
-					table.insert(IgnoreList::any,value)
-				end
-			end)
-			
-			Phase[6] = model:DoCatchFrom(World, function(Component6: { IsTemporal: boolean, Path: string }) 
+			Phase[5] = model:DoCatchFrom(World, function(Component6: { IsTemporal: boolean, Path: string }) 
 				local value = main.Libs.RbxUtility.FromPath(Component6.Path)
 				if value then
 					table.insert(IgnoreList::any,value)

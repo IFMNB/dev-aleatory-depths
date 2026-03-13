@@ -39,10 +39,7 @@ local TestZone = GameMapService.Service:GetMap('TestZone')
 TestZone:MapLoad() 
 
 
-local SystemSpawner = server.Services.SystemSpawner()
 
-SystemSpawner.Service:SetActive(true)
-SystemSpawner.Service:SetLogActive(false)
 
 --SystemPosition.Service:SetLogActive(true)
 
@@ -55,3 +52,6 @@ world:DoCallForCatchedWorld(abobo, function(World)
 	Fortuna:DoAddComponents(World)
 	Fortuna:DoAddAbilities(World)
 end)
+
+
+warn(WorldsService.Service:GetWorld('game.world'))

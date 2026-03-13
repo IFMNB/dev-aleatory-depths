@@ -1,0 +1,1 @@
+return require('@self/__HxBaseProperty/HxActionEmitter/HxSignal')

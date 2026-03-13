@@ -22,7 +22,7 @@ function private.new <T, tbl, i, v> (Name: T & string, Component)
 	local raw = {
 		Name = tostring(Name) :: tostring<T>;
 		Value = Component;
-		DoCatchFrom = (nil::any)::<T>(self: unknown, To: T,F: Func<typeof(Component)>)->()
+		DoCatchFrom = (nil::any)::<T>(self: unknown, To: T,F: Func<typeof(Component)>)->boolean
 	}
 	
 	return main.new(raw,class)

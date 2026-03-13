@@ -1,0 +1,1 @@
+return require('@self/_IHxPrimetive/HxString')

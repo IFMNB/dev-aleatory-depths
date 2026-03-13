@@ -41,7 +41,7 @@ function src.SystemPosition ()
 end
 
 function src.SystemSpawner ()
-	return require('../service/system/SystemSpawner')
+	return require('../service/system/RbxSync/SystemSpawner')
 end
 
 function src.SystemSurface ()
