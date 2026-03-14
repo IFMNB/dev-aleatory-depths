@@ -44,6 +44,15 @@ function src.SystemSpawn ()
 	return require('../service/system/RbxSync/SystemSpawn')
 end
 
+--[[
+	Система синхронизации объекта в иерархии роблокса
+]]
+function src.SystemFetch ()
+	return require('../service/system/RbxSync/SystemFetch')
+end
+--[[
+	Система для получения локального Y положения в пространстве
+]]
 function src.SystemSurface ()
 	return require('../service/system/RbxSync/SystemSurface')
 end

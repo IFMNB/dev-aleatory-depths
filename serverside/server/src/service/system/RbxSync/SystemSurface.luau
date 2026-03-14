@@ -38,9 +38,11 @@ function private.Action (World)
 			local RotationVectorDown = Vector3.new(0,-1,0)
 			local Position = Component2.Value
 			
-			Phase[3] = rotation:DoCatchFromWorld(World, function(Component3)
-				RotationVectorDown = -Component3.Up
-			end)
+			if Component1.IsLocalCoordinate then
+				Phase[3] = rotation:DoCatchFromWorld(World, function(Component3)
+					RotationVectorDown = -Component3.Up
+				end)
+			end
 			
 			Phase[4] = height:DoCatchFromWorld(World, function(Component4) 
 				RotationVectorDown *= Component4.Value

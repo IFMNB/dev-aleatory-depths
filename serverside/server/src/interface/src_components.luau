@@ -39,6 +39,9 @@ local components = table.freeze({
 		Spawn = function ()
 			return require(action.spawn)
 		end,
+		Fetch = function ()
+			return require(action.fetch)
+		end,
 	});
 	
 

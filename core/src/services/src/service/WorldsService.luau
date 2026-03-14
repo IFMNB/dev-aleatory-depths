@@ -57,11 +57,12 @@ function private:is_world_exist (Identity: Worlds | string)
 end
 
 interface.Service = main.Core.Classes.SadCoreService().new({
+	
 	GetWorld = private.get_shared_world;
 	IsExistsWorld = private.is_world_exist;
 	DoRemoveWorld = private.remove_shared_world;
 	
-	Name = 'GameCollisionService'::'GameCollisionService';
+	Name = script.Name;
 })
 
 return interface

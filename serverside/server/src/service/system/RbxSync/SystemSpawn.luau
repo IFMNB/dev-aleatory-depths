@@ -37,6 +37,7 @@ function private.Action (World)
 					end
 					
 					local copy = this:Clone()
+					copy.Name = main.Libs.CodeUtility.RandomStr()
 					copy.Parent = target
 					main.Mapping.Exception.ParallelConditionException:Assert(TargetWorld.DoUpdateComponent(World, model.Name, 'Path', function(old, current) 
 						if current == old then
@@ -48,10 +49,10 @@ function private.Action (World)
 			end
 		end)
 		
+		PhaseLog.EndLog(World.Identity)
 		if not IsProcessed then
 			main.Mapping.Exception.ParallelConditionException:Throw()
 		end
-		
 	end)
 end
 

@@ -8,6 +8,7 @@ local component = main.Core.Classes.SadComponentFabric().new(script.Name,
 			Material: Enum.Material,
 			Normal: Vector3
 		}?;
+		IsLocalCoordinate = true;
 	}
 )
 
