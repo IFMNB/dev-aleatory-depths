@@ -60,6 +60,10 @@ end
 
 
 local task_reactor = nil :: thread?
+--[[
+	Scheduler для активности систем
+
+]]
 function private.task_list_react ()
 	if task_reactor then
 		task.cancel(task_reactor)

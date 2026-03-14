@@ -46,12 +46,4 @@ TestZone:MapLoad()
 local world = WorldsService.Service:GetWorld('game.world')
 local Fortuna = server.Characters.Fortuna()
 
-local abobo = Fortuna:DoCreate(world)
-
-world:DoCallForCatchedWorld(abobo, function(World) 
-	Fortuna:DoAddComponents(World)
-	Fortuna:DoAddAbilities(World)
-end)
-
-
-warn(WorldsService.Service:GetWorld('game.world'))
+local abobo = Fortuna:DoCreate(world, true)

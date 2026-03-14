@@ -3,7 +3,7 @@ local components = require('../../../interface/src_components')
 
 local WorldsService = main.Core.Services.WorldsService()
 
-local form = components.Form()
+local model = components.Model()
 local rotation = components.Rotation()
 
 local private = {};
@@ -15,7 +15,7 @@ function private.ForWorld (World)
 	local Service = interface.Service
 	local Phase = {}
 	
-	Phase[1] = form:DoCatchFrom(World, function(Component1) 
+	Phase[1] = model:DoCatchFrom(World, function(Component1) 
 		Phase[2] = rotation:DoCatchFrom(World, function(Component2: { Look: Vector3, Right: Vector3, Up: Vector3 }) 
 			local this = main.Libs.RbxUtility.FromPath(Component1.Path) :: PVInstance?
 			if this then

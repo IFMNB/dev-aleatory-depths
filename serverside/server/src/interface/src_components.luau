@@ -21,11 +21,10 @@ local components = table.freeze({
 	Height = function ()
 		return require(path.height)
 	end,
-	-- Физическая форма (может быть PrimaryPart модели)
-	Form = function ()
-		return require(path.form)
-	end,
-	-- Результат рейкаста от известной позиции сугубо в -Up вектор
+	--[[
+		
+	
+	]]
 	Surface = function ()
 		return require(path.surface)
 	end,

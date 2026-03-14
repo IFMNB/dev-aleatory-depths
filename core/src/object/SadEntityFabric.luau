@@ -107,9 +107,18 @@ function private:insert_components_into (World, Identity: string, ...: any)
 	return true
 end
 
-function private:create (World)
+function private:create (World, WithUnpack: boolean?)
 	local self = self :: SadEntityFabric;
-	return SadWorld.class.AddWorldNew(World)
+	local Identity = SadWorld.class.AddWorldNew(World);
+	
+	if WithUnpack then
+		SadWorld.class.DoCallForCatchedWorld(World, Identity, function(World) 
+			class.DoAddAbilities(self,World);
+			class.DoAddComponents(self,World);
+		end)
+	end
+	
+	return Identity
 end
 
 

@@ -33,7 +33,7 @@ type fw = (World: DWorld)->()
 
 function private:DoForWorlds(f: fw)
 	local self = self :: SadWorld;
-	for i,v in self:GetSnapshotWorlds().Value :: any do
+	for i,v in class.GetSnapshotWorlds(self).Value :: any do
 		xpcall(f,warn,v)
 	end
 end
@@ -50,7 +50,7 @@ end
 
 function private:DoForComponents(f:fc)
 	local self = self :: SadWorld;
-	for i,v in self:GetSnapshotComponents().Value :: any do
+	for i,v in class.GetSnapshotComponents(self).Value :: any do
 		xpcall(f,warn,v)
 	end
 end
@@ -136,6 +136,15 @@ function private:AddComponent(Name:string, Component: Component)
 	return false
 end
 
+function private:UpdateComponent(Name: string, Index: any, f: (old: any, current:any)->any)
+	return class.DoCallForCatchedComponent(self, Name, function(Component: any)
+		local old = Component[Index]
+		SharedTable.update(Component :: SharedTable, Index, function(arg) 
+			return f(old, arg)
+		end)
+	end)
+end
+
 function private:RemComponent(Name:string)
 	local self = self :: SadWorld
 	local target = self.Components[Name]
@@ -183,6 +192,7 @@ class.AddWorldNew = private.AddWorldNew;
 class.AddWorld = private.AddWorld;
 class.RemWorld = private.RemWorld;
 
+class.DoUpdateComponent = private.UpdateComponent;
 class.AddComponent = private.AddComponent;
 class.RemComponent = private.RemComponent;
 

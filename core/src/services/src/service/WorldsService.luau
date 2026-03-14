@@ -29,7 +29,6 @@ function private:get_shared_world (Identity: Worlds | string)
 				end
 				return arg
 			end)
-			print(i,v)
 		end
 	else
 		world.Worlds = shared.Worlds

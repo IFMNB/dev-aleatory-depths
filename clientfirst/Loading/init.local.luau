@@ -9,9 +9,22 @@ local TweenService = game:GetService('TweenService')
 local ContentPreloader = require(script.ContentPreloader)
 local Utils = require(script.Utils)
 
-local function EnableClient ()
-	local client = player.PlayerScripts:WaitForChild('cl_main') :: Script|LocalScript
-	client.Enabled = true
+local function EnableClient () : never	
+	for i=1, 6 do
+		local scripts = player.PlayerScripts:GetDescendants()
+		for _, v in scripts do
+			if v:IsA('LocalScript') or v:IsA('Script') then
+				if v.Name == 'main' then
+					v.Enabled = true
+					return nil :: never
+				end
+			end
+		end
+		
+		task.wait(i)
+	end
+	
+	return error('Scripts should have "main" script to start the game')
 end
 
 if game["Run Service"]:IsStudio() then

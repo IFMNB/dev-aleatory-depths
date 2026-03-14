@@ -22,6 +22,11 @@ interface.Service = main.Core.Classes.SadSystemService().new({
 	TargetWorld = WorldsService.Service:GetWorld('game.world');
 });
 
+private.params = RaycastParams.new();
+private.params.FilterType = Enum.RaycastFilterType.Exclude;
+private.params.RespectCanCollide = true;
+private.params.IgnoreWater = true;
+
 function private.Action (World)
 	local Service = interface.Service
 	local Phase = {}
@@ -29,20 +34,17 @@ function private.Action (World)
 	Phase[1] = surface:DoCatchFrom(World, function(Component1) 
 		Phase[2] = position:DoCatchFrom(World, function(Component2: { Value: Vector3 }) 
 			local RotationVectorDown = Vector3.new(0,-1,0)
+			local IgnoreList = {}
 			local Position = Component2.Value
-			
-			local Height = 1
 			
 			Phase[3] = rotation:DoCatchFrom(World, function(Component3: { Look: Vector3, Right: Vector3, Up: Vector3 }) 
 				RotationVectorDown = -Component3.Up
 			end)
 			
 			Phase[4] = height:DoCatchFrom(World, function(Component4: { Value: number }) 
-				Height = Component4.Value
+				RotationVectorDown *= Component4.Value
 			end)
-			
-			local IgnoreList = {}
-			
+		
 			Phase[5] = model:DoCatchFrom(World, function(Component6: { IsTemporal: boolean, Path: string }) 
 				local value = main.Libs.RbxUtility.FromPath(Component6.Path)
 				if value then
@@ -50,17 +52,13 @@ function private.Action (World)
 				end
 			end)
 			
-			local CalculatedVector3 = (RotationVectorDown * Height) * 10
+			local Direction = RotationVectorDown * 10
 			
 			task.synchronize()
-			local RaycastParams = RaycastParams.new()
-			RaycastParams.FilterDescendantsInstances = IgnoreList
-			RaycastParams.FilterType = Enum.RaycastFilterType.Exclude
-			RaycastParams.RespectCanCollide = true
-			RaycastParams.IgnoreWater = true
+			private.params.FilterDescendantsInstances = IgnoreList
 			task.desynchronize()
 			
-			local RaycastResultRaw = workspace:Raycast(Position,CalculatedVector3, RaycastParams)
+			local RaycastResultRaw = workspace:Raycast(Position,Direction, private.params)
 			local RaycastResult
 			if RaycastResultRaw then
 				RaycastResult = {
@@ -73,19 +71,14 @@ function private.Action (World)
 			end
 			
 			IgnoreList = nil
-			RaycastParams = nil
+			local this = Component1.Value
 			
-			if typeof(Component1) == 'SharedTable' then
-				local this = Component1.Value
-				SharedTable.update(Component1, 'Value', function(arg) 
-					if arg == this then
-						return RaycastResult
-					end
-					return arg
-				end)
-			else
-				(Component1::any).Value = RaycastResult
-			end
+			Service.TargetWorld.DoUpdateComponent(World, surface.Name, 'Value', function(old, current) 
+				if current == old then
+					return RaycastResult
+				end
+				return current
+			end)
 			
 			if Service:IsDevActive() then
 				if main.Libs.CodeUtility.IsParallelContext() then
@@ -98,18 +91,19 @@ function private.Action (World)
 				local Beam = Instance.new('Beam')
 				
 				Beam.FaceCamera = true
-				Attachment1.Position = Position
-				Attachment2.Position = CalculatedVector3
 				Attachment1.Parent = Beam
 				Attachment2.Parent = Beam
 				Beam.Attachment0 = Attachment1
 				Beam.Attachment1 = Attachment2
+				Attachment1.Position = Position
+				Attachment2.Position = Position + Direction
+				
 				Beam.Name = Service.Name
 				Beam.Parent = workspace:FindFirstChild('temp') or workspace 
 				
-				Debris:AddItem(Beam, 1)
-				Debris:AddItem(Attachment1, 1)
-				Debris:AddItem(Attachment2, 1)
+				Debris:AddItem(Beam, Service.UpdateRate)
+				Debris:AddItem(Attachment1, Service.UpdateRate)
+				Debris:AddItem(Attachment2, Service.UpdateRate)
 			end
 		end)
 	end)
