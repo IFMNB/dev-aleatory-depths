@@ -11,7 +11,6 @@ local SystemSpawn = server.Services.SystemSpawn()
 local SystemFetch = server.Services.SystemFetch()
 
 SystemSpawn.Service:SetActive(true)
-SystemSpawn.Service:SetLogActive(true)
 SystemPosition.Service:SetActive(true)
 SystemRotation.Service:SetActive(true)
 SystemSurface.Service:SetActive(true)

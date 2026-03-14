@@ -138,6 +138,8 @@ function private:phased_log (PrintNoneJobNotifications: boolean?)
 				end
 			end
 			
+--			warn(phases)
+			
 		end,
 	}
 end
