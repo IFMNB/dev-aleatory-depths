@@ -10,8 +10,6 @@ type SadComponentFabric <U=string,T=any> = typeof(private.new(nil::U,nil::T))
 	Создает новый компонент.
 
 	@class SadComponentFabric
-	@side all
-	@return Instance (@P SadComponentFabric)
 ]]
 function private.new <T, tbl, i, v> (Name: T & string, Component)
 	type function tostring (t0: type)
@@ -34,11 +32,18 @@ type Func <T=unknown> = (Component: T)->()
 	Возвращает клон значения этой ткани.
 	
 	@class SadComponentFabric
-	@side all
-	@return *unknown*
 ]]
 function private:clone_value ()
 	return (type(self) == 'table' and table.clone(self.Value) or self.Value) :: typeof(self.Value)
+end
+
+function private:clone_value_to(target)
+	local self = self :: SadComponentFabric;
+	if not target[self.Name] then
+		target[self.Name]=self:DoCloneValue()
+		return true
+	end
+	return false
 end
 
 --[[
@@ -48,8 +53,6 @@ end
 	то сделайте это вручную.
 
 	@class SadComponentFabric
-	@side all
-	@return boolean
 ]]
 function private:create <T> (To)
 	local self = self :: SadComponentFabric;
@@ -75,14 +78,28 @@ end
 	
 	@class SadComponentFabric
 ]]
-function private:get_from (To, F: Func)
-	local Components = To.Components
+function private:get_from_world <T> (World, F: Func<>)
+	local Components = World.Components
     local TargetComponent = Components[self.Name]
     if TargetComponent then
         xpcall(F,warn,TargetComponent)
         return true
     end
     return false
+end
+
+--[[
+	Выполняет операцию с компонентом, если он существует.
+
+	@class SadComponentFabric
+]]
+function private:get_from (Target, F: Func)
+	local TargetComponent = Target[self.Name]
+	if TargetComponent then
+		xpcall(F,warn,TargetComponent)
+		return true
+	end
+	return false 
 end
 
 --[[
@@ -101,8 +118,11 @@ class.__index=main.SadObject.class;
 class.ClassName = main.Mapping.Class.SadComponentFabric;
 class.Source = script;
 
-class.DoInsert = private.create;
+class.DoInsertTo = private.clone_value_to;
+class.DoInsertToWorld = private.create;
+class.DoCatchFromWorld = private.get_from_world;
 class.DoCatchFrom = private.get_from;
+
 class.IsExistsIn = private.is_exists;
 class.DoCloneValue = private.clone_value;
 

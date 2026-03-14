@@ -1,6 +1,4 @@
-local main = require('../../');
-local a : RaycastResult
-
+local main = require('../../../');
 local component = main.Core.Classes.SadComponentFabric().new(script.Name,
 	{
 		Value = nil :: {

@@ -3,8 +3,8 @@ local components = require('../../../interface/src_components')
 
 local WorldsService = main.Core.Services.WorldsService()
 
-local model = components.Model()
-local position = components.Position()
+local model = components.property.Model()
+local position = components.parameter.Position()
 
 local private = {};
 local interface = {};

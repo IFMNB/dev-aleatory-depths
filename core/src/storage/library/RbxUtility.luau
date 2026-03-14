@@ -2,6 +2,11 @@ local private = {};
 local interface = {};
 
 function private.FromPath (path: string) : Instance?
+	if path == '' then
+		return nil
+	end
+	
+	
 	local current = game
 	for name in string.gmatch(path, "[^.]+") do
 		if name ~= "game" then

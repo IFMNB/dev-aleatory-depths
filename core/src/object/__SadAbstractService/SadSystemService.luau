@@ -87,7 +87,8 @@ function private.task_list_react ()
 					continue
 				end
 				
-				v.Core:DoCall(delta, v.Count > 0)
+				v.Core:DoCall(delta, v.Count <= 0)
+				v.Count+=1
 			end
 			
 			task.wait(T)

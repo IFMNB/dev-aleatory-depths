@@ -1,3 +1,7 @@
+--!strict
+--!native
+--!optimize 2
+
 local main = require('./');
 
 local private = {};
@@ -10,10 +14,12 @@ type SadWorld = typeof(private.new())
 type Component = (SharedTable & {[any]:unknown}) | unknown
 type SWorlds = SharedTable & {[string]:DWorld}
 type SComponents = SharedTable & {[string]: Component}
+type SArchetype = SharedTable & {[string]: {DWorld}}
 type DWorld = {
 	Worlds: {[string]: DWorld},
 	Components: {[string]: Component},
-	Identity: string
+	Identity: string,
+	Parent: DWorld?
 }
 
 function private.new (Identity: string?)
@@ -21,6 +27,8 @@ function private.new (Identity: string?)
 	this.Worlds = SharedTable.new() :: SWorlds
 	this.Components = SharedTable.new() :: SComponents
 	this.Identity = Identity or main.Libs.CodeUtility.RandomStr()
+	this.Archetypes = SharedTable.new() :: SArchetype
+	this.Parent = nil :: DWorld|SadWorld?
 	
 	local result = main.new(this, class)
 	return result
@@ -86,12 +94,14 @@ function private:AddWorldNew(Identity: string?)
 			return arg
 		end
 		result = new.Identity
+		new.Parent = self
 		return new
 	end)
+	
 	return result
 end
 
-function private:AddWorld(World: SadWorld)
+function private:AddWorld(World: SadWorld|DWorld)
 	local self = self :: SadWorld
 	if self.Worlds[World.Identity] == nil then
 		local state = true
@@ -102,6 +112,14 @@ function private:AddWorld(World: SadWorld)
 			end
 			return World
 		end)
+		
+		local parent = World.Parent
+		SharedTable.update(World::any, 'Parent', function(arg) 
+			if arg ~= parent then
+				return main.Mapping.Exception.ParallelConditionException:Throw()
+			end
+			return self
+		end)
 		return state
 	end
 	return false
@@ -109,10 +127,11 @@ end
 
 function private:RemWorld(Identity: string)
 	local self = self :: SadWorld
-	local World = self.Worlds[Identity]
+	local World : DWorld? = self.Worlds[Identity]
 	if World then
 		SharedTable.update(self.Worlds, Identity, function(arg) 
 			if arg == World then
+				World.Parent = nil
 				return nil
 			end
 			return arg
@@ -176,9 +195,11 @@ class.__index = main.SadObject.class;
 class.ClassName = main.Mapping.Class.SadWorld;
 class.Source = script;
 
-class.Worlds = SharedTable.cloneAndFreeze(SharedTable.new());
-class.Components = class.Worlds;
+class.Worlds = SharedTable.cloneAndFreeze(SharedTable.new()) :: SWorlds;
+class.Components = class.Worlds :: SComponents;
+class.Archetypes = class.Worlds :: SArchetype;
 class.Identity = '';
+class.Parent = nil :: DWorld?;
 
 class.DoForWorlds = private.DoForWorlds;
 class.DoForComponents = private.DoForComponents;

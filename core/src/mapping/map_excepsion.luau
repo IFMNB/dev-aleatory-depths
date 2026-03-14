@@ -13,35 +13,11 @@ return table.freeze({
 		'The error occurs when the access level to the protected parameter is insufficient.'
 		::'The error occurs when the access level to the protected parameter is insufficient.'
 	),
-	
-	ServerException = exception.new(
-		'ServerException' :: 'ServerException',
-		'The error occurs when there is no or irreversible loss of information on the server. This can happen for various reasons.'
-		::'The error occurs when there is no or irreversible loss of information on the server. This can happen for various reasons.'
-	),
-	
-	ClientException = exception.new(
-		'ClientException' :: 'ClientException',
-		'The error occurs when interacting incorrectly with information from the server.'
-		::'The error occurs when interacting incorrectly with information from the server.'
-	),
-	
+
 	GameException = exception.new( -- Usually, it means a crooked developer's code.
 		'GameException' :: 'GameException',
 		"The error occurs when the game services are not working properly or the world is not being processed correctly."
 		::"The error occurs when the game services are not working properly or the world is not being processed correctly."
-	),
-	
-	MachineWaitException = exception.new(
-		'MachineWaitException' :: 'MachineWaitException',
-		'The error occurs when waiting too long for a response from the interviewee.'
-		::'The error occurs when waiting too long for a response from the interviewee.'
-	),
-	
-	TimeoutException = exception.new(
-		'TimeoutException' :: 'TimeoutException',
-		'The error occurs when the time limit for processing a certain operation is exceeded.'
-		::'The error occurs when the time limit for processing a certain operation is exceeded.'
 	),
 	
 	CodeException = exception.new(
@@ -73,4 +49,12 @@ return table.freeze({
 		'The error occurs if the code does not allow simultaneous modification of any parameter from another source.'
 		::'The error occurs if the code does not allow simultaneous modification of any parameter from another source.'
 	),
+	
+	NullPointerException = exception.new(
+		'NullPointerException' :: 'NullPointerException',
+		'The error occurs when the code tries to use a parameter that has not been initialized, or that parameter has different types of data.'
+		::'The error occurs when the code tries to use a parameter that has not been initialized, or that parameter has different types of data.'
+	),
+	
+	
 })

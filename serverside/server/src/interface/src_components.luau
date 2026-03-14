@@ -1,33 +1,49 @@
 local path = script.Parent.Parent.storage.components
+local property = path.property
+local parameter = path.parameter
+local action = path.action
+
 local components = table.freeze({
-	Health = function ()
-		return require(path.health)
-	end,
-	Model = function ()
-		return require(path.model)
-	end,
-	Position= function ()
-		return require(path.position)
-	end,
-	Rotation = function ()
-		return require(path.rotation)
-	end,
-	Velocity = function ()
-		return require(path.velocity)
-	end,
-	Lifeform = function ()
-		return require(path.lifeform)
-	end,
-	Height = function ()
-		return require(path.height)
-	end,
-	--[[
-		
+	property = table.freeze({
+		Lifeform = function ()
+			return require(property.lifeform)
+		end,
+		Model = function ()
+			return require(property.model)
+		end,
+		Player = function ()
+			return require(property.player)
+		end,
+	});
+	parameter = table.freeze({
+		Health = function ()
+			return require(parameter.health)
+		end,
+		Position= function ()
+			return require(parameter.position)
+		end,
+		Rotation = function ()
+			return require(parameter.rotation)
+		end,
+		Velocity = function ()
+			return require(parameter.velocity)
+		end,
+		Height = function ()
+			return require(parameter.height)
+		end,
+		Surface = function ()
+			return require(parameter.surface)
+		end,
+	});
+	action = table.freeze({
+		Spawn = function ()
+			return require(action.spawn)
+		end,
+	});
 	
-	]]
-	Surface = function ()
-		return require(path.surface)
-	end,
+
+	
+
 	
 })
 

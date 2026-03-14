@@ -4,11 +4,11 @@ local components = require('../../../interface/src_components')
 local WorldsService = main.Core.Services.WorldsService()
 
 
-local position = components.Position()
-local rotation = components.Rotation()
-local height = components.Height()
-local model = components.Model()
-local surface = components.Surface()
+local position = components.parameter.Position()
+local rotation = components.parameter.Rotation()
+local height = components.parameter.Height()
+local model = components.property.Model()
+local surface = components.parameter.Surface()
 
 local private = {};
 local interface = {};
@@ -22,42 +22,38 @@ interface.Service = main.Core.Classes.SadSystemService().new({
 	TargetWorld = WorldsService.Service:GetWorld('game.world');
 });
 
+private.ignore_list = {}
 private.params = RaycastParams.new();
 private.params.FilterType = Enum.RaycastFilterType.Exclude;
 private.params.RespectCanCollide = true;
 private.params.IgnoreWater = true;
+private.params.FilterDescendantsInstances = private.ignore_list;
 
 function private.Action (World)
 	local Service = interface.Service
 	local Phase = {}
 	
-	Phase[1] = surface:DoCatchFrom(World, function(Component1) 
-		Phase[2] = position:DoCatchFrom(World, function(Component2: { Value: Vector3 }) 
+	Phase[1] = surface:DoCatchFromWorld(World, function(Component1) 
+		Phase[2] = position:DoCatchFromWorld(World, function(Component2)
 			local RotationVectorDown = Vector3.new(0,-1,0)
-			local IgnoreList = {}
 			local Position = Component2.Value
 			
-			Phase[3] = rotation:DoCatchFrom(World, function(Component3: { Look: Vector3, Right: Vector3, Up: Vector3 }) 
+			Phase[3] = rotation:DoCatchFromWorld(World, function(Component3)
 				RotationVectorDown = -Component3.Up
 			end)
 			
-			Phase[4] = height:DoCatchFrom(World, function(Component4: { Value: number }) 
+			Phase[4] = height:DoCatchFromWorld(World, function(Component4) 
 				RotationVectorDown *= Component4.Value
 			end)
 		
-			Phase[5] = model:DoCatchFrom(World, function(Component6: { IsTemporal: boolean, Path: string }) 
+			Phase[5] = model:DoCatchFromWorld(World, function(Component6) 
 				local value = main.Libs.RbxUtility.FromPath(Component6.Path)
 				if value then
-					table.insert(IgnoreList::any,value)
+					table.insert(private.ignore_list,value)
 				end
 			end)
 			
 			local Direction = RotationVectorDown * 10
-			
-			task.synchronize()
-			private.params.FilterDescendantsInstances = IgnoreList
-			task.desynchronize()
-			
 			local RaycastResultRaw = workspace:Raycast(Position,Direction, private.params)
 			local RaycastResult
 			if RaycastResultRaw then
@@ -70,9 +66,6 @@ function private.Action (World)
 				}
 			end
 			
-			IgnoreList = nil
-			local this = Component1.Value
-			
 			Service.TargetWorld.DoUpdateComponent(World, surface.Name, 'Value', function(old, current) 
 				if current == old then
 					return RaycastResult
@@ -80,6 +73,7 @@ function private.Action (World)
 				return current
 			end)
 			
+			table.clear(private.ignore_list)
 			if Service:IsDevActive() then
 				if main.Libs.CodeUtility.IsParallelContext() then
 					task.synchronize()

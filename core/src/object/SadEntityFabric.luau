@@ -4,21 +4,12 @@ local private = {};
 local class = {};
 local interface = {};
 
-local SadWorld = require('./SadWorld').SadWorld
 type SadEntityFabric <T0=string,T1=typeof(class.Abilities), T2=typeof(class.Components)> = typeof(private.new(nil::T0,nil::T1,nil::T2))
-type SadWorld = typeof(SadWorld.new())
 
 --[[
-	Создает ткань для создания персонажа.
-	
-	Эта ткань является базовой структурой для создания той или иной сущности.
-	
 	@class SadEntityFabric
-	@side all
-	@return Instance (@P SadEntityFabric)
 ]]
 function private.new <T,U> (Abilities, Components, Fabrics)
-	
 	Abilities = main.Mapping.Exception.CodeException:Assert(type(Abilities)=='table' and Abilities)
 	Components = main.Mapping.Exception.CodeException:Assert(type(Components)=='table' and Components)
 	
@@ -31,94 +22,58 @@ function private.new <T,U> (Abilities, Components, Fabrics)
 	return this
 end
 
-function private:insert_abilities_indo (World, ...: any)
-	local self = self :: SadEntityFabric;
-	local Abilities = self.Abilities :: typeof(class.Abilities)
-	local Names = {...}
+function private:unpack_abilities_into(Target)
+	local self = self :: SadEntityFabric	
+	local abilities : {[any]:unknown} = self.Abilities
 
-	if not World.Components then return false end
-	
-	for Position,AbilityName in Names do
-		if Abilities[AbilityName] then
-			if not SadWorld.class.AddComponent(World, AbilityName,Abilities[AbilityName]) then
-				main.Mapping.Exception.TechicalException:Warn(
-					string.format('Ability %s already exists in world %s',AbilityName,World.Identity),
-					false
-				)
-			end
-		end
+	for i,v in abilities do
+		class.AddAbilityTo(self, Target, i)
 	end
-	
-	return true
 end
 
-function private:unpack_abilities_into (World)
+function private:insert_ability_into (Target, name: any)
 	local self = self :: SadEntityFabric;
-	local Abilities = self.Abilities :: typeof(class.Abilities)
+	local abilities : {[any]:unknown} = self.Abilities
+	local ability = abilities[name]
+	local target_components : {[any]:unknown} = Target.Components
 	
-	if not World.Components then return false end
-	
-	for i,v in Abilities do
-		if not SadWorld.class.AddComponent(World,i,v) then
-			main.Mapping.Exception.TechicalException:Warn(
-				string.format('Ability %s already exists in world %s',i,World.Identity),
-				false
-			)
-		end
+	if ability then
+		target_components[name]=ability
+		return true
 	end
 	
-	return true
+	return false
 end
 
-function private:unpack_components_into (World)
+function private:unpack_components_into(Target)
 	local self = self :: SadEntityFabric;
-	local Components = self.Components ::  typeof(class.Components)
+	local components : {[any]: unknown} = self.Components
 	
-	if not World.Components then return false end
-	
-	for i,v in Components do
-		if not SadWorld.class.AddComponent(World,i,v) then
-			main.Mapping.Exception.TechicalException:Warn(
-				string.format('Component %s already exists in world %s',i,World.Identity),
-				false
-			)
-		end
+	for i,v in components do
+		class.AddComponentTo(self, Target, i)
 	end
-	
-	return true
 end
 
-function private:insert_components_into (World, Identity: string, ...: any)
+function private:insert_component_into (Target, name: any)
 	local self = self :: SadEntityFabric;
-	local Components = self.Components :: typeof(class.Components)
-	local Names = {...}
+	local components : {[any]: unknown} = self.Components
+	local component = components[name]
+	local target_components : {[any]: unknown} = Target.Components
 	
-	if not World.Components then return false end
-	
-	for Position,ComponentName in Names do
-		if not SadWorld.class.AddComponent(World,ComponentName,Components[ComponentName]) then
-			main.Mapping.Exception.TechicalException:Warn(
-				string.format('Component %s already exists in world %s',ComponentName,World.Identity),
-				false
-			)
-		end
+	if component then
+		target_components[name]= if type(component) == 'table' then table.clone(component) else component
+		return true
 	end
-
-	return true
+	
+	return false
+	
 end
 
-function private:create (World, WithUnpack: boolean?)
+function private:unpack_to(Target)
 	local self = self :: SadEntityFabric;
-	local Identity = SadWorld.class.AddWorldNew(World);
 	
-	if WithUnpack then
-		SadWorld.class.DoCallForCatchedWorld(World, Identity, function(World) 
-			class.DoAddAbilities(self,World);
-			class.DoAddComponents(self,World);
-		end)
-	end
-	
-	return Identity
+	class.DoUnpackAbilitiesTo(self,Target);
+	class.DoUnpackComponentsTo(self,Target);
 end
 
 
@@ -131,12 +86,12 @@ class.Abilities = {} :: {[string]: unknown};
 class.Components = {} :: {[string]: unknown};
 class.Fabrics = {} :: {[string]: unknown};
 
-class.DoCreate = private.create;
+class.DoUnpackAbilitiesTo = private.unpack_abilities_into;
+class.DoUnpackComponentsTo = private.unpack_components_into;
+class.DoUnpackTo = private.unpack_to;
 
-class.DoAddAbilities = private.unpack_abilities_into;
-class.DoAddComponents = private.unpack_components_into;
-class.DoAddAbility = private.insert_abilities_indo;
-class.DoAddComponent = private.insert_components_into;
+class.AddAbilityTo = private.insert_ability_into;
+class.AddComponentTo = private.insert_component_into;
 
 
 interface.class = class;

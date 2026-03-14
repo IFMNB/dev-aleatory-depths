@@ -40,8 +40,8 @@ function src.SystemPosition ()
 	return require('../service/system/RbxSync/SystemPosition')
 end
 
-function src.SystemSpawner ()
-	return require('../service/system/RbxSync/SystemSpawner')
+function src.SystemSpawn ()
+	return require('../service/system/RbxSync/SystemSpawn')
 end
 
 function src.SystemSurface ()

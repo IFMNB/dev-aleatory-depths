@@ -19,7 +19,7 @@ interface.Service = main.Core.Classes.SadSystemService().new({
 
 function private.Subact (Component)
 	if Component.IsTemporal then
-		local target = main.Libs.RbxUtility.FromPath(Component.Path)
+		local target = main.Libs.RbxUtility.FromPath(Component.Source)
 		if target then
 			target.Parent = workspace
 			Component.IsTemporal = false
