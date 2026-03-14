@@ -19,10 +19,10 @@ function private.Action (World)
 	local TargetWorld = Service.TargetWorld
 	local PhaseLog = Service:DoPhaseLog()
 	
-	spawn:DoCatchFrom(World, function(Component1: { ToPath: string })
+	spawn:DoCatchFromWorld(World, function(Component1)
 		TargetWorld.RemComponent(World, spawn.Name)
 		
-		local IsProcessed = model:DoCatchFrom(World, function(Component2: { Path: string, Source: string })
+		local IsProcessed = model:DoCatchFromWorld(World, function(Component2: { Path: string, Source: string })
 			PhaseLog.Insert(1,true)
 			if Component2.Path == '' then
 				local TargetPath = main.Libs.RbxUtility.FromPath(Component1.ToPath)

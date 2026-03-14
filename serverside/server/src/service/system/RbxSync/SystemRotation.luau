@@ -15,8 +15,8 @@ function private.ForWorld (World)
 	local Service = interface.Service
 	local Phase = {}
 	
-	Phase[1] = model:DoCatchFrom(World, function(Component1) 
-		Phase[2] = rotation:DoCatchFrom(World, function(Component2: { Look: Vector3, Right: Vector3, Up: Vector3 }) 
+	Phase[1] = model:DoCatchFromWorld(World, function(Component1) 
+		Phase[2] = rotation:DoCatchFromWorld(World, function(Component2: { Look: Vector3, Right: Vector3, Up: Vector3 }) 
 			local this = main.Libs.RbxUtility.FromPath(Component1.Path) :: PVInstance?
 			if this then
 				if this.GetPivot then

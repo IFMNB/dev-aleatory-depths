@@ -20,6 +20,7 @@ function private.new <T, tbl, i, v> (Name: T & string, Component)
 	local raw = {
 		Name = tostring(Name) :: tostring<T>;
 		Value = Component;
+		DoCatchFromWorld = (nil::any)::<T>(self: unknown, To: T,F: Func<typeof(Component)>)->boolean;
 		DoCatchFrom = (nil::any)::<T>(self: unknown, To: T,F: Func<typeof(Component)>)->boolean
 	}
 	
@@ -78,9 +79,9 @@ end
 	
 	@class SadComponentFabric
 ]]
-function private:get_from_world <T> (World, F: Func<>)
+function private:get_from_world <T> (World, F: Func)
 	local Components = World.Components
-    local TargetComponent = Components[self.Name]
+	local TargetComponent = Components[self.Name]
     if TargetComponent then
         xpcall(F,warn,TargetComponent)
         return true

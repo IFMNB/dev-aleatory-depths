@@ -15,8 +15,8 @@ function private.ForWorld (World)
 	local Service = interface.Service
 	local Phase = {}
 	
-	Phase[1] = model:DoCatchFrom(World, function(Component1) 
-		Phase[2] = position:DoCatchFrom(World, function(Component2) 
+	Phase[1] = model:DoCatchFromWorld(World, function(Component1) 
+		Phase[2] = position:DoCatchFromWorld(World, function(Component2) 
 			local form = main.Libs.RbxUtility.FromPath(Component1.Path) :: Instance?
 			if form and form:IsA('PVInstance') then
 				local CurrentPosition = Component2.Value
