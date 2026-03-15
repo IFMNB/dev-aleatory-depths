@@ -52,5 +52,3 @@ for i=1, 10 do
 		Fortuna:DoUnpackTo(World)
 	end)
 end
-
-print(world)

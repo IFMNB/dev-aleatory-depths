@@ -31,8 +31,11 @@ local components = table.freeze({
 		Height = function ()
 			return require(parameter.height)
 		end,
-		Surface = function ()
-			return require(parameter.surface)
+		Floor = function ()
+			return require(parameter.floor)
+		end,
+		Roof = function ()
+			return require(parameter.roof)
 		end,
 	});
 	action = table.freeze({

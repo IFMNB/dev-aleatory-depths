@@ -4,14 +4,14 @@ local WorldsService = server.Services.WorldsService()
 
 WorldsService.Service:SetActive(true)
 
-local SystemPosition = server.Services.SystemPosition()
-local SystemRotation = server.Services.SystemRotation()
-local SystemSurface = server.Services.SystemSurface()
+local SystemFloor = server.Services.SystemFloor()
 local SystemSpawn = server.Services.SystemSpawn()
 local SystemFetch = server.Services.SystemFetch()
+local SystemRoof = server.Services.SystemRoof()
 
-SystemSpawn.Service:SetActive(true)
-SystemPosition.Service:SetActive(true)
-SystemRotation.Service:SetActive(true)
-SystemSurface.Service:SetActive(true)
+SystemRoof.Service:SetActive(true)
+SystemFloor.Service:SetActive(true)
 SystemFetch.Service:SetActive(true)
+SystemSpawn.Service:SetActive(true)
+
+SystemRoof.Service:SetDevActive(true)

@@ -50,11 +50,18 @@ end
 function src.SystemFetch ()
 	return require('../service/system/RbxSync/SystemFetch')
 end
+
 --[[
-	Система для получения локального Y положения в пространстве
+	Система для получения крыши над объектом
 ]]
-function src.SystemSurface ()
-	return require('../service/system/RbxSync/SystemSurface')
+function src.SystemRoof ()
+	return require('../service/system/RbxSync/SystemRoof')
+end
+--[[
+	Система для получения пола под объектом
+]]
+function src.SystemFloor ()
+	return require('../service/system/RbxSync/SystemFloor')
 end
 
 

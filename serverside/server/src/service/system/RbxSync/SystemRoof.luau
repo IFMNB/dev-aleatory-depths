@@ -8,7 +8,7 @@ local position = components.parameter.Position()
 local rotation = components.parameter.Rotation()
 local height = components.parameter.Height()
 local model = components.property.Model()
-local surface = components.parameter.Surface()
+local floor = components.parameter.Floor()
 
 local private = {};
 local interface = {};
@@ -33,14 +33,14 @@ function private.Action (World)
 	local Service = interface.Service
 	local Phase = {}
 	
-	Phase[1] = surface:DoCatchFromWorld(World, function(Component1) 
+	Phase[1] = floor:DoCatchFromWorld(World, function(Component1) 
 		Phase[2] = position:DoCatchFromWorld(World, function(Component2)
 			local RotationVectorDown = Vector3.new(0,-1,0)
 			local Position = Component2.Value
 			
 			if Component1.IsLocalCoordinate then
-				Phase[3] = rotation:DoCatchFromWorld(World, function(Component3)
-					RotationVectorDown = -Component3.Up
+			Phase[3] = rotation:DoCatchFromWorld(World, function(Component3)
+				RotationVectorDown = Component3.Up
 				end)
 			end
 			
@@ -68,7 +68,7 @@ function private.Action (World)
 				}
 			end
 			
-			Service.TargetWorld.DoUpdateComponent(World, surface.Name, 'Value', function(old, current) 
+			Service.TargetWorld.DoUpdateComponent(World, floor.Name, 'Value', function(old, current) 
 				if current == old then
 					return RaycastResult
 				end

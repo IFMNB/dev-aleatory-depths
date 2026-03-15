@@ -87,7 +87,10 @@ function private.task_list_react ()
 					continue
 				end
 				
-				v.Core:DoCall(delta, v.Count <= 0)
+				task.defer(function ()
+					v.Core:DoCall(delta, v.Count <= 0)
+				end)
+				
 				v.Count+=1
 			end
 			
