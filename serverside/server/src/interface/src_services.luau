@@ -64,5 +64,10 @@ function src.SystemFloor ()
 	return require('../service/system/RbxSync/SystemFloor')
 end
 
+-- Система для получения Scale (размера) модели
+function src.SystemScale ()
+	return require('../service/system/RbxSync/SystemScale')
+end
+
 
 return src

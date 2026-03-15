@@ -37,6 +37,9 @@ local components = table.freeze({
 		Roof = function ()
 			return require(parameter.roof)
 		end,
+		Scale = function ()
+			return require(parameter.scale)
+		end,
 	});
 	action = table.freeze({
 		Spawn = function ()

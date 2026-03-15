@@ -8,7 +8,8 @@ local position = components.parameter.Position()
 local rotation = components.parameter.Rotation()
 local height = components.parameter.Height()
 local model = components.property.Model()
-local roof = components.parameter.Roof()
+local floor = components.parameter.Floor()
+local scale = components.parameter.Scale()
 
 local private = {};
 local interface = {};
@@ -31,32 +32,43 @@ private.params.FilterDescendantsInstances = private.ignore_list;
 
 function private.Action (World)
 	local Service = interface.Service
-	local Phase = {}
 	
-	Phase[1] = roof:DoCatchFromWorld(World, function(Component1) 
-		Phase[2] = position:DoCatchFromWorld(World, function(Component2)
-			local Rotation = Vector3.new(0,-1,0)
+	floor:DoCatchFromWorld(World, function(Component1)
+		local PhaseLog = Service:DoPhaseLog()
+		PhaseLog.Insert(1,true)
+		
+		local IsPositionCatched = position:DoCatchFromWorld(World, function(Component2)
+			local Rotation = -Vector3.yAxis
 			local Position = Component2.Value
+			local Size = 1
 			
 			if Component1.IsLocalCoordinate then
-			Phase[3] = rotation:DoCatchFromWorld(World, function(Component3)
+				local IsRotationCatched = rotation:DoCatchFromWorld(World, function(Component3)
 					Rotation = -Component3.Up
 				end)
+				PhaseLog.Insert(3, IsRotationCatched)
 			end
 			
-			Phase[4] = height:DoCatchFromWorld(World, function(Component4) 
+			height:DoCatchFromWorld(World, function(Component4) 
 				Rotation *= Component4.Value
+				PhaseLog.Insert(4, true)
 			end)
-		
-			Phase[5] = model:DoCatchFromWorld(World, function(Component6) 
-				local value = main.Libs.RbxUtility.FromPath(Component6.Path)
+			
+			model:DoCatchFromWorld(World, function(Component6) 
+				local value = main.Libs.RbxUtility.FromPath(Component6.Path) :: Model?
 				if value then
 					table.insert(private.ignore_list,value)
 				end
+				PhaseLog.Insert(5, value ~= nil)
+			end)
+			
+			scale:DoCatchFromWorld(World, function(Component7: { Value: number }) 
+				Size = Component7.Value
+				PhaseLog.Insert(6, true)
 			end)
 			
 			local Direction = Rotation * 10
-			local RaycastResultRaw = workspace:Raycast(Position,Direction, private.params)
+			local RaycastResultRaw = workspace:Spherecast(Position, Size, Direction, private.params)
 			local RaycastResult
 			if RaycastResultRaw then
 				RaycastResult = {
@@ -68,7 +80,7 @@ function private.Action (World)
 				}
 			end
 			
-			Service.TargetWorld.DoUpdateComponent(World, roof.Name, 'Value', function(old, current) 
+			Service.TargetWorld.DoUpdateComponent(World, floor.Name, 'Value', function(old, current) 
 				if current == old then
 					return RaycastResult
 				end
@@ -93,7 +105,7 @@ function private.Action (World)
 				Beam.Attachment1 = Attachment2
 				Attachment1.Position = Position
 				Attachment2.Position = Position + Direction
-				
+				Beam.Color = ColorSequence.new(Color3.fromRGB(225,100,200))
 				Beam.Name = Service.Name
 				Beam.Parent = workspace:FindFirstChild('temp') or workspace 
 				
@@ -102,21 +114,9 @@ function private.Action (World)
 				Debris:AddItem(Attachment2, Service.UpdateRate)
 			end
 		end)
+		
+		PhaseLog.Insert(2, IsPositionCatched)
 	end)
-	
-	
-	if Service:IsLogActive() then
-		local fails = false
-		for i,v in Phase do
-			if not v then
-				fails = true
-				Service:PrintLog(string.format('Failed Phase%s, %s', tostring(i), World.Identity))
-			end
-		end
-		if not fails then
-			Service:PrintLog(string.format('Success, %s', World.Identity))
-		end
-	end
 end
 
 interface.Service:DoWhileActive():ConnectParallel(function(deltaTime: number, NewCycle: boolean)

@@ -11,6 +11,7 @@ local fabrics = {
 	Position = components.parameter.Position();
 	Velocity = components.parameter.Velocity();
 	Floor = components.parameter.Floor();
+	Roof = components.parameter.Roof();
 	Height = components.parameter.Height();
 	Spawn = components.action.Spawn();
 	Model = components.property.Model();
