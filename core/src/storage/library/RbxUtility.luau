@@ -1,8 +1,8 @@
 local private = {};
 local interface = {};
 
-function private.FromPath (path: string) : Instance?
-	if path == '' then
+function private.FromPath (path: string?) : Instance?
+	if path == '' or path == nil then
 		return nil
 	end
 	

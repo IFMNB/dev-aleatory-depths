@@ -14,6 +14,9 @@ local components = table.freeze({
 		Player = function ()
 			return require(property.player)
 		end,
+		CustomPhysics = function ()
+			return require(property.cstphysic)
+		end,
 	});
 	parameter = table.freeze({
 		Health = function ()
@@ -47,6 +50,9 @@ local components = table.freeze({
 		end,
 		Fetch = function ()
 			return require(action.fetch)
+		end,
+		Teleport = function ()
+			return require(action.teleport)
 		end,
 	});
 	

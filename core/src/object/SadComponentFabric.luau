@@ -79,7 +79,7 @@ end
 	
 	@class SadComponentFabric
 ]]
-function private:get_from_world <T> (World, F: Func)
+function private:get_from_world (World, F: Func)
 	local Components = World.Components
 	local TargetComponent = Components[self.Name]
     if TargetComponent then
@@ -87,6 +87,17 @@ function private:get_from_world <T> (World, F: Func)
         return true
     end
     return false
+end
+
+function private:destroy_from_world (World: any)
+	local self = self :: SadComponentFabric;
+	local Components = World.Components
+	local TargetComponent = Components[self.Name]
+	if TargetComponent then
+		Components[self.Name] = nil
+		return true
+	end
+	return false
 end
 
 --[[
@@ -101,6 +112,16 @@ function private:get_from (Target, F: Func)
 		return true
 	end
 	return false 
+end
+
+function private:destroy_from (Target: any)
+	local self = self :: SadComponentFabric;
+	local TargetComponent = Target[self.Name]
+	if TargetComponent then
+		Target[self.Name] = nil
+		return true
+	end
+	return false
 end
 
 --[[
@@ -123,6 +144,8 @@ class.DoInsertTo = private.clone_value_to;
 class.DoInsertToWorld = private.create;
 class.DoCatchFromWorld = private.get_from_world;
 class.DoCatchFrom = private.get_from;
+class.DoDestroyFromWorld = private.destroy_from_world;
+class.DoDestroyFrom = private.destroy_from;
 
 class.IsExistsIn = private.is_exists;
 class.DoCloneValue = private.clone_value;

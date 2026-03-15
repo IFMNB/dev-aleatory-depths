@@ -46,7 +46,7 @@ TestZone:MapLoad()
 local world = WorldsService.Service:GetWorld('game.world')
 local Fortuna = server.Characters.Fortuna()
 
-for i=1, 10 do
+for i=1, 1 do
 	local fortuna_w = world:AddWorldNew()
 	world:DoCallForCatchedWorld(fortuna_w, function(World) 
 		Fortuna:DoUnpackTo(World)
