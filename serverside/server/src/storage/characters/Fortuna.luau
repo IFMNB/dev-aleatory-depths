@@ -25,7 +25,7 @@ for i,v in pairs(fabrics) do
 end
  
 fabrics.Model:DoCatchFrom(components, function(Component: { Path: string, Source: string }) 
-	Component.Source = storage.models.characters.Fortuna:GetFullName();
+	Component.Source = main.Libs.CodeUtility.GetInstanceIdentity(storage.models.characters.Fortuna);
 end)
 
 

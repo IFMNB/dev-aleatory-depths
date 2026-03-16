@@ -1,12 +1,13 @@
 local main = require('../../../');
 local components = require('../../../interface/src_components')
 local WorldsService = main.Core.Services.WorldsService()
-local CollectionService = game:GetService('CollectionService')
+
+local CodeUtility = main.Libs.CodeUtility
+local Mapping = main.Mapping
 
 local private = {};
 local interface = {};
 
-local model = components.property.Model()
 local spawn = components.action.Spawn()
 
 interface.Service = main.Core.Classes.SadSystemService().new({
@@ -14,51 +15,83 @@ interface.Service = main.Core.Classes.SadSystemService().new({
 	TargetWorld = WorldsService.Service:GetWorld('game.world');
 })
 
-function private.Action (World)
+local model = components.property.Model()
+
+function private.action_model_spawn (World, Component1)
+	model:DoCatchFromWorld(World, function(Component2: { Path: string, Source: string })
+		
+		local IsValideComponent = Component2.Path ~= '' and CodeUtility.GetInstanceFrom(Component2.Path)
+		
+		if not IsValideComponent then
+			local Source = Mapping.Exception.NullPointerException:Assert(CodeUtility.GetInstanceFrom(Component2.Source)) :: PVInstance
+			local Path = Mapping.Exception.TechicalException:Assert(CodeUtility.GetInstanceFrom(Component1.ToPath)) :: Instance
+			
+			CodeUtility.DoCallContextSync(function(...) 
+				local clone = Source:Clone()
+				local identity = CodeUtility.GetInstanceIdentity(clone)
+				clone.Parent = Path
+				clone.Name = identity
+				Component2.Path = identity
+				return clone
+			end)
+			
+		end
+	end)
+end
+
+local position = components.parameter.Position()
+local cstphysic = components.property.CustomPhysics()
+
+function private.action_csphysic_spawn (World, Component1)
+	cstphysic:DoCatchFromWorld(World, function(Component: { AttachmentPath: string }) 
+		local IsValideComponent = Component.AttachmentPath ~= '' and CodeUtility.GetInstanceFrom(Component.AttachmentPath)
+		
+		if not IsValideComponent then
+			local ToPath
+			local Position
+			
+			position:DoCatchFromWorld(World, function(Component: { Value: Vector3 }) 
+				Position = Component.Value
+			end)
+			
+			model:DoCatchFromWorld(World, function(Component: { Path: string, Source: string }) 
+				local this = CodeUtility.GetInstanceFrom(Component.Path) :: Model?
+				if this then
+					ToPath = this.PrimaryPart or this
+					if not Position then
+						Position = this:GetPivot().Position
+					end
+				end
+			end)
+			
+			CodeUtility.DoCallContextSync(function(...) 
+				local attachment = Instance.new('Attachment')
+				attachment.Parent = ToPath or workspace
+				attachment.WorldPosition = Position or Vector3.zero
+				Component.AttachmentPath = CodeUtility.GetInstanceIdentity(attachment)
+				return attachment
+			end)
+		end
+	end)
+end
+
+function private.main (World)
 	local Service = interface.Service
 	local TargetWorld = Service.TargetWorld
 	local PhaseLog = Service:DoPhaseLog()
 	
 	spawn:DoCatchFromWorld(World, function(Component1)
-		TargetWorld.RemComponent(World, spawn.Name)
+		spawn:DoDestroyFromWorld(World)
 		
-		local IsProcessed = model:DoCatchFromWorld(World, function(Component2: { Path: string, Source: string })
-			PhaseLog.Insert(1,true)
-			if Component2.Path == '' then
-				local TargetPath = main.Libs.RbxUtility.FromPath(Component1.ToPath)
-				local this = main.Libs.RbxUtility.FromPath(Component2.Source) :: PVInstance?
-				if this then
-					PhaseLog.Insert(2, true)
-					PhaseLog.Insert(3, TargetPath ~= nil)
-					local target = TargetPath or workspace
-					
-					if main.Libs.CodeUtility.IsParallelContext() then
-						task.synchronize()
-					end
-					
-					local copy = this:Clone()
-					copy.Name = main.Libs.CodeUtility.RandomStr()
-					copy.Parent = target
-					main.Mapping.Exception.ParallelConditionException:Assert(TargetWorld.DoUpdateComponent(World, model.Name, 'Path', function(old, current) 
-						if current == old then
-							return copy:GetFullName()
-						end
-						return current
-					end))
-				end
-			end
-		end)
+		private.action_model_spawn(World,Component1)
+		private.action_csphysic_spawn(World, Component1)
 		
-		PhaseLog.EndLog(World.Identity)
-		if not IsProcessed then
-			main.Mapping.Exception.ParallelConditionException:Throw()
-		end
 	end)
 end
 
 interface.Service:DoWhileActive():ConnectParallel(function(deltaTime: number, NewCycle: boolean) 
 	local TargetWorld = interface.Service.TargetWorld
-	TargetWorld:DoForWorlds(private.Action)
+	TargetWorld:DoForWorlds(private.main)
 end)
 
 return interface

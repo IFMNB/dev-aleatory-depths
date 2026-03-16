@@ -1,6 +1,8 @@
 local private = {};
 local interface = {};
 
+-- Используйте GetFromIdentity
+@deprecated
 function private.FromPath (path: string?) : Instance?
 	if path == '' or path == nil then
 		return nil
@@ -19,6 +21,7 @@ function private.FromPath (path: string?) : Instance?
 	return current
 end
 
+@deprecated
 function private.Path (to: Instance)
 	return to and to.GetFullName and to:GetFullName() or ''
 end
