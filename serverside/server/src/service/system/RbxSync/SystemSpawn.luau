@@ -38,6 +38,7 @@ function private.action_model_spawn (World, Component1)
 	end)
 end
 
+local rotation = components.parameter.Rotation()
 local position = components.parameter.Position()
 local cstphysic = components.property.CustomPhysics()
 
@@ -47,7 +48,8 @@ function private.action_csphysic_spawn (World, Component1)
 		
 		if not IsValideComponent then
 			local ToPath
-			local Position
+			local Position = Vector3.zero
+			local Look = Vector3.zero
 			
 			position:DoCatchFromWorld(World, function(Component: { Value: Vector3 }) 
 				Position = Component.Value
@@ -62,13 +64,17 @@ function private.action_csphysic_spawn (World, Component1)
 					end
 				end
 			end)
+
+			rotation:DoCatchFromWorld(World, function (Component)
+				Look = Component.Look
+			end)
 			
 			CodeUtility.DoCallContextSync(function(...) 
 				local attachment = Instance.new('Attachment')
 				local path = CodeUtility.GetInstanceIdentity(attachment)
 				attachment.Parent = ToPath or workspace
 				attachment.Name = path
-				attachment.WorldPosition = Position or Vector3.zero
+				attachment.WorldCFrame = CFrame.LookAt(Position,Look)
 				Component.AttachmentPath = path
 				return attachment
 			end)
