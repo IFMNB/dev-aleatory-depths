@@ -15,28 +15,25 @@ local interface = {};
 
 type System = typeof(interface.Service)
 
+
 function private.main (World)
 	local Service = interface.Service
 
 	
-	position:DoCatchFromWorld(World, function(Component2) 
+	position:DoCatchFromWorld(World, function(Component2)
+		local form = CodeUtility.GetInstanceFrom(Path) :: Instance?
 		local Path = ''
 		
 		model:DoCatchFromWorld(World, function(Component1) 
 			Path = Component1.Path
 		end)
 		
-		local form = CodeUtility.GetInstanceFrom(Path) :: Instance?
+
 		if form and form:IsA('PVInstance') then
-			local CurrentPosition = Component2.Value
-			
-			teleport:DoCatchFromWorld(World, function(Component: { Value: Vector3 }) 
-				form:PivotTo(CFrame.new(Component.Value))
-				teleport:DoDestroyFromWorld(World)
-			end)
-			
+			private.action_teleport(World, form)
 			local RealPosition = form:GetPivot().Position
-			
+			local CurrentPosition = Component2.Value
+
 			if CurrentPosition ~= RealPosition then
 				local Shared = typeof(Component2) == 'SharedTable' and Component2 
 				if Shared then
@@ -52,31 +49,42 @@ function private.main (World)
 			end
 		end
 		
-		if Service:IsDevActive() then
-			if main.Libs.CodeUtility.IsParallelContext() then
-				task.synchronize()
-			end
-			
-			local attachment = Instance.new('Part')
-			attachment.Name = position.Name..'_'..World.Identity::string
-			attachment.CFrame = CFrame.new(Component2.Value)
-			attachment.Parent = workspace:FindFirstChild('temp') or workspace
-			attachment.CanCollide = false
-			attachment.CanQuery = false
-			attachment.CanTouch = false
-			attachment.AudioCanCollide = false
-			attachment.Anchored = true
-			attachment.Transparency = 0
-			attachment.Material = Enum.Material.Neon
-			attachment.Color = Color3.fromRGB(200,110,200)
-			attachment.Size = Vector3.new(3,3,3)
-			attachment.Shape = Enum.PartType.Ball
-			
-			game.Debris:AddItem(attachment, 1)
-		end
+		private.dev(World, Component2)
 	end)
-	
 end
+
+function private.action_teleport (World, This: PVInstance)
+	teleport:DoCatchFromWorld(World, function(Component: { Value: Vector3 })
+		teleport:DoDestroyFromWorld(World)
+		This:PivotTo(CFrame.new(Component.Value))
+	end)
+end
+
+function private.dev (World, PosComponent)
+	if interface.Service:IsDevActive() then
+		if main.Libs.CodeUtility.IsParallelContext() then
+			task.synchronize()
+		end
+
+		local Part = Instance.new('Part')
+		Part.Name = position.Name..'_'..World.Identity::string
+		Part.CFrame = CFrame.new(Component2.Value)
+		Part.Parent = workspace:FindFirstChild('temp') or workspace
+		Part.CanCollide = false
+		Part.CanQuery = false
+		Part.CanTouch = false
+		Part.AudioCanCollide = false
+		Part.Anchored = true
+		Part.Transparency = 0
+		Part.Material = Enum.Material.Neon
+		Part.Color = Color3.fromRGB(200,110,200)
+		Part.Size = Vector3.new(3,3,3)
+		Part.Shape = Enum.PartType.Ball
+
+		game.Debris:AddItem(Part, 1)
+	end
+end
+
 
 interface.Service = main.Core.Classes.SadSystemService().new({
 	Name = script.Name;
