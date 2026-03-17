@@ -15,7 +15,7 @@ local components = table.freeze({
 			return require(property.player)
 		end,
 		CustomPhysics = function ()
-			return require(property.cstphysic)
+			return require(property.physic)
 		end,
 	});
 	parameter = table.freeze({
