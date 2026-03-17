@@ -1,7 +1,9 @@
 local path = script.Parent.Parent.storage.components
+
 local property = path.property
 local parameter = path.parameter
 local action = path.action
+local effect = path.effect
 
 local components = table.freeze({
 	property = table.freeze({
@@ -50,9 +52,13 @@ local components = table.freeze({
 		end,
 		Teleport = function ()
 			return require(action.teleport)
+		end
+	});
+	effect = table.freeze({
+		Gravity = function ()	
+			return require(effect.gravity)
 		end,
 	});
-	
 
 	
 

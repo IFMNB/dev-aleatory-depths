@@ -9,5 +9,3 @@ local SystemRotation = server.Services.SystemRotation()
 
 SystemPosition.Service:SetActive(true)
 SystemRotation.Service:SetActive(true)
-
-SystemPosition.Service:SetDevActive(true)

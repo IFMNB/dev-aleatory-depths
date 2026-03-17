@@ -42,7 +42,9 @@ function private:while_active_do ()
 		task.defer(function ()
 			local Controller = private.task_self[Id]
 			local delta = 0
-			local beta = tick()
+			local teta = os.clock()
+			local beta = teta
+			
 			while Controller do
 				if #Controller.Core.Listeners < 1 then
 					task.wait(Controller.Me.UpdateRate)
@@ -55,8 +57,9 @@ function private:while_active_do ()
 					continue
 				end
 				
-				delta = tick() - beta
-				beta = tick()
+				teta = os.clock()
+				delta = teta - beta
+				beta = teta
 				
 				task.defer(function ()
 					local Controller = private.task_self[Id]

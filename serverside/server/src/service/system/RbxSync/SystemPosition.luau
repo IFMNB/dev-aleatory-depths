@@ -21,11 +21,9 @@ function private.main (World)
 
 	
 	position:DoCatchFromWorld(World, function(Component2)
-		local form = CodeUtility.GetInstanceFrom(Path) :: Instance?
-		local Path = ''
-		
+		local form
 		model:DoCatchFromWorld(World, function(Component1) 
-			Path = Component1.Path
+			form = CodeUtility.GetInstanceFrom(Component1.Path) :: Instance?
 		end)
 		
 
@@ -67,8 +65,8 @@ function private.dev (World, PosComponent)
 		end
 
 		local Part = Instance.new('Part')
-		Part.Name = position.Name..'_'..World.Identity::string
-		Part.CFrame = CFrame.new(Component2.Value)
+		Part.Name = interface.Service.Name
+		Part.CFrame = CFrame.new(PosComponent.Value)
 		Part.Parent = workspace:FindFirstChild('temp') or workspace
 		Part.CanCollide = false
 		Part.CanQuery = false
