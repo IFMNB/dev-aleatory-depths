@@ -19,7 +19,6 @@ local model = components.property.Model()
 
 function private.action_model_spawn (World, Component1)
 	model:DoCatchFromWorld(World, function(Component2: { Path: string, Source: string })
-		
 		local IsValideComponent = Component2.Path ~= '' and CodeUtility.GetInstanceFrom(Component2.Path)
 		
 		if not IsValideComponent then
@@ -66,9 +65,11 @@ function private.action_csphysic_spawn (World, Component1)
 			
 			CodeUtility.DoCallContextSync(function(...) 
 				local attachment = Instance.new('Attachment')
+				local path = CodeUtility.GetInstanceIdentity(attachment)
 				attachment.Parent = ToPath or workspace
+				attachment.Name = path
 				attachment.WorldPosition = Position or Vector3.zero
-				Component.AttachmentPath = CodeUtility.GetInstanceIdentity(attachment)
+				Component.AttachmentPath = path
 				return attachment
 			end)
 		end
@@ -91,7 +92,9 @@ end
 
 interface.Service:DoWhileActive():ConnectParallel(function(deltaTime: number, NewCycle: boolean) 
 	local TargetWorld = interface.Service.TargetWorld
-	TargetWorld:DoForWorlds(private.main)
+	if WorldsService.Service:IsItWorld(TargetWorld) then
+		TargetWorld:DoForWorlds(private.main)
+	end
 end)
 
 return interface

@@ -15,7 +15,6 @@ local fabrics = {
 	Height = components.parameter.Height();
 	Spawn = components.action.Spawn();
 	Model = components.property.Model();
-	Fetch = components.action.Fetch();
 	CustomPhysics = components.property.CustomPhysics();
 }
 local components = {}

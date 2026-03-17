@@ -1,6 +1,8 @@
-### [Hexagon](https://github.com/IFMNB/Hexagon/tree/main)
+[@IFMNB](https://github.com/IFMNB) [Hexagon](https://github.com/IFMNB/Hexagon/tree/main)
 
+> Main OOP library
 
+[@Larsen-dev](https://github.com/Larsen-dev) [TableToBuffer](https://github.com/Larsen-dev/TableToBuffer/tree/main)
 
-* Используется внутри всех частей игры в качестве ООП-базы
-* Также обеспечивает функционирование ECS обработки
+> Main network-optimize library
+

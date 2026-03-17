@@ -1,7 +1,9 @@
 local main = require('../../../');
 local components = require('../../../interface/src_components')
-
 local WorldsService = main.Core.Services.WorldsService()
+local CodeUtility = main.Libs.CodeUtility
+local Mapping = main.Mapping
+
 
 local model = components.property.Model()
 local rotation = components.parameter.Rotation()
@@ -11,16 +13,18 @@ local interface = {};
 
 type System = typeof(interface.Service)
 
-function private.ForWorld (World)
+function private.main (World)
 	local Service = interface.Service
-	local Phase = {}
+
 	
-	Phase[1] = model:DoCatchFromWorld(World, function(Component1) 
-		Phase[2] = rotation:DoCatchFromWorld(World, function(Component2: { Look: Vector3, Right: Vector3, Up: Vector3 }) 
-			local this = main.Libs.RbxUtility.FromPath(Component1.Path) :: PVInstance?
+	model:DoCatchFromWorld(World, function(Component1) 
+		rotation:DoCatchFromWorld(World, function(Component2: { Look: Vector3, Right: Vector3, Up: Vector3 }) 
+			local this = CodeUtility.GetInstanceFrom(Component1.Path) :: PVInstance?
 			if this then
 				if this.GetPivot then
 					local cframe = this:GetPivot()
+					
+					
 					
 					if typeof(Component2) == 'SharedTable' then
 						local Component2 = Component2 :: SharedTable
@@ -60,18 +64,6 @@ function private.ForWorld (World)
 		end)
 	end)
 	
-	if Service:IsLogActive() then
-		local fails = false
-		for i,v in Phase do
-			if not v then
-				fails = true
-				Service:PrintLog(string.format('Failed Phase%s, %s', tostring(i), World.Identity))
-			end
-		end
-		if not fails then
-			Service:PrintLog(string.format('Success, %s', World.Identity))
-		end
-	end
 end
 
 interface.Service = main.Core.Classes.SadSystemService().new({
@@ -80,10 +72,10 @@ interface.Service = main.Core.Classes.SadSystemService().new({
 });
 
 interface.Service:DoWhileActive():ConnectParallel(function(deltaTime: number, NewCycle: boolean)
-	if not interface.Service.TargetWorld then return end
-	
---	interface.Service.TargetWorld:DoFor(private.ForWorld);
-	interface.Service.TargetWorld:DoForWorlds(private.ForWorld);
+	local TargetWorld = interface.Service.TargetWorld
+	if WorldsService.Service:IsItWorld(TargetWorld) then
+		TargetWorld:DoForWorlds(private.main)
+	end
 end)
 
 return interface

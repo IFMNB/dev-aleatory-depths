@@ -2,7 +2,7 @@ local main = require('../../../');
 local component = table.freeze(main.Core.Classes.SadComponentFabric().new(
 	script.Name,
 	{
-		ToPath = workspace:GetFullName();
+		ToPath = main.Libs.CodeUtility.GetInstanceIdentity(workspace);
 	}
 	))
 

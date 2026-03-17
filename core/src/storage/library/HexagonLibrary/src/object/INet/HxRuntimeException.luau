@@ -28,6 +28,7 @@ function private:throw (withStackTrace: boolean?)
 	
 	local text = private.https:JSONEncode(self)
 	self:Warn(text, withStackTrace)
+	warn(debug.traceback())
 	return error(self.Code)
 end
 -- Equalent to assert. Throws self if assertion is failed.

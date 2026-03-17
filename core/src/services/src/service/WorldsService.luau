@@ -56,11 +56,16 @@ function private:is_world_exist (Identity: Worlds | string)
 	return private.shared_worlds[Identity] ~= nil
 end
 
+function private:is_it_world (this: any)
+	return SadWorld.class.IsA(this, 'SadWorld')
+end
+
 interface.Service = main.Core.Classes.SadCoreService().new({
 	
 	GetWorld = private.get_shared_world;
 	IsExistsWorld = private.is_world_exist;
 	DoRemoveWorld = private.remove_shared_world;
+	IsItWorld = private.is_it_world;
 	
 	Name = script.Name;
 })

@@ -45,13 +45,6 @@ function src.SystemSpawn ()
 end
 
 --[[
-	Система синхронизации объекта в иерархии роблокса
-]]
-function src.SystemFetch ()
-	return require('../service/system/RbxSync/SystemFetch')
-end
-
---[[
 	Система для получения крыши над объектом
 ]]
 function src.SystemRoof ()

@@ -10,8 +10,10 @@ function private.random_str ()
 	
 	local t = os.clock()
 	
-	local str_n = string.byte(tostring(str), math.random(1, #str))
-    for i=1, 8 do
+	
+	for i=1, 8 do
+		local str_c = #str
+		local str_n = string.byte(tostring(str), math.random(1, str_c > 0 and str_c or 1))
         math.randomseed((i/t)-t+math.random(1,tick())+str_n)
         local i0 = i/2
         table.insert(str, 

@@ -2,6 +2,9 @@ local main = require('../../../');
 local components = require('../../../interface/src_components')
 
 local WorldsService = main.Core.Services.WorldsService()
+local CodeUtility = main.Libs.CodeUtility
+local Mapping = main.Mapping
+
 
 local model = components.property.Model()
 local position = components.parameter.Position()
@@ -12,7 +15,7 @@ local interface = {};
 
 type System = typeof(interface.Service)
 
-function private.ForWorld (World)
+function private.main (World)
 	local Service = interface.Service
 
 	
@@ -23,7 +26,7 @@ function private.ForWorld (World)
 			Path = Component1.Path
 		end)
 		
-		local form = main.Libs.RbxUtility.FromPath(Path) :: Instance?
+		local form = CodeUtility.GetInstanceFrom(Path) :: Instance?
 		if form and form:IsA('PVInstance') then
 			local CurrentPosition = Component2.Value
 			
@@ -81,8 +84,9 @@ interface.Service = main.Core.Classes.SadSystemService().new({
 });
 
 interface.Service:DoWhileActive():ConnectParallel(function(deltaTime: number, NewCycle: boolean)
-	if interface.Service.IsA(interface.Service.TargetWorld, 'SadWorld') then
-		interface.Service.TargetWorld:DoForWorlds(private.ForWorld);
+	local TargetWorld = interface.Service.TargetWorld
+	if WorldsService.Service:IsItWorld(TargetWorld) then
+		TargetWorld:DoForWorlds(private.main)
 	end
 end)
 

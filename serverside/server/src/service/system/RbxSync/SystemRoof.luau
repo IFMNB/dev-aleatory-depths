@@ -1,6 +1,7 @@
 local main = require('../../../');
 local components = require('../../../interface/src_components')
-
+local CodeUtility = main.Libs.CodeUtility
+local Mapping = main.Mapping
 local WorldsService = main.Core.Services.WorldsService()
 
 
@@ -30,7 +31,7 @@ private.params.RespectCanCollide = true;
 private.params.IgnoreWater = true;
 private.params.FilterDescendantsInstances = private.ignore_list;
 
-function private.Action (World)
+function private.main (World)
 	local Service = interface.Service
 	
 	roof:DoCatchFromWorld(World, function(Component1)
@@ -55,7 +56,7 @@ function private.Action (World)
 			end)
 			
 			model:DoCatchFromWorld(World, function(Component6) 
-				local value = main.Libs.RbxUtility.FromPath(Component6.Path) :: Model?
+				local value = CodeUtility.GetInstanceFrom(Component6.Path) :: Model?
 				if value then
 					table.insert(private.ignore_list,value)
 				end
@@ -120,9 +121,10 @@ function private.Action (World)
 end
 
 interface.Service:DoWhileActive():ConnectParallel(function(deltaTime: number, NewCycle: boolean)
-	local TargetWorld = interface.Service.TargetWorld;
-	--	TargetWorld:DoFor(private.Action)
-	TargetWorld:DoForWorlds(private.Action)
+	local TargetWorld = interface.Service.TargetWorld
+	if WorldsService.Service:IsItWorld(TargetWorld) then
+		TargetWorld:DoForWorlds(private.main)
+	end
 end)
 
 return interface
