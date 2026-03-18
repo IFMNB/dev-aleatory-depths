@@ -14,7 +14,7 @@ function private.main (World)
 	
 	velocity:DoCatchFromWorld(World, function(Component) 
 		private.action_velocity(World, Component)
-		private.action_apply_delta(Component)
+		private.push_delta(Component)
 	end)
 end
 
@@ -33,7 +33,7 @@ function private.action_velocity (World, ComVel)
 	end)
 end
 
-function private.action_apply_delta (ComVel: {Value: Vector3, Delta: Vector3})
+function private.push_delta (ComVel: {Value: Vector3, Delta: Vector3})
 	ComVel.Value += ComVel.Delta
 	ComVel.Delta = Vector3.zero
 end

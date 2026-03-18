@@ -6,6 +6,10 @@ local component = table.freeze(main.Core.Classes.SadComponentFabric().new(
 		Look = Vector3.zero,
 		Right = Vector3.zero,
 		
+		PreviousUp = Vector3.zero,
+		PreviousLook = Vector3.zero,
+		PreviousRight = Vector3.zero,
+		
 		DeltaUp = Vector3.zero,
 		DeltaLook = Vector3.zero,
 		DeltaRight = Vector3.zero,
