@@ -1,13 +1,13 @@
 local server = require(game.ServerStorage.server)
 
 local NetworkService = server.Services.NetworkService()
-local NetOwnerService = server.Services.NetOwnerService()
-local NetCoordinateService = server.Services.NetCoordinateService()
-local NetInputService = server.Services.NetInputService()
+local NetOwnerService = server.Services.Net.OwnerService()
+local NetCoordinateService = server.Services.Net.CoordinateService()
+local NetInputService = server.Services.Net.IOService()
 local ContextGateway = server.Services.ContextGateway()
 
-local GameMapService = server.Services.GameMapService()
-local GameStunService = server.Services.GameStunService()
+local GameMapService = server.Services.Game.MapService()
+local GameStunService = server.Services.Game.StunService()
 local CollisionService = server.Services.CollisionService()
 local HitScanService = server.Services.HitScanService()
 local ContextBus = server.Services.ContextBus()

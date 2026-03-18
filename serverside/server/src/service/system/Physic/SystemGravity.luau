@@ -34,20 +34,24 @@ function private.action_gravity (World, ComCP)
 end
 
 function private.set_vectorforce (World, ComG: { Direction: Vector3, Path: string }, VectorForce: VectorForce)
-	mass:DoCatchFromWorld(World, function(ComMass: { Value: number })
-		private.gravity_added[World.Identity]=VectorForce
+	private.gravity_added[World.Identity]=VectorForce
+	CodeUtility.DoCallContextSync(function(...) 
+		local vY = Vector3.zero.Y
+		local k = 0
+		local g = workspace.Gravity
+		local m = 1
 		
-		local Velocity = Vector3.zero
 		velocity:DoCatchFromWorld(World, function(Component: { Value: Vector3 }) 
-			Velocity = Component.Value
+			vY = Component.Value.Y
 		end)
 		
-		local k = 1
-		local GVector = Vector3.new(0, ComMass.Value * workspace.Gravity, 0) - Vector3.new(0,Velocity.Y,0) * k
-		CodeUtility.DoCallContextSync(function(...) 
-			VectorForce.Force = GVector-- + ComG.Direction
-			return
+		mass:DoCatchFromWorld(World, function(ComMass: { Value: number })
+			m = ComMass.Value	
 		end)
+		
+		local GVector = Vector3.new(0, m*g, 0) - Vector3.new(0,vY,0) * k
+		VectorForce.Force = GVector + ComG.Direction
+		return
 	end)
 end
 
@@ -58,10 +62,10 @@ function private.new_vectorforce (ComCP,ComG) : VectorForce?
 		return CodeUtility.DoCallContextSync(function(...) 
 			local vf = Instance.new 'VectorForce' 
 			local Identity = CodeUtility.GetInstanceIdentity(vf)
-			vf.Parent = workspace:FindFirstChild('temp') or workspace
+			vf.Parent = attachment
 			vf.Attachment0 = attachment
 			vf.RelativeTo = Enum.ActuatorRelativeTo.World
-			vf.Name = Identity
+			vf.Name = interface[('Service'::any)].Name
 			vf.ApplyAtCenterOfMass = true
 			ComG.Path = Identity
 			
@@ -83,9 +87,8 @@ interface.Service:DoWhileActive():ConnectParallel(function (delta, first)
 	local TargetWorld = interface.Service.TargetWorld
 	if WorldsService.Service:IsItWorld(TargetWorld) then
 		TargetWorld:DoForWorlds(private.main)
+		private.clear()
 	end
-	
-	private.clear()
 end)
 
 function private.clear ()

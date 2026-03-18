@@ -1,74 +1,74 @@
-local src = setmetatable({}, {__index=require(game.ReplicatedStorage.core).Services})
+local services = script.Parent.Parent.service
 
+local system = services.system
+local physic = system.Physic
+local sensors = system.Sensors
+local Workspace = system.Workspace
 
--- Установщик сетевых владельцев.
-function src.NetOwnerService ()
-	return require('../service/net/NetOwnerService')
-end
+local net = services.net
+local Game = services.game
 
--- Синхронизирует координаты клиента с сервером посредством постоянного стриминга.
-function src.NetCoordinateService ()
-	return require('../service/net/NetCoordinateService')
-end
+local src = table.freeze(setmetatable({
+	Net = table.freeze({
+		OwnerService = function ()
+			return require(net.NetOwnerService)
+		end,
+		IOService = function ()
+			return require(net.NetInputService)
+		end,
+		CoordinateService = function ()
+			return require(net.NetCoordinateService)
+		end,
+	});
+	
+	Game = table.freeze({
+		MapService = function ()
+			return require(Game.GameMapService)
+		end,
+		StunService = function ()
+			return require(Game.GameStunService)
+		end,
+	});
+	
+	
+	System = table.freeze({
+		Physic = table.freeze({
+			Rotation = function ()
+				return require(physic.SystemRotation)
+			end,
+			Position = function ()
+				return require(physic.SystemPosition)
+			end,
+			Velocity = function ()
+				return require(physic.SystemVelocity)
+			end,
+			Gravity = function ()
+				return require(physic.SystemGravity)
+			end,
+			Mass = function ()
+				return require(physic.SystemMass)
+			end,
+		});
+		Sensors = table.freeze({
+			Scale = function ()
+				return require(sensors.SystemScale)
+			end,
+			Roof = function ()
+				return require(sensors.SystemRoof)
+			end,
+			Floor = function ()
+				return require(sensors.SystemFloor)
+			end,
+		});
+		Workspace = table.freeze({
+			Spawn = function ()
+				return require(Workspace.SystemSpawn)
+			end,
+		});
+		
 
--- Общее место хранения карт.
-function src.GameMapService ()
-	return require('../service/game/GameMapService')
-end
-
--- Сервис для манипуляций с персонажами, обладающими Humanoid.
-function src.GameStunService ()
-	return require('../service/game/GameStunService')
-end
-
---[[
-	Стандартный низкоуровневый сервис для протокольного доступа к IO данным девайсов клиентов.
-
-	@fullAuto false
-	@side server
-]]
-function src.NetInputService ()
-	return require('../service/net/NetInputService')
-end
-
-
-function src.SystemRotation ()
-	return require('../service/system/RbxSync/SystemRotation')
-end
-
-function src.SystemPosition ()
-	return require('../service/system/RbxSync/SystemPosition')
-end
-
-function src.SystemSpawn ()
-	return require('../service/system/RbxSync/SystemSpawn')
-end
-
---[[
-	Система для получения крыши над объектом
-]]
-function src.SystemRoof ()
-	return require('../service/system/RbxSync/SystemRoof')
-end
---[[
-	Система для получения пола под объектом
-]]
-function src.SystemFloor ()
-	return require('../service/system/RbxSync/SystemFloor')
-end
-
--- Система для получения Scale (размера) модели
-function src.SystemScale ()
-	return require('../service/system/RbxSync/SystemScale')
-end
-
-
-function src.SystemMass ()
-	return require('../service/system/Physic/SystemMass')
-end
-
-function src.SystemGravity ()
-	return require('../service/system/Physic/SystemGravity')
-end
+	});
+	
+}, {__index=require(game.ReplicatedStorage.core).Services}))
 
 return src

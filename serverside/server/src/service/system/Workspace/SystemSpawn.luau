@@ -67,9 +67,11 @@ function private.action_csphysic_spawn (World, Component1)
 				local this = CodeUtility.GetInstanceFrom(Component.Path) :: Model?
 				if this then
 					ToPath = this.PrimaryPart or this
-					if Position == Vector3.zero then
-						Position = this:GetPivot().Position
-					end
+
+						if Position == Vector3.zero then
+							Position = this:GetPivot().Position
+						end
+					
 				end
 			end)
 			

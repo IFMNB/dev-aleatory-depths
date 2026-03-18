@@ -17,14 +17,16 @@ function private.main (World)
 	end)
 end
 
-function private.action_velocity (World, ComMass: { Value: Vector3 })
+function private.action_velocity (World, ComVel: { Value: Vector3 })
 	model:DoCatchFromWorld(World, function(ComModel: { Path: string, Source: string }) 
 		local primary : PVInstance?
 		local this = CodeUtility.GetInstanceFrom(ComModel.Path) :: Model?
+		
+		
 		if this then
 			primary = this.PrimaryPart
 			if primary then
-				ComMass.Value = primary.AssemblyLinearVelocity
+				ComVel.Value = primary.AssemblyLinearVelocity
 			end
 		end
 	end)

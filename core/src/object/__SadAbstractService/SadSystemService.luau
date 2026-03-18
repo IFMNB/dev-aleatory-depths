@@ -61,7 +61,7 @@ function private:while_active_do ()
 				delta = teta - beta
 				beta = teta
 				
-				task.defer(function ()
+				task.spawn(function ()
 					local Controller = private.task_self[Id]
 					if Controller then
 						Controller.Core:DoCall(delta, Controller.Count < 1)
