@@ -16,6 +16,9 @@ local fabrics = {
 	Spawn = components.action.Spawn();
 	Model = components.property.Model();
 	CustomPhysics = components.property.CustomPhysics();
+	
+	Mass = components.property.Mass();
+	Gravity = components.effect.Gravity();
 }
 local components = {}
 

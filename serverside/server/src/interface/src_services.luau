@@ -63,4 +63,12 @@ function src.SystemScale ()
 end
 
 
+function src.SystemMass ()
+	return require('../service/system/Physic/SystemMass')
+end
+
+function src.SystemGravity ()
+	return require('../service/system/Physic/SystemGravity')
+end
+
 return src

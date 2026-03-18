@@ -2,7 +2,7 @@ local main = require('../../../');
 local component = table.freeze(main.Core.Classes.SadComponentFabric().new(
 	script.Name,
 	{
-		Value = 20
+		Value = Vector3.zero;
 	}
 ))
 

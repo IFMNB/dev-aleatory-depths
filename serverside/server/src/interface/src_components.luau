@@ -13,6 +13,9 @@ local components = table.freeze({
 		Model = function ()
 			return require(property.model)
 		end,
+		Mass = function ()
+			return require(property.mass)
+		end,
 		Player = function ()
 			return require(property.player)
 		end,

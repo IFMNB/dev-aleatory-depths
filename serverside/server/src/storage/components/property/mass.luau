@@ -1,8 +1,7 @@
 local main = require('../../../');
 local component = main.Core.Classes.SadComponentFabric().new(script.Name,
 	{
-		Direction = Vector3.new(0, workspace.Gravity, 0);
-		Path = '';
+		Value = 1
 	}
 )
 
