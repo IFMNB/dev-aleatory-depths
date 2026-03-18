@@ -12,12 +12,13 @@ local interface = {}
 function private.main (World)
 	local Service = interface.Service
 	
-	velocity:DoCatchFromWorld(World, function(Component: { Value: Vector3 }) 
+	velocity:DoCatchFromWorld(World, function(Component) 
 		private.action_velocity(World, Component)
+		private.action_apply_delta(Component)
 	end)
 end
 
-function private.action_velocity (World, ComVel: { Value: Vector3 })
+function private.action_velocity (World, ComVel)
 	model:DoCatchFromWorld(World, function(ComModel: { Path: string, Source: string }) 
 		local primary : PVInstance?
 		local this = CodeUtility.GetInstanceFrom(ComModel.Path) :: Model?
@@ -26,10 +27,15 @@ function private.action_velocity (World, ComVel: { Value: Vector3 })
 		if this then
 			primary = this.PrimaryPart
 			if primary then
-				ComVel.Value = primary.AssemblyLinearVelocity
+				ComVel.Delta += primary.AssemblyLinearVelocity
 			end
 		end
 	end)
+end
+
+function private.action_apply_delta (ComVel: {Value: Vector3, Delta: Vector3})
+	ComVel.Value += ComVel.Delta
+	ComVel.Delta = Vector3.zero
 end
 
 interface.Service = main.Core.Classes.SadSystemService().new({
@@ -42,7 +48,6 @@ interface.Service:DoWhileActive():ConnectParallel(function (delta, first)
 	if WorldsService.Service:IsItWorld(TargetWorld) then
 		TargetWorld:DoForWorlds(private.main)
 	end
-	
 end)
 
 return interface

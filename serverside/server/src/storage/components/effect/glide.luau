@@ -2,9 +2,10 @@ local main = require('../../../');
 local component = table.freeze(main.Core.Classes.SadComponentFabric().new(
 	script.Name,
 	{
-		Value = Vector3.zero;
-		Delta = Vector3.zero;
+		Elasticity = 2;
+		Damper = 2;
+		HeightDiff = 1.1;
 	}
-))
+	))
 
 return component

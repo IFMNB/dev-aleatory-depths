@@ -14,11 +14,14 @@ local fabrics = {
 	Roof = components.parameter.Roof();
 	Height = components.parameter.Height();
 	Spawn = components.action.Spawn();
-	Model = components.property.Model();
-	CustomPhysics = components.property.CustomPhysics();
 	
+	
+	Model = components.property.Model();
+	
+	CustomPhysics = components.property.CustomPhysics();
 	Mass = components.property.Mass();
 	Gravity = components.effect.Gravity();
+	Glide = components.effect.Glide();
 }
 local components = {}
 
@@ -29,7 +32,9 @@ end
 fabrics.Model:DoCatchFrom(components, function(Component: { Path: string, Source: string }) 
 	Component.Source = main.Libs.CodeUtility.GetInstanceIdentity(storage.models.characters.Fortuna);
 end)
-
+fabrics.Height:DoCatchFrom(components, function(Component: { Value: number }) 
+	Component.Value = 4.325
+end)
 
 local Fortuna = SadEntityFabric.new({},components, fabrics)
 

@@ -61,6 +61,9 @@ local components = table.freeze({
 		Gravity = function ()	
 			return require(effect.gravity)
 		end,
+		Glide = function ()
+			return require(effect.glide)
+		end,
 	});
 
 	

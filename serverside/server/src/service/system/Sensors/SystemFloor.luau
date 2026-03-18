@@ -70,7 +70,7 @@ function private.main (World)
 				PhaseLog.Insert(6, true)
 			end)
 			
-			local Direction = Rotation * 10
+			local Direction = Rotation * Size
 			local RaycastResultRaw = workspace:Spherecast(Position, Size, Direction, private.params)
 			local RaycastResult
 			if RaycastResultRaw then
