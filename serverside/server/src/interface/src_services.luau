@@ -45,9 +45,7 @@ local src = table.freeze(setmetatable({
 			Gravity = function ()
 				return require(physic.SystemGravity)
 			end,
-			Mass = function ()
-				return require(physic.SystemMass)
-			end,
+	
 		});
 		Sensors = table.freeze({
 			Scale = function ()
@@ -59,6 +57,10 @@ local src = table.freeze(setmetatable({
 			Floor = function ()
 				return require(sensors.SystemFloor)
 			end,
+			
+			Mass = function ()
+				return require(sensors.SystemMass)
+			end
 		});
 		Workspace = table.freeze({
 			Spawn = function ()
