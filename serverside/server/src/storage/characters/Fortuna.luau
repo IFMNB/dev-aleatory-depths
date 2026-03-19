@@ -10,8 +10,8 @@ local fabrics = {
 	Rotation = components.parameter.Rotation();
 	Position = components.parameter.Position();
 	Velocity = components.parameter.Velocity();
-	Floor = components.parameter.Floor();
-	Roof = components.parameter.Roof();
+	Floor = components.sensoric.Floor();
+	Roof = components.sensoric.Roof();
 	Height = components.parameter.Height();
 	Spawn = components.action.Spawn();
 	
@@ -19,7 +19,7 @@ local fabrics = {
 	Model = components.property.Model();
 	
 	CustomPhysics = components.property.CustomPhysics();
-	Mass = components.property.Mass();
+	Mass = components.sensoric.Mass();
 	Gravity = components.effect.Gravity();
 	Glide = components.effect.Glide();
 }
@@ -34,6 +34,9 @@ fabrics.Model:DoCatchFrom(components, function(Component: { Path: string, Source
 end)
 fabrics.Height:DoCatchFrom(components, function(Component: { Value: number }) 
 	Component.Value = 4.325
+end)
+fabrics.Gravity:DoCatchFrom(components, function(Component) 
+	--Component.Value = Vector3.new(0,-workspace.Gravity)
 end)
 
 local Fortuna = SadEntityFabric.new({},components, fabrics)

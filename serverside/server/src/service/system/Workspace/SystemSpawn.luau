@@ -15,79 +15,68 @@ local interface = {};
 function private.main (World)
 	local Service = interface.Service
 	local TargetWorld = Service.TargetWorld
-	local PhaseLog = Service:DoPhaseLog()
 	
-	spawn:DoCatchFromWorld(World, function(Component1)
+	spawn:DoCatchFromWorld(World, function(ComSpawn)
 		spawn:DoDestroyFromWorld(World)
 		
-		private.action_model_spawn(World,Component1)
-		private.action_csphysic_spawn(World, Component1)
-		
+		model:DoCatchFromWorld(World, function(ComMod) 
+			private.action_model_spawn(World, ComSpawn, ComMod)
+			private.action_csphysic_spawn(World, ComMod)
+		end)	
 	end)
 end
 
 
-function private.action_model_spawn (World, Component1)
-	model:DoCatchFromWorld(World, function(Component2: { Path: string, Source: string })
-		local IsValideComponent = Component2.Path ~= '' and CodeUtility.GetInstanceFrom(Component2.Path)
+function private.action_model_spawn (World,  ComSpawn: typeof(spawn.Value), ComMod: typeof(model.Value))
+	local IsValideComponent = CodeUtility.GetInstanceFrom(ComMod.Path)
+	
+	if not IsValideComponent then
+		local Source = Mapping.Exception.NullPointerException:Assert(CodeUtility.GetInstanceFrom(ComMod.Source)) :: PVInstance
+		local Path = Mapping.Exception.TechicalException:Assert(CodeUtility.GetInstanceFrom(ComSpawn.ToPath)) :: Instance
 		
-		if not IsValideComponent then
-			local Source = Mapping.Exception.NullPointerException:Assert(CodeUtility.GetInstanceFrom(Component2.Source)) :: PVInstance
-			local Path = Mapping.Exception.TechicalException:Assert(CodeUtility.GetInstanceFrom(Component1.ToPath)) :: Instance
-			
-			CodeUtility.DoCallContextSync(function(...) 
-				local clone = Source:Clone()
-				for i,v in clone:GetTags() do clone:RemoveTag(v) end
-				local identity = CodeUtility.GetInstanceIdentity(clone)
-				clone.Parent = Path
-				clone.Name = identity
-				Component2.Path = identity
-				return clone
-			end)
-			
-		end
-	end)
+		CodeUtility.DoCallContextSync(function(...) 
+			local clone = Source:Clone()
+			for i,v in clone:GetTags() do clone:RemoveTag(v) end
+			local identity = CodeUtility.GetInstanceIdentity(clone)
+			clone.Parent = Path
+			clone.Name = identity
+			ComMod.Path = identity
+			return clone
+		end)
+		
+	end
 end
 
-function private.action_csphysic_spawn (World, Component1)
-	cstphysic:DoCatchFromWorld(World, function(Component: { AttachmentPath: string }) 
-		local IsValideComponent = Component.AttachmentPath ~= '' and CodeUtility.GetInstanceFrom(Component.AttachmentPath)
+function private.action_csphysic_spawn (World, ComMod: typeof(model.Value))
+	cstphysic:DoCatchFromWorld(World, function(ComCPhys: typeof(cstphysic.Value)) 
+		local IsValideComponent = CodeUtility.GetInstanceFrom(ComCPhys.AttachmentPath)
 		
 		if not IsValideComponent then
-			local ToPath
-			local Position = Vector3.zero
-			local Look = Vector3.one
-			local Up = Vector3.one
+			local ToPath = Mapping.Exception.NullPointerException:Assert(CodeUtility.GetInstanceFrom(ComMod.Path)) :: Model|PVInstance
+			local Coordinate = CFrame.new()
 			
 			position:DoCatchFromWorld(World, function(Component: { Value: Vector3 }) 
-				Position = Component.Value
-			end)
-			
-			model:DoCatchFromWorld(World, function(Component: { Path: string, Source: string }) 
-				local this = CodeUtility.GetInstanceFrom(Component.Path) :: Model?
-				if this then
-					ToPath = this.PrimaryPart or this
-
-						if Position == Vector3.zero then
-							Position = this:GetPivot().Position
-						end
-					
-				end
+				Coordinate = CFrame.new(Component.Value) * Coordinate.Rotation
 			end)
 			
 			rotation:DoCatchFromWorld(World, function (Component)
-				Look = Component.Look
-				Up = Component.Up
+				Coordinate *= Component.Value
 			end)
 			
 			CodeUtility.DoCallContextSync(function(...) 
 				local attachment = Instance.new('Attachment')
 				local path = CodeUtility.GetInstanceIdentity(attachment)
-				attachment.Parent = ToPath or workspace
+				if ToPath:IsA('Model') then
+					attachment.Parent = ToPath.PrimaryPart or ToPath
+				else
+					attachment.Parent = ToPath
+				end
+				
+				print(attachment.Parent)
+				
 				attachment.Name = path
-				attachment.WorldPosition = Position
-				attachment.WorldAxis = Look
-				Component.AttachmentPath = path
+				attachment.WorldCFrame = Coordinate
+				ComCPhys.AttachmentPath = path
 				return attachment
 			end)
 		end

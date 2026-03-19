@@ -1,17 +1,15 @@
 local main = require('../../../');
 local components = require('../../../interface/src_components')
-
-local WorldsService = main.Core.Services.WorldsService()
 local CodeUtility = main.Libs.CodeUtility
 local Mapping = main.Mapping
-
+local WorldsService = main.Core.Services.WorldsService()
 
 
 local position = components.parameter.Position()
 local rotation = components.parameter.Rotation()
 local height = components.parameter.Height()
 local model = components.property.Model()
-local floor = components.parameter.Floor()
+local roof = components.sensoric.Roof()
 local scale = components.parameter.Scale()
 
 local private = {};
@@ -36,18 +34,18 @@ private.params.FilterDescendantsInstances = private.ignore_list;
 function private.main (World)
 	local Service = interface.Service
 	
-	floor:DoCatchFromWorld(World, function(Component1)
+	roof:DoCatchFromWorld(World, function(Component1)
 		local PhaseLog = Service:DoPhaseLog()
 		PhaseLog.Insert(1,true)
 		
 		local IsPositionCatched = position:DoCatchFromWorld(World, function(Component2)
-			local Rotation = -Vector3.yAxis
+			local Rotation = Vector3.yAxis
 			local Position = Component2.Value
 			local Size = 1
 			
 			if Component1.IsLocalCoordinate then
 				local IsRotationCatched = rotation:DoCatchFromWorld(World, function(Component3)
-					Rotation = -Component3.Up
+					Rotation = Component3.Value.UpVector
 				end)
 				PhaseLog.Insert(3, IsRotationCatched)
 			end
@@ -70,7 +68,7 @@ function private.main (World)
 				PhaseLog.Insert(6, true)
 			end)
 			
-			local Direction = Rotation * Size
+			local Direction = Rotation * 10
 			local RaycastResultRaw = workspace:Spherecast(Position, Size, Direction, private.params)
 			local RaycastResult
 			if RaycastResultRaw then
@@ -83,7 +81,7 @@ function private.main (World)
 				}
 			end
 			
-			Service.TargetWorld.DoUpdateComponent(World, floor.Name, 'Value', function(old, current) 
+			Service.TargetWorld.DoUpdateComponent(World, roof.Name, 'Value', function(old, current) 
 				if current == old then
 					return RaycastResult
 				end
@@ -108,7 +106,7 @@ function private.main (World)
 				Beam.Attachment1 = Attachment2
 				Attachment1.Position = Position
 				Attachment2.Position = Position + Direction
-				Beam.Color = ColorSequence.new(Color3.fromRGB(225,100,200))
+				Beam.Color = ColorSequence.new(Color3.fromRGB(125,200,200))
 				Beam.Name = Service.Name
 				Beam.Parent = workspace:FindFirstChild('temp') or workspace 
 				

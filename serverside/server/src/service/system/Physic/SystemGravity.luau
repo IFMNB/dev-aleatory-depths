@@ -1,13 +1,13 @@
 local main = require('../../../');
 local components = require('../../../interface/src_components')
 local WorldsService = main.Core.Services.WorldsService()
+local DPhys = main.Libs.DPhys
 local CodeUtility = main.Libs.CodeUtility
 local Mapping = main.Mapping
 
 local cphysic = components.property.CustomPhysics()
 local gravity = components.effect.Gravity()
-local mass = components.property.Mass()
-local velocity = components.parameter.Velocity()
+local mass = components.sensoric.Mass()
 
 local private = {}
 local interface = {}
@@ -24,7 +24,7 @@ function private.main (World)
 end
 
 function private.action_gravity (World, ComCP)
-	gravity:DoCatchFromWorld(World, function(ComG: { Direction: Vector3, Path: string }) 
+	gravity:DoCatchFromWorld(World, function(ComG: { Value: Vector3, Path: string }) 
 		local this = (CodeUtility.GetInstanceFrom(ComG.Path) or private.new_vectorforce(ComCP, ComG)) :: VectorForce?
 		private.check[World.Identity]=true
 		if this then
@@ -33,24 +33,17 @@ function private.action_gravity (World, ComCP)
 	end)
 end
 
-function private.set_vectorforce (World, ComG: { Direction: Vector3, Path: string }, VectorForce: VectorForce)
+function private.set_vectorforce (World, ComG: { Value: Vector3, Path: string }, VectorForce: VectorForce)
 	private.gravity_added[World.Identity]=VectorForce
 	CodeUtility.DoCallContextSync(function(...) 
-		local vY = Vector3.zero.Y
-		local k = 0
-		local g = workspace.Gravity
 		local m = 1
-		
-		velocity:DoCatchFromWorld(World, function(Component: { Value: Vector3 }) 
-			vY = Component.Value.Y
-		end)
 		
 		mass:DoCatchFromWorld(World, function(ComMass: { Value: number })
 			m = ComMass.Value	
 		end)
 		
-		local GVector = Vector3.new(0, m*g, 0) - Vector3.new(0,vY,0) * k
-		VectorForce.Force = GVector + ComG.Direction
+		VectorForce.Force = Vector3.new(0,DPhys.AntiGravityFor(m)) + m*ComG.Value
+		
 		return
 	end)
 end

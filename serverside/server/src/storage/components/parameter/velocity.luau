@@ -4,7 +4,6 @@ local component = table.freeze(main.Core.Classes.SadComponentFabric().new(
 	{
 		Value = Vector3.zero;
 		Previous = Vector3.zero;
-		Delta = Vector3.zero;
 	}
 ))
 

@@ -1,9 +1,9 @@
 local services = script.Parent.Parent.service
 
 local system = services.system
-local physic = system.Physic
-local sensors = system.Sensors
-local Workspace = system.Workspace
+local physic = system.physic
+local sensors = system.sensor
+local Workspace = system.workspace
 
 local net = services.net
 local Game = services.game

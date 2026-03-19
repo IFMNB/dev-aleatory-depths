@@ -4,6 +4,8 @@ local property = path.property
 local parameter = path.parameter
 local action = path.action
 local effect = path.effect
+local force = path.force
+local sensoric = path.sensoric
 
 local components = table.freeze({
 	property = table.freeze({
@@ -12,9 +14,6 @@ local components = table.freeze({
 		end,
 		Model = function ()
 			return require(property.model)
-		end,
-		Mass = function ()
-			return require(property.mass)
 		end,
 		Player = function ()
 			return require(property.player)
@@ -39,12 +38,6 @@ local components = table.freeze({
 		Height = function ()
 			return require(parameter.height)
 		end,
-		Floor = function ()
-			return require(parameter.floor)
-		end,
-		Roof = function ()
-			return require(parameter.roof)
-		end,
 		Scale = function ()
 			return require(parameter.scale)
 		end,
@@ -55,7 +48,10 @@ local components = table.freeze({
 		end,
 		Teleport = function ()
 			return require(action.teleport)
-		end
+		end,
+		Rotate = function ()
+			return require(action.rotate)
+		end,
 	});
 	effect = table.freeze({
 		Gravity = function ()	
@@ -64,6 +60,17 @@ local components = table.freeze({
 		Glide = function ()
 			return require(effect.glide)
 		end,
+	});
+	sensoric = table.freeze({
+		Floor = function ()
+			return require(sensoric.floor)
+		end,
+		Roof = function ()
+			return require(sensoric.roof)
+		end,
+		Mass = function ()
+			return require(sensoric.mass)
+		end
 	});
 
 	

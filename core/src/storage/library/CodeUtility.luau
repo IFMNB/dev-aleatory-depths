@@ -75,7 +75,7 @@ function private.set_tag_identity (this: Instance, Identity: string?)
 end
 
 function private.get_from_identity (Identity: string) : Instance?
-	return CollectionService:GetTagged(Identity)[1]
+	return if Identity == '' or Identity == nil then nil else CollectionService:GetTagged(Identity)[1]
 end
 
 interface.RandomStr = private.random_str;

@@ -12,6 +12,7 @@ local SystemVelocity = server.Services.System.Physic.Velocity()
 
 SystemVelocity.Service.UpdateRate = 1/60
 SystemGravity.Service.UpdateRate = 1/60
+SystemRotation.Service.UpdateRate = 1/60
 
 SystemPosition.Service:SetActive(true)
 SystemRotation.Service:SetActive(true)

@@ -18,21 +18,18 @@ interface.Service = main.Core.Classes.SadSystemService().new({
 function private.main (World)
 	local Service = interface.Service
 	
-	scale:DoCatchFromWorld(World, function(Component1: { Value: number })
-		local PhaseLog = Service:DoPhaseLog()
-		PhaseLog.Insert(1, true)
-		model:DoCatchFromWorld(World, function(Component2: { Path: string, Source: string }) 
-			PhaseLog.Insert(2, true)
-			local this = CodeUtility.GetInstanceFrom(Component2.Path) :: Model?
-			if this then
-				task.synchronize()
-				Component1.Value = this:GetScale()
-				task.desynchronize()
-			end
-			PhaseLog.Insert(3, this ~= nil)
-		end)
-		
-		PhaseLog.EndLog(World.Identity)
+	scale:DoCatchFromWorld(World, function(ComScale)
+		private.fetch_scale(World, ComScale)
+	end)
+end
+
+function private.fetch_scale (World, ComScale: typeof(scale.Value))
+	model:DoCatchFromWorld(World, function(Component: { Path: string, Source: string }) 
+		local this = CodeUtility.GetInstanceFrom(Component.Path) :: Model?
+		if this then
+			ComScale.Previous = ComScale.Value
+			ComScale.Value = this:GetScale()
+		end
 	end)
 end
 

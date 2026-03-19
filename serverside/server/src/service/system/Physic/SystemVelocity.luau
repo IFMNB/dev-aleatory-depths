@@ -3,6 +3,7 @@ local components = require('../../../interface/src_components')
 local WorldsService = main.Core.Services.WorldsService()
 local CodeUtility = main.Libs.CodeUtility
 local Mapping = main.Mapping
+
 local model = components.property.Model()
 local velocity = components.parameter.Velocity()
 
@@ -13,29 +14,23 @@ function private.main (World)
 	local Service = interface.Service
 	
 	velocity:DoCatchFromWorld(World, function(Component) 
-		private.action_velocity(World, Component)
-		private.push_delta(Component)
+		private.fetch_velocity(World, Component)
 	end)
 end
 
-function private.action_velocity (World, ComVel)
+function private.fetch_velocity (World, ComVel: typeof(velocity.Value))
 	model:DoCatchFromWorld(World, function(ComModel: { Path: string, Source: string }) 
 		local primary : PVInstance?
 		local this = CodeUtility.GetInstanceFrom(ComModel.Path) :: Model?
 		
-		
 		if this then
 			primary = this.PrimaryPart
 			if primary then
-				ComVel.Delta += primary.AssemblyLinearVelocity
+				ComVel.Previous = ComVel.Value
+				ComVel.Value = primary.AssemblyLinearVelocity
 			end
 		end
 	end)
-end
-
-function private.push_delta (ComVel: {Value: Vector3, Delta: Vector3})
-	ComVel.Value += ComVel.Delta
-	ComVel.Delta = Vector3.zero
 end
 
 interface.Service = main.Core.Classes.SadSystemService().new({

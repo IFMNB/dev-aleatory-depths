@@ -52,3 +52,5 @@ for i=1, 1 do
 		Fortuna:DoUnpackTo(World)
 	end)
 end
+
+print(world)
