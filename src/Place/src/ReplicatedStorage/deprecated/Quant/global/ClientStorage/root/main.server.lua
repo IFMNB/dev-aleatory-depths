@@ -1,0 +1,2 @@
+--local global = require(game.ReplicatedStorage.global)
+--cm:MoveTo(workspace.Camera, workspace.pein.Position)
